@@ -1,16 +1,16 @@
 <?php
 
-use Omisai\CreditOnline\Model\Company;
 use Omisai\CreditOnline\Model\Address;
+use Omisai\CreditOnline\Model\Auditor;
+use Omisai\CreditOnline\Model\Company;
+use Omisai\CreditOnline\Model\FinancialSummary;
+use Omisai\CreditOnline\Model\Member;
 use Omisai\CreditOnline\Model\NegativeInfo;
 use Omisai\CreditOnline\Model\PositiveInfo;
-use Omisai\CreditOnline\Model\FinancialSummary;
 use Omisai\CreditOnline\Model\Signer;
-use Omisai\CreditOnline\Model\Member;
-use Omisai\CreditOnline\Model\Auditor;
 
 beforeEach(function () {
-    $this->model = new Company();
+    $this->model = new Company;
 });
 
 it('getModelName returns Company', function () {
@@ -166,7 +166,7 @@ it('setLongName sets string value and returns $this', function () {
 });
 
 it('setHeadquarter sets Address value and returns $this', function () {
-    $address = new Address();
+    $address = new Address;
     $result = $this->model->setHeadquarter($address);
     expect($result)->toBe($this->model);
     expect($this->model->getHeadquarter())->toBe($address);
@@ -180,7 +180,7 @@ it('setStatus sets valid enum value and returns $this', function () {
 
 it('setStatus throws on invalid enum value', function () {
     $this->model->setStatus('InvalidStatus');
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 it('setFoundation sets DateTime value and returns $this', function () {
     $date = new DateTime('2020-01-15');
@@ -290,49 +290,49 @@ it('setWebpages sets array value and returns $this', function () {
 });
 
 it('setNegativeInfo sets model array value and returns $this', function () {
-    $items = [new NegativeInfo()];
+    $items = [new NegativeInfo];
     $result = $this->model->setNegativeInfo($items);
     expect($result)->toBe($this->model);
     expect($this->model->getNegativeInfo())->toBe($items);
 });
 
 it('setPositiveInfo sets model array value and returns $this', function () {
-    $items = [new PositiveInfo()];
+    $items = [new PositiveInfo];
     $result = $this->model->setPositiveInfo($items);
     expect($result)->toBe($this->model);
     expect($this->model->getPositiveInfo())->toBe($items);
 });
 
 it('setFinancialSummaries sets model array value and returns $this', function () {
-    $items = [new FinancialSummary()];
+    $items = [new FinancialSummary];
     $result = $this->model->setFinancialSummaries($items);
     expect($result)->toBe($this->model);
     expect($this->model->getFinancialSummaries())->toBe($items);
 });
 
 it('setSigners sets model array value and returns $this', function () {
-    $items = [new Signer()];
+    $items = [new Signer];
     $result = $this->model->setSigners($items);
     expect($result)->toBe($this->model);
     expect($this->model->getSigners())->toBe($items);
 });
 
 it('setMembers sets model array value and returns $this', function () {
-    $items = [new Member()];
+    $items = [new Member];
     $result = $this->model->setMembers($items);
     expect($result)->toBe($this->model);
     expect($this->model->getMembers())->toBe($items);
 });
 
 it('setAuditors sets model array value and returns $this', function () {
-    $items = [new Auditor()];
+    $items = [new Auditor];
     $result = $this->model->setAuditors($items);
     expect($result)->toBe($this->model);
     expect($this->model->getAuditors())->toBe($items);
 });
 
 it('setSites sets Address array value and returns $this', function () {
-    $items = [new Address()];
+    $items = [new Address];
     $result = $this->model->setSites($items);
     expect($result)->toBe($this->model);
     expect($this->model->getSites())->toBe($items);
@@ -396,7 +396,7 @@ it('throws on null value for non-nullable string properties', function (string $
     $setters = Company::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['regnumber'],
     ['taxnumber'],
     ['name'],
@@ -416,7 +416,7 @@ it('throws on null value for non-nullable int properties', function (string $pro
     $setters = Company::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['employees'],
     ['last_turnover'],
     ['rating'],
@@ -427,7 +427,7 @@ it('throws on null value for non-nullable bool properties', function (string $pr
     $setters = Company::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['has_deleted_tax_number'],
     ['has_active_positive_info'],
     ['has_active_negative_info'],
@@ -443,7 +443,7 @@ it('throws on null value for non-nullable array properties', function (string $p
     $setters = Company::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['bank_accounts'],
     ['phones'],
     ['emails'],
@@ -461,7 +461,7 @@ it('throws on null value for headquarter and foundation', function (string $prop
     $setters = Company::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['headquarter'],
     ['foundation'],
 ]);
@@ -472,7 +472,7 @@ it('getStatusAllowableValues returns correct enum values', function () {
 });
 
 it('constructor with null initializes all properties to null', function () {
-    $model = new Company();
+    $model = new Company;
     expect($model->getRegnumber())->toBeNull();
     expect($model->getName())->toBeNull();
     expect($model->getEmployees())->toBeNull();
@@ -482,7 +482,7 @@ it('constructor with null initializes all properties to null', function () {
 });
 
 it('constructor with data sets provided properties', function () {
-    $address = new Address();
+    $address = new Address;
     $model = new Company([
         'regnumber' => '01-09-123456',
         'name' => 'Test',

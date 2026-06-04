@@ -3,7 +3,7 @@
 use Omisai\CreditOnline\Model\Address;
 
 beforeEach(function () {
-    $this->model = new Address();
+    $this->model = new Address;
 });
 
 it('getModelName returns Address', function () {
@@ -101,7 +101,7 @@ it('setter throws on null for non-nullable properties', function (string $proper
     $setters = Address::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['country_code'],
     ['zip'],
     ['city'],
@@ -111,7 +111,7 @@ it('setter throws on null for non-nullable properties', function (string $proper
 ]);
 
 it('constructor with null sets all properties to null', function () {
-    $model = new Address();
+    $model = new Address;
     expect($model->getCountryCode())->toBeNull();
     expect($model->getZip())->toBeNull();
     expect($model->getCity())->toBeNull();

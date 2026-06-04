@@ -1,10 +1,10 @@
 <?php
 
-use Omisai\CreditOnline\Model\Signer;
 use Omisai\CreditOnline\Model\Address;
+use Omisai\CreditOnline\Model\Signer;
 
 beforeEach(function () {
-    $this->model = new Signer();
+    $this->model = new Signer;
 });
 
 it('getModelName returns Signer', function () {
@@ -78,7 +78,7 @@ it('setMotherName sets value and returns $this', function () {
 });
 
 it('setAddress sets Address value and returns $this', function () {
-    $address = new Address();
+    $address = new Address;
     $result = $this->model->setAddress($address);
     expect($result)->toBe($this->model);
     expect($this->model->getAddress())->toBe($address);
@@ -95,7 +95,7 @@ it('setter throws on null for non-nullable properties', function (string $proper
     $setters = Signer::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['regnumber'],
     ['name'],
     ['mother_name'],
@@ -104,7 +104,7 @@ it('setter throws on null for non-nullable properties', function (string $proper
 ]);
 
 it('constructor with null sets all properties to null', function () {
-    $model = new Signer();
+    $model = new Signer;
     expect($model->getRegnumber())->toBeNull();
     expect($model->getName())->toBeNull();
     expect($model->getMotherName())->toBeNull();
@@ -113,7 +113,7 @@ it('constructor with null sets all properties to null', function () {
 });
 
 it('constructor with data sets provided properties', function () {
-    $address = new Address();
+    $address = new Address;
     $date = new DateTime('2023-01-15');
     $model = new Signer([
         'regnumber' => '01-09-123456',

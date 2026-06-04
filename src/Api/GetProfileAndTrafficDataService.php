@@ -1,10 +1,10 @@
 <?php
+
 /**
  * GetProfileAndTrafficDataService
  * PHP version 8.1
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -32,22 +32,23 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Utils;
 use Omisai\CreditOnline\ApiException;
 use Omisai\CreditOnline\Configuration;
-use Omisai\CreditOnline\FormDataProcessor;
 use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\ObjectSerializer;
+use OmisaiCreditOnline\Model\Profile;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * GetProfileAndTrafficDataService Class Doc Comment
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -73,7 +74,7 @@ class GetProfileAndTrafficDataService
      */
     protected $hostIndex;
 
-    /** @var string[] $contentTypes **/
+    /** @var string[] * */
     public const contentTypes = [
         'profileGet' => [
             'application/json',
@@ -81,10 +82,7 @@ class GetProfileAndTrafficDataService
     ];
 
     /**
-     * @param ClientInterface $client
-     * @param Configuration   $config
-     * @param HeaderSelector  $selector
-     * @param int             $hostIndex (Optional) host index to select the list of hosts if defined in the OpenAPI spec
+     * @param  int  $hostIndex  (Optional) host index to select the list of hosts if defined in the OpenAPI spec
      */
     public function __construct(
         ?ClientInterface $client = null,
@@ -92,16 +90,16 @@ class GetProfileAndTrafficDataService
         ?HeaderSelector $selector = null,
         int $hostIndex = 0
     ) {
-        $this->client = $client ?: new Client();
+        $this->client = $client ?: new Client;
         $this->config = $config ?: Configuration::getDefaultConfiguration();
-        $this->headerSelector = $selector ?: new HeaderSelector();
+        $this->headerSelector = $selector ?: new HeaderSelector;
         $this->hostIndex = $hostIndex;
     }
 
     /**
      * Set the host index
      *
-     * @param int $hostIndex Host index (required)
+     * @param  int  $hostIndex  Host index (required)
      */
     public function setHostIndex($hostIndex): void
     {
@@ -129,28 +127,29 @@ class GetProfileAndTrafficDataService
     /**
      * Operation profileGet
      *
-     * @param  string $token Egyedi token (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  string  $token  Egyedi token (required)
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
+     * @return Profile
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \OmisaiCreditOnline\Model\Profile
      */
     public function profileGet($token, string $contentType = self::contentTypes['profileGet'][0])
     {
-        list($response) = $this->profileGetWithHttpInfo($token, $contentType);
+        [$response] = $this->profileGetWithHttpInfo($token, $contentType);
+
         return $response;
     }
 
     /**
      * Operation profileGetWithHttpInfo
      *
-     * @param  string $token Egyedi token (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  string  $token  Egyedi token (required)
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
+     * @return array of \OmisaiCreditOnline\Model\Profile, HTTP status code, HTTP response headers (array of strings)
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \OmisaiCreditOnline\Model\Profile, HTTP status code, HTTP response headers (array of strings)
      */
     public function profileGetWithHttpInfo($token, string $contentType = self::contentTypes['profileGet'][0])
     {
@@ -178,8 +177,7 @@ class GetProfileAndTrafficDataService
 
             $statusCode = $response->getStatusCode();
 
-
-            switch($statusCode) {
+            switch ($statusCode) {
                 case 200:
                     return $this->handleResponseWithDataType(
                         '\Omisai\CreditOnline\Model\Profile',
@@ -187,8 +185,6 @@ class GetProfileAndTrafficDataService
                         $response,
                     );
             }
-
-
 
             if ($statusCode < 200 || $statusCode > 299) {
                 throw new ApiException(
@@ -220,7 +216,6 @@ class GetProfileAndTrafficDataService
                     throw $e;
             }
 
-
             throw $e;
         }
     }
@@ -228,11 +223,11 @@ class GetProfileAndTrafficDataService
     /**
      * Operation profileGetAsync
      *
-     * @param  string $token Egyedi token (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  string  $token  Egyedi token (required)
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
+     * @return PromiseInterface
      * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function profileGetAsync($token, string $contentType = self::contentTypes['profileGet'][0])
     {
@@ -247,11 +242,11 @@ class GetProfileAndTrafficDataService
     /**
      * Operation profileGetAsyncWithHttpInfo
      *
-     * @param  string $token Egyedi token (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  string  $token  Egyedi token (required)
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
+     * @return PromiseInterface
      * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function profileGetAsyncWithHttpInfo($token, string $contentType = self::contentTypes['profileGet'][0])
     {
@@ -263,7 +258,7 @@ class GetProfileAndTrafficDataService
             ->then(
                 function ($response) use ($returnType) {
                     if ($returnType === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
+                        $content = $response->getBody(); // stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
                         if ($returnType !== 'string') {
@@ -274,7 +269,7 @@ class GetProfileAndTrafficDataService
                     return [
                         ObjectSerializer::deserialize($content, $returnType, []),
                         $response->getStatusCode(),
-                        $response->getHeaders()
+                        $response->getHeaders(),
                     ];
                 },
                 function ($exception) {
@@ -297,11 +292,11 @@ class GetProfileAndTrafficDataService
     /**
      * Create request for operation 'profileGet'
      *
-     * @param  string $token Egyedi token (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  string  $token  Egyedi token (required)
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
+     * @return Request
      * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
      */
     public function profileGetRequest($token, string $contentType = self::contentTypes['profileGet'][0])
     {
@@ -312,7 +307,6 @@ class GetProfileAndTrafficDataService
                 'Missing the required parameter $token when calling profileGet'
             );
         }
-
 
         $resourcePath = '/Profile';
         $formParams = [];
@@ -331,11 +325,8 @@ class GetProfileAndTrafficDataService
             true // required
         ) ?? []);
 
-
-
-
         $headers = $this->headerSelector->selectHeaders(
-            ['application/json', 'application/xml', ],
+            ['application/json', 'application/xml'],
             $contentType,
             $multipart
         );
@@ -349,7 +340,7 @@ class GetProfileAndTrafficDataService
                     foreach ($formParamValueItems as $formParamValueItem) {
                         $multipartContents[] = [
                             'name' => $formParamName,
-                            'contents' => $formParamValueItem
+                            'contents' => $formParamValueItem,
                         ];
                     }
                 }
@@ -357,14 +348,13 @@ class GetProfileAndTrafficDataService
                 $httpBody = new MultipartStream($multipartContents);
 
             } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
-                # if Content-Type contains "application/json", json_encode the form parameters
-                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+                // if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = Utils::jsonEncode($formParams);
             } else {
                 // for HTTP post (form)
                 $httpBody = ObjectSerializer::buildQuery($formParams);
             }
         }
-
 
         $defaultHeaders = [];
         if ($this->config->getUserAgent()) {
@@ -379,9 +369,10 @@ class GetProfileAndTrafficDataService
 
         $operationHost = $this->config->getHost();
         $query = ObjectSerializer::buildQuery($queryParams);
+
         return new Request(
             'GET',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost.$resourcePath.($query ? "?{$query}" : ''),
             $headers,
             $httpBody
         );
@@ -390,8 +381,8 @@ class GetProfileAndTrafficDataService
     /**
      * Create http client option
      *
-     * @throws \RuntimeException on file opening failure
      * @return array of http client options
+     * @throws \RuntimeException on file opening failure
      */
     protected function createHttpClientOption()
     {
@@ -399,7 +390,7 @@ class GetProfileAndTrafficDataService
         if ($this->config->getDebug()) {
             $options[RequestOptions::DEBUG] = fopen($this->config->getDebugFile(), 'a');
             if (!$options[RequestOptions::DEBUG]) {
-                throw new \RuntimeException('Failed to open the debug file: ' . $this->config->getDebugFile());
+                throw new \RuntimeException('Failed to open the debug file: '.$this->config->getDebugFile());
             }
         }
 
@@ -420,7 +411,7 @@ class GetProfileAndTrafficDataService
         ResponseInterface $response
     ): array {
         if ($dataType === '\SplFileObject') {
-            $content = $response->getBody(); //stream goes to serializer
+            $content = $response->getBody(); // stream goes to serializer
         } else {
             $content = (string) $response->getBody();
             if ($dataType !== 'string') {
@@ -443,7 +434,7 @@ class GetProfileAndTrafficDataService
         return [
             ObjectSerializer::deserialize($content, $dataType, []),
             $response->getStatusCode(),
-            $response->getHeaders()
+            $response->getHeaders(),
         ];
     }
 

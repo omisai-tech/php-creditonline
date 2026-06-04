@@ -1,8 +1,8 @@
 <?php
 
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -15,10 +15,10 @@ use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\Model\Profile;
 
 beforeEach(function () {
-    $this->mock = new MockHandler();
+    $this->mock = new MockHandler;
     $this->handlerStack = HandlerStack::create($this->mock);
     $this->client = new Client(['handler' => $this->handlerStack]);
-    $this->config = new Configuration();
+    $this->config = new Configuration;
     $this->api = new GetProfileAndTrafficDataService($this->client, $this->config);
 });
 
@@ -39,7 +39,7 @@ it('can inject custom Guzzle ClientInterface', function () {
 });
 
 it('can inject custom Configuration', function () {
-    $config = new Configuration();
+    $config = new Configuration;
     $config->setHost('https://custom.example.com/v2');
 
     $api = new GetProfileAndTrafficDataService(null, $config);
@@ -48,7 +48,7 @@ it('can inject custom Configuration', function () {
 });
 
 it('can inject custom HeaderSelector', function () {
-    $selector = new HeaderSelector();
+    $selector = new HeaderSelector;
     $api = new GetProfileAndTrafficDataService(null, null, $selector);
 
     $request = $api->profileGetRequest('token');
@@ -71,7 +71,7 @@ it('getConfig returns the Configuration instance', function () {
 });
 
 it('has contentTypes static property', function () {
-    expect(defined(GetProfileAndTrafficDataService::class . '::contentTypes'))->toBeTrue();
+    expect(defined(GetProfileAndTrafficDataService::class.'::contentTypes'))->toBeTrue();
 });
 
 it('contentTypes has profileGet with application/json', function () {
@@ -214,11 +214,11 @@ it('profileGetRequest includes token query parameter', function () {
 
 it('profileGetRequest throws InvalidArgumentException when token is null', function () {
     $this->api->profileGetRequest(null);
-})->throws(\InvalidArgumentException::class, 'Missing the required parameter $token when calling profileGet');
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling profileGet');
 
 it('profileGetRequest throws InvalidArgumentException when token is empty array', function () {
     $this->api->profileGetRequest([]);
-})->throws(\InvalidArgumentException::class, 'Missing the required parameter $token when calling profileGet');
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling profileGet');
 
 it('throws ApiException on 400 bad request', function () {
     $this->mock->append(new Response(400, [], json_encode(['error' => 'Bad Request'])));
@@ -284,7 +284,7 @@ it('profileGetWithHttpInfo handles 201 non-200 2xx response', function () {
 
 it('throws ApiException on RequestException', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Server error',
             new Request('GET', 'test'),
             new Response(502, [], json_encode(['error' => 'Bad Gateway']))
@@ -296,7 +296,7 @@ it('throws ApiException on RequestException', function () {
 
 it('ApiException from RequestException captures status code and body', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Validation failed',
             new Request('GET', 'test'),
             new Response(422, ['X-Reason' => 'invalid'], json_encode(['field' => 'token']))
@@ -326,7 +326,7 @@ it('ApiException from ConnectException has null body and headers', function () {
 
 it('profileGetAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Async failure',
             new Request('GET', 'test'),
             new Response(503, [], json_encode(['error' => 'Down']))
@@ -338,7 +338,7 @@ it('profileGetAsyncWithHttpInfo rejects with ApiException on RequestException', 
 });
 
 it('createHttpClientOption enables debug logging', function () {
-    $tempFile = sys_get_temp_dir() . '/creditonline-profile-debug-' . uniqid() . '.log';
+    $tempFile = sys_get_temp_dir().'/creditonline-profile-debug-'.uniqid().'.log';
     $this->config->setDebug(true);
     $this->config->setDebugFile($tempFile);
 
@@ -360,7 +360,7 @@ it('createHttpClientOption with debug throws RuntimeException for bad path', fun
 
     $this->mock->append(new Response(200, [], json_encode([])));
     $this->api->profileGetWithHttpInfo('token');
-})->throws(\RuntimeException::class);
+})->throws(RuntimeException::class);
 
 it('createHttpClientOption sets cert and ssl_key', function () {
     $this->config->setCertFile('/fake/cert.pem');

@@ -7,7 +7,7 @@ use Omisai\CreditOnline\HeaderSelector;
 // ---------------------------------------------------------------------------
 
 beforeEach(function () {
-    $this->selector = new HeaderSelector();
+    $this->selector = new HeaderSelector;
 });
 
 // ---------------------------------------------------------------------------

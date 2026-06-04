@@ -1,10 +1,10 @@
 <?php
+
 /**
  * GetDataByIdService
  * PHP version 8.1
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -32,22 +32,23 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Utils;
 use Omisai\CreditOnline\ApiException;
 use Omisai\CreditOnline\Configuration;
-use Omisai\CreditOnline\FormDataProcessor;
 use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\ObjectSerializer;
+use OmisaiCreditOnline\Model\ApiResult;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * GetDataByIdService Class Doc Comment
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -73,7 +74,7 @@ class GetDataByIdService
      */
     protected $hostIndex;
 
-    /** @var string[] $contentTypes **/
+    /** @var string[] * */
     public const contentTypes = [
         'dataGet' => [
             'application/json',
@@ -81,10 +82,7 @@ class GetDataByIdService
     ];
 
     /**
-     * @param ClientInterface $client
-     * @param Configuration   $config
-     * @param HeaderSelector  $selector
-     * @param int             $hostIndex (Optional) host index to select the list of hosts if defined in the OpenAPI spec
+     * @param  int  $hostIndex  (Optional) host index to select the list of hosts if defined in the OpenAPI spec
      */
     public function __construct(
         ?ClientInterface $client = null,
@@ -92,16 +90,16 @@ class GetDataByIdService
         ?HeaderSelector $selector = null,
         int $hostIndex = 0
     ) {
-        $this->client = $client ?: new Client();
+        $this->client = $client ?: new Client;
         $this->config = $config ?: Configuration::getDefaultConfiguration();
-        $this->headerSelector = $selector ?: new HeaderSelector();
+        $this->headerSelector = $selector ?: new HeaderSelector;
         $this->hostIndex = $hostIndex;
     }
 
     /**
      * Set the host index
      *
-     * @param int $hostIndex Host index (required)
+     * @param  int  $hostIndex  Host index (required)
      */
     public function setHostIndex($hostIndex): void
     {
@@ -129,32 +127,33 @@ class GetDataByIdService
     /**
      * Operation dataGet
      *
-     * @param  string $token Egyedi token (required)
-     * @param  string|null $regnumber Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
-     * @param  string|null $taxnumber Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
+     * @param  string  $token  Egyedi token (required)
+     * @param  string|null  $regnumber  Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
+     * @param  string|null  $taxnumber  Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
      *
+     * @return ApiResult
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \OmisaiCreditOnline\Model\ApiResult
      */
     public function dataGet($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
     {
-        list($response) = $this->dataGetWithHttpInfo($token, $regnumber, $taxnumber, $contentType);
+        [$response] = $this->dataGetWithHttpInfo($token, $regnumber, $taxnumber, $contentType);
+
         return $response;
     }
 
     /**
      * Operation dataGetWithHttpInfo
      *
-     * @param  string $token Egyedi token (required)
-     * @param  string|null $regnumber Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
-     * @param  string|null $taxnumber Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
+     * @param  string  $token  Egyedi token (required)
+     * @param  string|null  $regnumber  Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
+     * @param  string|null  $taxnumber  Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
      *
+     * @return array of \OmisaiCreditOnline\Model\ApiResult, HTTP status code, HTTP response headers (array of strings)
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \OmisaiCreditOnline\Model\ApiResult, HTTP status code, HTTP response headers (array of strings)
      */
     public function dataGetWithHttpInfo($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
     {
@@ -182,8 +181,7 @@ class GetDataByIdService
 
             $statusCode = $response->getStatusCode();
 
-
-            switch($statusCode) {
+            switch ($statusCode) {
                 case 200:
                     return $this->handleResponseWithDataType(
                         '\Omisai\CreditOnline\Model\ApiResult',
@@ -191,8 +189,6 @@ class GetDataByIdService
                         $response,
                     );
             }
-
-
 
             if ($statusCode < 200 || $statusCode > 299) {
                 throw new ApiException(
@@ -224,7 +220,6 @@ class GetDataByIdService
                     throw $e;
             }
 
-
             throw $e;
         }
     }
@@ -232,13 +227,13 @@ class GetDataByIdService
     /**
      * Operation dataGetAsync
      *
-     * @param  string $token Egyedi token (required)
-     * @param  string|null $regnumber Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
-     * @param  string|null $taxnumber Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
+     * @param  string  $token  Egyedi token (required)
+     * @param  string|null  $regnumber  Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
+     * @param  string|null  $taxnumber  Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
      *
+     * @return PromiseInterface
      * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function dataGetAsync($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
     {
@@ -253,13 +248,13 @@ class GetDataByIdService
     /**
      * Operation dataGetAsyncWithHttpInfo
      *
-     * @param  string $token Egyedi token (required)
-     * @param  string|null $regnumber Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
-     * @param  string|null $taxnumber Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
+     * @param  string  $token  Egyedi token (required)
+     * @param  string|null  $regnumber  Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
+     * @param  string|null  $taxnumber  Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
      *
+     * @return PromiseInterface
      * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function dataGetAsyncWithHttpInfo($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
     {
@@ -271,7 +266,7 @@ class GetDataByIdService
             ->then(
                 function ($response) use ($returnType) {
                     if ($returnType === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
+                        $content = $response->getBody(); // stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
                         if ($returnType !== 'string') {
@@ -282,7 +277,7 @@ class GetDataByIdService
                     return [
                         ObjectSerializer::deserialize($content, $returnType, []),
                         $response->getStatusCode(),
-                        $response->getHeaders()
+                        $response->getHeaders(),
                     ];
                 },
                 function ($exception) {
@@ -305,13 +300,13 @@ class GetDataByIdService
     /**
      * Create request for operation 'dataGet'
      *
-     * @param  string $token Egyedi token (required)
-     * @param  string|null $regnumber Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
-     * @param  string|null $taxnumber Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
+     * @param  string  $token  Egyedi token (required)
+     * @param  string|null  $regnumber  Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
+     * @param  string|null  $taxnumber  Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
      *
+     * @return Request
      * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
      */
     public function dataGetRequest($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
     {
@@ -322,9 +317,6 @@ class GetDataByIdService
                 'Missing the required parameter $token when calling dataGet'
             );
         }
-
-
-
 
         $resourcePath = '/Data';
         $formParams = [];
@@ -361,11 +353,8 @@ class GetDataByIdService
             false // required
         ) ?? []);
 
-
-
-
         $headers = $this->headerSelector->selectHeaders(
-            ['application/json', 'application/xml', ],
+            ['application/json', 'application/xml'],
             $contentType,
             $multipart
         );
@@ -379,7 +368,7 @@ class GetDataByIdService
                     foreach ($formParamValueItems as $formParamValueItem) {
                         $multipartContents[] = [
                             'name' => $formParamName,
-                            'contents' => $formParamValueItem
+                            'contents' => $formParamValueItem,
                         ];
                     }
                 }
@@ -387,14 +376,13 @@ class GetDataByIdService
                 $httpBody = new MultipartStream($multipartContents);
 
             } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
-                # if Content-Type contains "application/json", json_encode the form parameters
-                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+                // if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = Utils::jsonEncode($formParams);
             } else {
                 // for HTTP post (form)
                 $httpBody = ObjectSerializer::buildQuery($formParams);
             }
         }
-
 
         $defaultHeaders = [];
         if ($this->config->getUserAgent()) {
@@ -409,9 +397,10 @@ class GetDataByIdService
 
         $operationHost = $this->config->getHost();
         $query = ObjectSerializer::buildQuery($queryParams);
+
         return new Request(
             'GET',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost.$resourcePath.($query ? "?{$query}" : ''),
             $headers,
             $httpBody
         );
@@ -420,8 +409,8 @@ class GetDataByIdService
     /**
      * Create http client option
      *
-     * @throws \RuntimeException on file opening failure
      * @return array of http client options
+     * @throws \RuntimeException on file opening failure
      */
     protected function createHttpClientOption()
     {
@@ -429,7 +418,7 @@ class GetDataByIdService
         if ($this->config->getDebug()) {
             $options[RequestOptions::DEBUG] = fopen($this->config->getDebugFile(), 'a');
             if (!$options[RequestOptions::DEBUG]) {
-                throw new \RuntimeException('Failed to open the debug file: ' . $this->config->getDebugFile());
+                throw new \RuntimeException('Failed to open the debug file: '.$this->config->getDebugFile());
             }
         }
 
@@ -450,7 +439,7 @@ class GetDataByIdService
         ResponseInterface $response
     ): array {
         if ($dataType === '\SplFileObject') {
-            $content = $response->getBody(); //stream goes to serializer
+            $content = $response->getBody(); // stream goes to serializer
         } else {
             $content = (string) $response->getBody();
             if ($dataType !== 'string') {
@@ -473,7 +462,7 @@ class GetDataByIdService
         return [
             ObjectSerializer::deserialize($content, $dataType, []),
             $response->getStatusCode(),
-            $response->getHeaders()
+            $response->getHeaders(),
         ];
     }
 

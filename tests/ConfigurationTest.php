@@ -7,7 +7,7 @@ use Omisai\CreditOnline\Configuration;
 // ---------------------------------------------------------------------------
 
 beforeEach(function () {
-    $this->config = new Configuration();
+    $this->config = new Configuration;
 });
 
 $originalDefaultConfig = Configuration::getDefaultConfiguration();
@@ -144,12 +144,12 @@ it('has default user agent', function () {
 
 it('throws InvalidArgumentException for non-string user agent', function ($value) {
     $this->config->setUserAgent($value);
-})->throws(\InvalidArgumentException::class, 'User-agent must be a string.')->with([
+})->throws(InvalidArgumentException::class, 'User-agent must be a string.')->with([
     'int' => 123,
     'float' => 45.67,
     'true' => true,
     'false' => false,
-    'stdClass' => fn() => new stdClass(),
+    'stdClass' => fn () => new stdClass,
     'null' => null,
 ]);
 
@@ -254,7 +254,7 @@ it('getDefaultConfiguration returns singleton', function () {
 });
 
 it('setDefaultConfiguration overrides the singleton', function () {
-    $newConfig = new Configuration();
+    $newConfig = new Configuration;
     $newConfig->setHost('https://overridden.example.com');
     Configuration::setDefaultConfiguration($newConfig);
 
@@ -392,7 +392,7 @@ it('getHostString throws for invalid enum value', function () {
     ];
 
     Configuration::getHostString($hostSettings, 0, ['region' => 'invalid']);
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 // ---------------------------------------------------------------------------
 // getHostString — invalid index
@@ -400,11 +400,11 @@ it('getHostString throws for invalid enum value', function () {
 
 it('getHostString throws for negative index', function () {
     Configuration::getHostString($this->config->getHostSettings(), -1);
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 it('getHostString throws for out of bounds index', function () {
     Configuration::getHostString($this->config->getHostSettings(), 999);
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 // ---------------------------------------------------------------------------
 // Chained returns

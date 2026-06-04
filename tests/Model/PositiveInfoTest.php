@@ -3,7 +3,7 @@
 use Omisai\CreditOnline\Model\PositiveInfo;
 
 beforeEach(function () {
-    $this->model = new PositiveInfo();
+    $this->model = new PositiveInfo;
 });
 
 it('getModelName returns PositiveInfo', function () {
@@ -75,14 +75,14 @@ it('setter throws on null for non-nullable properties', function (string $proper
     $setters = PositiveInfo::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['type'],
     ['start'],
     ['end'],
 ]);
 
 it('constructor with null sets all properties to null', function () {
-    $model = new PositiveInfo();
+    $model = new PositiveInfo;
     expect($model->getType())->toBeNull();
     expect($model->getStart())->toBeNull();
     expect($model->getEnd())->toBeNull();

@@ -36,7 +36,7 @@ $createTempSplFile = function (string $content = 'test content'): SplFileObject 
 // ===========================================================================
 
 it('has_file defaults to false', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     expect($processor->has_file)->toBeFalse();
 });
 
@@ -45,37 +45,37 @@ it('has_file defaults to false', function () {
 // ===========================================================================
 
 it('prepare() passes string values through unchanged', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare(['name' => 'John']);
     expect($result)->toBe(['name' => 'John']);
 });
 
 it('prepare() converts int values to string', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare(['age' => 42]);
     expect($result)->toBe(['age' => '42']);
 });
 
 it('prepare() converts float values to string', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare(['price' => 9.99]);
     expect($result)->toBe(['price' => '9.99']);
 });
 
 it('prepare() converts bool true to string', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare(['active' => true]);
     expect($result)->toBe(['active' => 'true']);
 });
 
 it('prepare() converts bool false to string', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare(['active' => false]);
     expect($result)->toBe(['active' => 'false']);
 });
 
 it('prepare() handles multiple scalar types in one call', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare([
         'name' => 'Alice',
         'age' => 30,
@@ -95,14 +95,14 @@ it('prepare() handles multiple scalar types in one call', function () {
 // ===========================================================================
 
 it('prepare() converts DateTime to ISO8601 string', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $dt = new DateTime('2025-01-15T10:20:30', new DateTimeZone('UTC'));
     $result = $processor->prepare(['created_at' => $dt]);
     expect($result)->toBe(['created_at' => '2025-01-15T10:20:30+00:00']);
 });
 
 it('prepare() converts DateTime inside nested array to ISO8601 string', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $dt = new DateTime('2025-06-04T12:00:00', new DateTimeZone('UTC'));
     $result = $processor->prepare(['meta' => ['timestamp' => $dt, 'label' => 'test']]);
     expect($result)->toBe(['meta' => ['timestamp' => '2025-06-04T12:00:00+00:00', 'label' => 'test']]);
@@ -113,14 +113,14 @@ it('prepare() converts DateTime inside nested array to ISO8601 string', function
 // ===========================================================================
 
 it('prepare() skips null values', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare(['name' => 'John', 'middle' => null, 'last' => 'Doe']);
     expect($result)->not->toHaveKey('middle');
     expect($result)->toBe(['name' => 'John', 'last' => 'Doe']);
 });
 
 it('prepare() converts null values inside nested arrays to empty string', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare([
         'user' => [
             'name' => 'Jane',
@@ -138,7 +138,7 @@ it('prepare() converts null values inside nested arrays to empty string', functi
 });
 
 it('prepare() returns empty array when all values are null', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare(['a' => null, 'b' => null]);
     expect($result)->toBe([]);
 });
@@ -148,7 +148,7 @@ it('prepare() returns empty array when all values are null', function () {
 // ===========================================================================
 
 it('prepare() recurses into nested associative arrays', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare([
         'user' => [
             'name' => 'John',
@@ -164,7 +164,7 @@ it('prepare() recurses into nested associative arrays', function () {
 });
 
 it('prepare() recurses into nested list arrays', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare([
         'tags' => ['php', 'api', 'rest'],
     ]);
@@ -174,7 +174,7 @@ it('prepare() recurses into nested list arrays', function () {
 });
 
 it('prepare() handles deeply nested arrays', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $result = $processor->prepare([
         'a' => ['b' => ['c' => ['d' => 'deep']]],
     ]);
@@ -184,7 +184,7 @@ it('prepare() handles deeply nested arrays', function () {
 });
 
 it('prepare() handles mixed nested arrays with various types', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $dt = new DateTime('2025-01-01T00:00:00', new DateTimeZone('UTC'));
     $result = $processor->prepare([
         'data' => [
@@ -209,7 +209,7 @@ it('prepare() handles mixed nested arrays with various types', function () {
 // ===========================================================================
 
 it('prepare() processes Address model converting all string properties', function () use ($createAddress) {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $address = $createAddress([
         'country_code' => 'HU',
         'zip' => '1234',
@@ -232,7 +232,7 @@ it('prepare() processes Address model converting all string properties', functio
 });
 
 it('prepare() processes Address model with partial fields', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $address = new Address([
         'country_code' => 'DE',
         'city' => 'Berlin',
@@ -247,7 +247,7 @@ it('prepare() processes Address model with partial fields', function () {
 });
 
 it('prepare() processes array of Address models', function () use ($createAddress) {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $addr1 = $createAddress(['country_code' => 'HU', 'city' => 'Budapest']);
     $addr2 = $createAddress(['country_code' => 'AT', 'city' => 'Wien']);
     $result = $processor->prepare(['addresses' => [$addr1, $addr2]]);
@@ -274,7 +274,7 @@ it('prepare() processes array of Address models', function () use ($createAddres
 });
 
 it('prepare() processes nested Address model inside nested array', function () use ($createAddress) {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $address = $createAddress(['city' => 'Szeged']);
     $result = $processor->prepare([
         'person' => [
@@ -302,14 +302,14 @@ it('prepare() processes nested Address model inside nested array', function () u
 // ===========================================================================
 
 it('prepare() sets has_file when SplFileObject is present', function () use ($createTempSplFile) {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $file = $createTempSplFile('hello world');
     $processor->prepare(['document' => $file]);
     expect($processor->has_file)->toBeTrue();
 });
 
 it('prepare() sets has_file when resource is present', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $resource = fopen('php://temp', 'r');
     $processor->prepare(['file' => $resource]);
     expect($processor->has_file)->toBeTrue();
@@ -317,7 +317,7 @@ it('prepare() sets has_file when resource is present', function () {
 });
 
 it('prepare() sets has_file when SplFileObject is nested inside array', function () use ($createTempSplFile) {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $file = $createTempSplFile('nested content');
     $processor->prepare([
         'attachments' => [$file],
@@ -326,7 +326,7 @@ it('prepare() sets has_file when SplFileObject is nested inside array', function
 });
 
 it('prepare() does not set has_file when no file data is present', function () {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $processor->prepare(['name' => 'John', 'age' => 30]);
     expect($processor->has_file)->toBeFalse();
 });
@@ -336,7 +336,7 @@ it('prepare() does not set has_file when no file data is present', function () {
 // ===========================================================================
 
 it('has_file resets to false on next prepare() call', function () use ($createTempSplFile) {
-    $processor = new FormDataProcessor();
+    $processor = new FormDataProcessor;
     $file = $createTempSplFile('some content');
     $processor->prepare(['doc' => $file]);
     expect($processor->has_file)->toBeTrue();

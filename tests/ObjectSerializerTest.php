@@ -1,9 +1,9 @@
 <?php
 
 use Omisai\CreditOnline\Configuration;
-use Omisai\CreditOnline\ObjectSerializer;
 use Omisai\CreditOnline\Model\Address;
 use Omisai\CreditOnline\Model\ModelInterface;
+use Omisai\CreditOnline\ObjectSerializer;
 
 // ---------------------------------------------------------------------------
 // Helpers / fixtures
@@ -27,16 +27,18 @@ $createAddress = function (array $data = []): Address {
  * A plain stdClass-style object that does NOT implement ModelInterface.
  */
 $createPlainObject = function (): stdClass {
-    $obj = new stdClass();
+    $obj = new stdClass;
     $obj->name = 'Test';
     $obj->value = 42;
+
     return $obj;
 };
 
 /**
  * An object that has a toHeaderValue() method (for toHeaderValue tests).
  */
-$createHeaderObject = new class {
+$createHeaderObject = new class
+{
     public function toHeaderValue(): string
     {
         return 'custom-header-value';
@@ -46,7 +48,8 @@ $createHeaderObject = new class {
 // ---------------------------------------------------------------------------
 // Enum fixture for sanitizeForSerialization enum validation test
 // ---------------------------------------------------------------------------
-$enumFixtureClass = new class {
+$enumFixtureClass = new class
+{
     public static function getAllowableEnumValues(): array
     {
         return ['red', 'green', 'blue'];
@@ -60,162 +63,407 @@ $enumFixtureClassName = get_class($enumFixtureClass);
 class CustomPlainObject
 {
     public $title = 'TestTitle';
+
     public $count = 5;
+
     public $createdAt;
 }
 
 // ---------------------------------------------------------------------------
 // Nullable model fixture for deserialize tests
 // ---------------------------------------------------------------------------
-$nullableModelClass = new class implements ModelInterface {
+$nullableModelClass = new class implements ModelInterface
+{
     public const DISCRIMINATOR = null;
+
     private static $openAPITypes = [
         'name' => 'string',
         'optional_field' => 'string',
     ];
+
     private static $openAPIFormats = [
         'name' => null,
         'optional_field' => null,
     ];
+
     private static $openAPINullables = [
         'name' => false,
         'optional_field' => true,
     ];
+
     private static $attributeMap = [
         'name' => 'Name',
         'optional_field' => 'OptionalField',
     ];
+
     private static $setters = [
         'name' => 'setName',
         'optional_field' => 'setOptionalField',
     ];
+
     private static $getters = [
         'name' => 'getName',
         'optional_field' => 'getOptionalField',
     ];
+
     public $name = null;
+
     public $optionalField = 'default-value';
 
-    public static function openAPITypes() { return self::$openAPITypes; }
-    public static function openAPIFormats() { return self::$openAPIFormats; }
-    public static function attributeMap() { return self::$attributeMap; }
-    public static function setters() { return self::$setters; }
-    public static function getters() { return self::$getters; }
-    public function getModelName() { return 'TestNullable'; }
-    public function listInvalidProperties() { return []; }
-    public function valid() { return true; }
-    public static function isNullable(string $property): bool { return self::$openAPINullables[$property] ?? false; }
-    public function isNullableSetToNull(string $property): bool { return false; }
-    public function setName($value) { $this->name = $value; }
-    public function setOptionalField($value) { $this->optionalField = $value; }
-    public function getName() { return $this->name; }
-    public function getOptionalField() { return $this->optionalField; }
+    public static function openAPITypes()
+    {
+        return self::$openAPITypes;
+    }
+
+    public static function openAPIFormats()
+    {
+        return self::$openAPIFormats;
+    }
+
+    public static function attributeMap()
+    {
+        return self::$attributeMap;
+    }
+
+    public static function setters()
+    {
+        return self::$setters;
+    }
+
+    public static function getters()
+    {
+        return self::$getters;
+    }
+
+    public function getModelName()
+    {
+        return 'TestNullable';
+    }
+
+    public function listInvalidProperties()
+    {
+        return [];
+    }
+
+    public function valid()
+    {
+        return true;
+    }
+
+    public static function isNullable(string $property): bool
+    {
+        return self::$openAPINullables[$property] ?? false;
+    }
+
+    public function isNullableSetToNull(string $property): bool
+    {
+        return false;
+    }
+
+    public function setName($value)
+    {
+        $this->name = $value;
+    }
+
+    public function setOptionalField($value)
+    {
+        $this->optionalField = $value;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getOptionalField()
+    {
+        return $this->optionalField;
+    }
 };
 
 // ---------------------------------------------------------------------------
 // ModelInterface with an enum-typed property (for sanitizeForSerialization)
 // ---------------------------------------------------------------------------
-$modelWithEnumProp = new class($enumFixtureClassName) implements ModelInterface {
+$modelWithEnumProp = new class($enumFixtureClassName) implements ModelInterface
+{
     public const DISCRIMINATOR = null;
+
     private string $enumClass;
+
     private static $openAPITypes = [
         'color' => 'enumClass',
     ];
+
     private static $openAPIFormats = [
         'color' => null,
     ];
+
     private static $openAPINullables = [
         'color' => false,
     ];
+
     private static $attributeMap = [
         'color' => 'Color',
     ];
+
     private static $setters = [
         'color' => 'setColor',
     ];
+
     private static $getters = [
         'color' => 'getColor',
     ];
+
     private $color = 'red';
+
     private array $openAPINullablesSetToNull = [];
 
-    public function __construct(string $enumClass) {
+    public function __construct(string $enumClass)
+    {
         $this->enumClass = $enumClass;
         self::$openAPITypes['color'] = $enumClass;
     }
-    public static function openAPITypes() { return self::$openAPITypes; }
-    public static function openAPIFormats() { return self::$openAPIFormats; }
-    public static function attributeMap() { return self::$attributeMap; }
-    public static function setters() { return self::$setters; }
-    public static function getters() { return self::$getters; }
-    public function getModelName() { return 'TestEnumModel'; }
-    public function listInvalidProperties() { return []; }
-    public function valid() { return true; }
-    public static function isNullable(string $property): bool { return self::$openAPINullables[$property] ?? false; }
-    public function isNullableSetToNull(string $property): bool { return in_array($property, $this->openAPINullablesSetToNull, true); }
-    public function setColor($value) { $this->color = $value; return $this; }
-    public function getColor() { return $this->color; }
+
+    public static function openAPITypes()
+    {
+        return self::$openAPITypes;
+    }
+
+    public static function openAPIFormats()
+    {
+        return self::$openAPIFormats;
+    }
+
+    public static function attributeMap()
+    {
+        return self::$attributeMap;
+    }
+
+    public static function setters()
+    {
+        return self::$setters;
+    }
+
+    public static function getters()
+    {
+        return self::$getters;
+    }
+
+    public function getModelName()
+    {
+        return 'TestEnumModel';
+    }
+
+    public function listInvalidProperties()
+    {
+        return [];
+    }
+
+    public function valid()
+    {
+        return true;
+    }
+
+    public static function isNullable(string $property): bool
+    {
+        return self::$openAPINullables[$property] ?? false;
+    }
+
+    public function isNullableSetToNull(string $property): bool
+    {
+        return in_array($property, $this->openAPINullablesSetToNull, true);
+    }
+
+    public function setColor($value)
+    {
+        $this->color = $value;
+
+        return $this;
+    }
+
+    public function getColor()
+    {
+        return $this->color;
+    }
 };
 
 // ---------------------------------------------------------------------------
 // ModelInterface with an enum-typed property set to invalid value
 // ---------------------------------------------------------------------------
-$modelWithInvalidEnumProp = new class($enumFixtureClassName) implements ModelInterface {
+$modelWithInvalidEnumProp = new class($enumFixtureClassName) implements ModelInterface
+{
     public const DISCRIMINATOR = null;
+
     private string $enumClass;
+
     private static $openAPITypes = ['color' => 'enumClass'];
+
     private static $openAPIFormats = ['color' => null];
+
     private static $openAPINullables = ['color' => false];
+
     private static $attributeMap = ['color' => 'Color'];
+
     private static $setters = ['color' => 'setColor'];
+
     private static $getters = ['color' => 'getColor'];
+
     private array $openAPINullablesSetToNull = [];
 
-    public function __construct(string $enumClass) {
+    public function __construct(string $enumClass)
+    {
         $this->enumClass = $enumClass;
         self::$openAPITypes['color'] = $enumClass;
     }
-    public static function openAPITypes() { return self::$openAPITypes; }
-    public static function openAPIFormats() { return self::$openAPIFormats; }
-    public static function attributeMap() { return self::$attributeMap; }
-    public static function setters() { return self::$setters; }
-    public static function getters() { return self::$getters; }
-    public function getModelName() { return 'TestInvalidEnumModel'; }
-    public function listInvalidProperties() { return []; }
-    public function valid() { return true; }
-    public static function isNullable(string $property): bool { return self::$openAPINullables[$property] ?? false; }
-    public function isNullableSetToNull(string $property): bool { return in_array($property, $this->openAPINullablesSetToNull, true); }
-    public function setColor($value) { $this->color = $value; return $this; }
-    public function getColor() { return 'yellow'; }
+
+    public static function openAPITypes()
+    {
+        return self::$openAPITypes;
+    }
+
+    public static function openAPIFormats()
+    {
+        return self::$openAPIFormats;
+    }
+
+    public static function attributeMap()
+    {
+        return self::$attributeMap;
+    }
+
+    public static function setters()
+    {
+        return self::$setters;
+    }
+
+    public static function getters()
+    {
+        return self::$getters;
+    }
+
+    public function getModelName()
+    {
+        return 'TestInvalidEnumModel';
+    }
+
+    public function listInvalidProperties()
+    {
+        return [];
+    }
+
+    public function valid()
+    {
+        return true;
+    }
+
+    public static function isNullable(string $property): bool
+    {
+        return self::$openAPINullables[$property] ?? false;
+    }
+
+    public function isNullableSetToNull(string $property): bool
+    {
+        return in_array($property, $this->openAPINullablesSetToNull, true);
+    }
+
+    public function setColor($value)
+    {
+        $this->color = $value;
+
+        return $this;
+    }
+
+    public function getColor()
+    {
+        return 'yellow';
+    }
 };
 
 // ---------------------------------------------------------------------------
 // ModelInterface that does NOT reference an enum subclass for a property
 // (exercises the non-enum branch: the type IS in the primitives list)
 // ---------------------------------------------------------------------------
-$modelWithPrimitiveProp = new class implements ModelInterface {
+$modelWithPrimitiveProp = new class implements ModelInterface
+{
     public const DISCRIMINATOR = null;
+
     private static $openAPITypes = ['label' => 'string'];
+
     private static $openAPIFormats = ['label' => null];
+
     private static $openAPINullables = ['label' => false];
+
     private static $attributeMap = ['label' => 'Label'];
+
     private static $setters = ['label' => 'setLabel'];
+
     private static $getters = ['label' => 'getLabel'];
+
     private array $openAPINullablesSetToNull = [];
+
     private $label = 'hello';
 
-    public static function openAPITypes() { return self::$openAPITypes; }
-    public static function openAPIFormats() { return self::$openAPIFormats; }
-    public static function attributeMap() { return self::$attributeMap; }
-    public static function setters() { return self::$setters; }
-    public static function getters() { return self::$getters; }
-    public function getModelName() { return 'TestPrimitiveModel'; }
-    public function listInvalidProperties() { return []; }
-    public function valid() { return true; }
-    public static function isNullable(string $property): bool { return false; }
-    public function isNullableSetToNull(string $property): bool { return false; }
-    public function setLabel($value) { $this->label = $value; return $this; }
-    public function getLabel() { return $this->label; }
+    public static function openAPITypes()
+    {
+        return self::$openAPITypes;
+    }
+
+    public static function openAPIFormats()
+    {
+        return self::$openAPIFormats;
+    }
+
+    public static function attributeMap()
+    {
+        return self::$attributeMap;
+    }
+
+    public static function setters()
+    {
+        return self::$setters;
+    }
+
+    public static function getters()
+    {
+        return self::$getters;
+    }
+
+    public function getModelName()
+    {
+        return 'TestPrimitiveModel';
+    }
+
+    public function listInvalidProperties()
+    {
+        return [];
+    }
+
+    public function valid()
+    {
+        return true;
+    }
+
+    public static function isNullable(string $property): bool
+    {
+        return false;
+    }
+
+    public function isNullableSetToNull(string $property): bool
+    {
+        return false;
+    }
+
+    public function setLabel($value)
+    {
+        $this->label = $value;
+
+        return $this;
+    }
+
+    public function getLabel()
+    {
+        return $this->label;
+    }
 };
 
 // Save and restore default configuration / static state between tests.
@@ -223,7 +471,7 @@ $originalConfig = Configuration::getDefaultConfiguration();
 
 afterEach(function () use ($originalConfig) {
     Configuration::setDefaultConfiguration($originalConfig);
-    ObjectSerializer::setDateTimeFormat(\DateTime::ATOM);
+    ObjectSerializer::setDateTimeFormat(DateTime::ATOM);
 });
 
 // ===========================================================================
@@ -500,7 +748,7 @@ it('convertBoolToQueryStringFormat returns 1 for true and 0 for false when int f
 });
 
 it('convertBoolToQueryStringFormat returns "true"/"false" when string format', function () {
-    $config = new Configuration();
+    $config = new Configuration;
     $config->setBooleanFormatForQueryString(Configuration::BOOLEAN_FORMAT_STRING);
     Configuration::setDefaultConfiguration($config);
 
@@ -614,7 +862,7 @@ it('buildQuery encodes boolean values using int format by default', function () 
 });
 
 it('buildQuery encodes boolean values using string format', function () {
-    $config = new Configuration();
+    $config = new Configuration;
     $config->setBooleanFormatForQueryString(Configuration::BOOLEAN_FORMAT_STRING);
     Configuration::setDefaultConfiguration($config);
 
@@ -644,7 +892,7 @@ it('buildQuery does not encode when encoding is false', function () {
 
 it('buildQuery throws InvalidArgumentException for invalid encoding', function () {
     ObjectSerializer::buildQuery(['key' => 'value'], 999);
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 it('buildQuery skips null values', function () {
     $result = ObjectSerializer::buildQuery(['a' => 1, 'b' => null, 'c' => 3]);
@@ -678,7 +926,7 @@ it('deserialize handles array type with empty array', function () {
 
 it('deserialize throws for non-array data with array type', function () {
     ObjectSerializer::deserialize('not-an-array', 'string[]');
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 it('deserialize returns string as string', function () {
     expect(ObjectSerializer::deserialize('hello', 'string'))->toBe('hello');
@@ -815,7 +1063,8 @@ it('deserialize handles mixed type from array', function () {
 
 it('deserialize validates enum values', function () {
     // Create a mock enum class inline
-    $enumClass = new class {
+    $enumClass = new class
+    {
         public static function getAllowableEnumValues(): array
         {
             return ['red', 'green', 'blue'];
@@ -827,7 +1076,8 @@ it('deserialize validates enum values', function () {
 });
 
 it('deserialize throws for invalid enum value', function () {
-    $enumClass = new class {
+    $enumClass = new class
+    {
         public static function getAllowableEnumValues(): array
         {
             return ['red', 'green', 'blue'];
@@ -835,7 +1085,7 @@ it('deserialize throws for invalid enum value', function () {
     };
 
     ObjectSerializer::deserialize('yellow', get_class($enumClass));
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 it('deserialize handles float with decimal string', function () {
     $result = ObjectSerializer::deserialize('2.718', 'float');
@@ -870,14 +1120,14 @@ it('sanitizeForSerialization accepts valid enum value for ModelInterface propert
 
 it('sanitizeForSerialization throws for invalid enum value on ModelInterface property', function () use ($modelWithInvalidEnumProp) {
     ObjectSerializer::sanitizeForSerialization($modelWithInvalidEnumProp);
-})->throws(\InvalidArgumentException::class, "Invalid value for enum");
+})->throws(InvalidArgumentException::class, 'Invalid value for enum');
 
 // ===========================================================================
 // 14. sanitizeForSerialization — non-ModelInterface objects (lines ~107-108)
 // ===========================================================================
 
 it('sanitizeForSerialization serializes custom non-ModelInterface class', function () {
-    $obj = new CustomPlainObject();
+    $obj = new CustomPlainObject;
     $this->createdAt = new DateTime('2025-06-04', new DateTimeZone('UTC'));
     $obj->createdAt = $this->createdAt;
 
@@ -1012,7 +1262,7 @@ it('buildQuery encodes boolean values inside nested arrays', function () {
 });
 
 it('buildQuery encodes nested arrays with booleans using string format', function () {
-    $config = new Configuration();
+    $config = new Configuration;
     $config->setBooleanFormatForQueryString(Configuration::BOOLEAN_FORMAT_STRING);
     Configuration::setDefaultConfiguration($config);
 
@@ -1101,10 +1351,10 @@ it('deserialize preserves type for mixed from float', function () {
 // ===========================================================================
 
 it('deserialize creates SplFileObject from stream with Content-Disposition header', function () {
-    $tempDir = sys_get_temp_dir() . '/opencode-spl-test-' . uniqid();
+    $tempDir = sys_get_temp_dir().'/opencode-spl-test-'.uniqid();
     mkdir($tempDir, 0777, true);
 
-    $config = new Configuration();
+    $config = new Configuration;
     $config->setTempFolderPath($tempDir);
     Configuration::setDefaultConfiguration($config);
 
@@ -1119,7 +1369,7 @@ it('deserialize creates SplFileObject from stream with Content-Disposition heade
 
     // Cleanup
     $result = null;
-    array_map('unlink', glob($tempDir . '/*'));
+    array_map('unlink', glob($tempDir.'/*'));
     rmdir($tempDir);
 });
 
@@ -1128,10 +1378,10 @@ it('deserialize creates SplFileObject from stream with Content-Disposition heade
 // ===========================================================================
 
 it('deserialize creates SplFileObject from stream without Content-Disposition header', function () {
-    $tempDir = sys_get_temp_dir() . '/opencode-spl-test2-' . uniqid();
+    $tempDir = sys_get_temp_dir().'/opencode-spl-test2-'.uniqid();
     mkdir($tempDir, 0777, true);
 
-    $config = new Configuration();
+    $config = new Configuration;
     $config->setTempFolderPath($tempDir);
     Configuration::setDefaultConfiguration($config);
 
@@ -1143,7 +1393,7 @@ it('deserialize creates SplFileObject from stream without Content-Disposition he
 
     // Cleanup
     $result = null;
-    array_map('unlink', glob($tempDir . '/*'));
+    array_map('unlink', glob($tempDir.'/*'));
     rmdir($tempDir);
 });
 
@@ -1152,7 +1402,8 @@ it('deserialize creates SplFileObject from stream without Content-Disposition he
 // ===========================================================================
 
 it('deserialize throws InvalidArgumentException for invalid enum value with descriptive message', function () {
-    $enumClass = new class {
+    $enumClass = new class
+    {
         public static function getAllowableEnumValues(): array
         {
             return ['red', 'green', 'blue'];
@@ -1160,7 +1411,7 @@ it('deserialize throws InvalidArgumentException for invalid enum value with desc
     };
 
     ObjectSerializer::deserialize('purple', get_class($enumClass));
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 // ===========================================================================
 // 26. deserialize — discriminator-based deserialization (lines 504-511)
@@ -1169,8 +1420,8 @@ it('deserialize throws InvalidArgumentException for invalid enum value with desc
 it('deserialize uses discriminator to select subclass', function () {
     // Create a base class and a subclass in the Omisai\CreditOnline\Model namespace
     // using anonymous classes wrapped in the correct namespace via eval
-    $baseClassName = 'Omisai\CreditOnline\Model\_DiscriminatorBaseTest_' . uniqid();
-    $subClassName = 'Omisai\CreditOnline\Model\_DiscriminatorSubTest_' . uniqid();
+    $baseClassName = 'Omisai\CreditOnline\Model\_DiscriminatorBaseTest_'.uniqid();
+    $subClassName = 'Omisai\CreditOnline\Model\_DiscriminatorSubTest_'.uniqid();
 
     // Extract short names
     $baseShort = substr($baseClassName, strrpos($baseClassName, '\\') + 1);

@@ -1,8 +1,8 @@
 <?php
 
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -14,15 +14,15 @@ use Omisai\CreditOnline\Configuration;
 use Omisai\CreditOnline\HeaderSelector;
 
 beforeEach(function () {
-    $this->mock = new MockHandler();
+    $this->mock = new MockHandler;
     $this->handlerStack = HandlerStack::create($this->mock);
     $this->client = new Client(['handler' => $this->handlerStack]);
-    $this->config = new Configuration();
+    $this->config = new Configuration;
     $this->api = new AuthenticationService($this->client, $this->config);
 });
 
 it('creates with default client, config, and header selector', function () {
-    $api = new AuthenticationService();
+    $api = new AuthenticationService;
 
     expect($api->getConfig())->toBeInstanceOf(Configuration::class);
     expect($api->getConfig()->getHost())->toBe('https://api.creditonline.hu/v3');
@@ -41,7 +41,7 @@ it('can inject custom Guzzle ClientInterface', function () {
 });
 
 it('can inject custom Configuration', function () {
-    $config = new Configuration();
+    $config = new Configuration;
     $config->setHost('https://custom.example.com/v2');
 
     $api = new AuthenticationService(null, $config);
@@ -50,7 +50,7 @@ it('can inject custom Configuration', function () {
 });
 
 it('can inject custom HeaderSelector', function () {
-    $selector = new HeaderSelector();
+    $selector = new HeaderSelector;
     $api = new AuthenticationService(null, null, $selector);
 
     $request = $api->tokenGetRequest('api-key');
@@ -73,7 +73,7 @@ it('getConfig returns the Configuration instance', function () {
 });
 
 it('has contentTypes static property', function () {
-    expect(defined(AuthenticationService::class . '::contentTypes'))->toBeTrue();
+    expect(defined(AuthenticationService::class.'::contentTypes'))->toBeTrue();
 });
 
 it('contentTypes has tokenGet with application/json', function () {
@@ -136,11 +136,11 @@ it('tokenGetRequest includes optional format and language query params', functio
 
 it('tokenGetRequest throws InvalidArgumentException when api_key is null', function () {
     $this->api->tokenGetRequest(null);
-})->throws(\InvalidArgumentException::class, 'Missing the required parameter $api_key when calling tokenGet');
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $api_key when calling tokenGet');
 
 it('tokenGetRequest throws InvalidArgumentException when api_key is empty array', function () {
     $this->api->tokenGetRequest([]);
-})->throws(\InvalidArgumentException::class, 'Missing the required parameter $api_key when calling tokenGet');
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $api_key when calling tokenGet');
 
 it('tokenGetRequest uses custom content type from self::contentTypes', function () {
     $request = $this->api->tokenGetRequest('key', 'json', 'hu', 'application/json');
@@ -149,7 +149,7 @@ it('tokenGetRequest uses custom content type from self::contentTypes', function 
 });
 
 it('tokenGetRequest uses custom host from configuration', function () {
-    $config = new Configuration();
+    $config = new Configuration;
     $config->setHost('https://custom.example.com/v1');
     $api = new AuthenticationService($this->client, $config);
 
@@ -276,7 +276,7 @@ it('tokenGetRequest allows empty string api_key', function () {
 });
 
 it('createHttpClientOption sets debug when config has debug enabled', function () {
-    $tempFile = sys_get_temp_dir() . '/creditonline-debug-' . uniqid() . '.log';
+    $tempFile = sys_get_temp_dir().'/creditonline-debug-'.uniqid().'.log';
     $this->config->setDebug(true);
     $this->config->setDebugFile($tempFile);
 
@@ -293,7 +293,7 @@ it('createHttpClientOption throws RuntimeException when debug file cannot be ope
 
     $this->mock->append(new Response(200, [], ''));
     $this->api->tokenGetWithHttpInfo('key');
-})->throws(\RuntimeException::class, 'Failed to open the debug file');
+})->throws(RuntimeException::class, 'Failed to open the debug file');
 
 it('createHttpClientOption sets cert and ssl_key options', function () {
     $this->config->setCertFile('/path/to/cert.pem');
@@ -307,7 +307,7 @@ it('createHttpClientOption sets cert and ssl_key options', function () {
 
 it('throws ApiException on RequestException', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Request error',
             new Request('GET', 'test'),
             new Response(502, [], json_encode(['error' => 'Bad Gateway']))
@@ -319,7 +319,7 @@ it('throws ApiException on RequestException', function () {
 
 it('ApiException from RequestException contains response body', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Request error',
             new Request('GET', 'test'),
             new Response(422, ['X-Error' => 'validation'], json_encode(['detail' => 'Invalid input']))
@@ -349,7 +349,7 @@ it('ApiException from ConnectException has null response body and headers', func
 
 it('tokenGetAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Async error',
             new Request('GET', 'test'),
             new Response(503, [], json_encode(['error' => 'Service Unavailable']))

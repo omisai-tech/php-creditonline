@@ -7,7 +7,7 @@ use Omisai\CreditOnline\ApiException;
 // ---------------------------------------------------------------------------
 
 it('extends Exception', function () {
-    $e = new ApiException();
+    $e = new ApiException;
     expect($e)->toBeInstanceOf(Exception::class);
     expect($e)->toBeInstanceOf(ApiException::class);
 });
@@ -36,22 +36,22 @@ it('constructor accepts all parameters', function () {
 // ---------------------------------------------------------------------------
 
 it('defaults message to empty string', function () {
-    $e = new ApiException();
+    $e = new ApiException;
     expect($e->getMessage())->toBe('');
 });
 
 it('defaults code to 0', function () {
-    $e = new ApiException();
+    $e = new ApiException;
     expect($e->getCode())->toBe(0);
 });
 
 it('defaults responseHeaders to empty array', function () {
-    $e = new ApiException();
+    $e = new ApiException;
     expect($e->getResponseHeaders())->toBe([]);
 });
 
 it('defaults responseBody to null', function () {
-    $e = new ApiException();
+    $e = new ApiException;
     expect($e->getResponseBody())->toBeNull();
 });
 
@@ -85,29 +85,29 @@ it('getResponseBody returns stdClass body', function () {
 // ---------------------------------------------------------------------------
 
 it('setResponseObject stores and getResponseObject retrieves', function () {
-    $obj = new stdClass();
+    $obj = new stdClass;
     $obj->key = 'value';
 
-    $e = new ApiException();
+    $e = new ApiException;
     $e->setResponseObject($obj);
 
     expect($e->getResponseObject())->toBe($obj);
 });
 
 it('getResponseObject returns null by default', function () {
-    $e = new ApiException();
+    $e = new ApiException;
     expect($e->getResponseObject())->toBeNull();
 });
 
 it('setResponseObject accepts any type', function ($value) {
-    $e = new ApiException();
+    $e = new ApiException;
     $e->setResponseObject($value);
     expect($e->getResponseObject())->toBe($value);
 })->with([
     'string' => 'some string',
     'int' => 42,
     'array' => [1, 2, 3],
-    'stdClass' => fn() => (object) ['prop' => 'val'],
+    'stdClass' => fn () => (object) ['prop' => 'val'],
 ]);
 
 // ---------------------------------------------------------------------------

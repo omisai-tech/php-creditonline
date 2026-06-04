@@ -1,11 +1,11 @@
 <?php
+
 /**
  * Address
  *
  * PHP version 8.1
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -29,78 +29,77 @@
 
 namespace Omisai\CreditOnline\Model;
 
-use \ArrayAccess;
-use \Omisai\CreditOnline\ObjectSerializer;
+use ArrayAccess;
+use Omisai\CreditOnline\ObjectSerializer;
 
 /**
  * Address Class Doc Comment
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @implements ArrayAccess<string, mixed>
  */
-class Address implements ModelInterface, ArrayAccess, \JsonSerializable
+class Address implements \JsonSerializable, ArrayAccess, ModelInterface
 {
     public const DISCRIMINATOR = null;
 
     /**
-      * The original name of the model.
-      *
-      * @var string
-      */
+     * The original name of the model.
+     *
+     * @var string
+     */
     protected static $openAPIModelName = 'Address';
 
     /**
-      * Array of property to type mappings. Used for (de)serialization
-      *
-      * @var string[]
-      */
+     * Array of property to type mappings. Used for (de)serialization
+     *
+     * @var string[]
+     */
     protected static $openAPITypes = [
         'country_code' => 'string',
         'zip' => 'string',
         'city' => 'string',
         'street' => 'string',
         'place_type' => 'string',
-        'house_number' => 'string'
+        'house_number' => 'string',
     ];
 
     /**
-      * Array of property to format mappings. Used for (de)serialization
-      *
-      * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
-      */
+     * Array of property to format mappings. Used for (de)serialization
+     *
+     * @var string[]
+     * @phpstan-var array<string, string|null>
+     * @psalm-var array<string, string|null>
+     */
     protected static $openAPIFormats = [
         'country_code' => null,
         'zip' => null,
         'city' => null,
         'street' => null,
         'place_type' => null,
-        'house_number' => null
+        'house_number' => null,
     ];
 
     /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
+     * Array of nullable properties. Used for (de)serialization
+     *
+     * @var bool[]
+     */
     protected static array $openAPINullables = [
         'country_code' => false,
         'zip' => false,
         'city' => false,
         'street' => false,
         'place_type' => false,
-        'house_number' => false
+        'house_number' => false,
     ];
 
     /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
+     * If a nullable field gets set to null, insert it here
+     *
+     * @var bool[]
+     */
     protected array $openAPINullablesSetToNull = [];
 
     /**
@@ -125,8 +124,6 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
 
     /**
      * Array of nullable properties
-     *
-     * @return array
      */
     protected static function openAPINullables(): array
     {
@@ -136,7 +133,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Array of nullable field names deliberately set to null
      *
-     * @return boolean[]
+     * @return bool[]
      */
     private function getOpenAPINullablesSetToNull(): array
     {
@@ -146,7 +143,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Setter - Array of nullable field names deliberately set to null
      *
-     * @param boolean[] $openAPINullablesSetToNull
+     * @param  bool[]  $openAPINullablesSetToNull
      */
     private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
     {
@@ -155,9 +152,6 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
 
     /**
      * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
      */
     public static function isNullable(string $property): bool
     {
@@ -166,9 +160,6 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
 
     /**
      * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
      */
     public function isNullableSetToNull(string $property): bool
     {
@@ -187,7 +178,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
         'city' => 'City',
         'street' => 'Street',
         'place_type' => 'PlaceType',
-        'house_number' => 'HouseNumber'
+        'house_number' => 'HouseNumber',
     ];
 
     /**
@@ -201,7 +192,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
         'city' => 'setCity',
         'street' => 'setStreet',
         'place_type' => 'setPlaceType',
-        'house_number' => 'setHouseNumber'
+        'house_number' => 'setHouseNumber',
     ];
 
     /**
@@ -215,7 +206,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
         'city' => 'getCity',
         'street' => 'getStreet',
         'place_type' => 'getPlaceType',
-        'house_number' => 'getHouseNumber'
+        'house_number' => 'getHouseNumber',
     ];
 
     /**
@@ -259,7 +250,6 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
-
     /**
      * Associative array for storing property values
      *
@@ -270,8 +260,8 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Constructor
      *
-     * @param mixed[]|null $data Associated array of property values
-     *                      initializing the model
+     * @param  mixed[]|null  $data  Associated array of property values
+     *                              initializing the model
      */
     public function __construct(?array $data = null)
     {
@@ -284,14 +274,12 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
+     * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
+     * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
+     * $this->openAPINullablesSetToNull array
+     *
+     * @param  mixed  $defaultValue
+     */
     private function setIfExists(string $variableName, array $fields, $defaultValue): void
     {
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
@@ -324,7 +312,6 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
         return count($this->listInvalidProperties()) === 0;
     }
 
-
     /**
      * Gets country_code
      *
@@ -338,7 +325,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets country_code
      *
-     * @param string|null $country_code Országkód (csak részletes bontás esetén)
+     * @param  string|null  $country_code  Országkód (csak részletes bontás esetén)
      *
      * @return self
      */
@@ -365,7 +352,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets zip
      *
-     * @param string|null $zip Irányítószám
+     * @param  string|null  $zip  Irányítószám
      *
      * @return self
      */
@@ -392,7 +379,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets city
      *
-     * @param string|null $city Település
+     * @param  string|null  $city  Település
      *
      * @return self
      */
@@ -419,7 +406,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets street
      *
-     * @param string|null $street Közterület
+     * @param  string|null  $street  Közterület
      *
      * @return self
      */
@@ -446,7 +433,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets place_type
      *
-     * @param string|null $place_type Közterület jellege (csak részletes bontás esetén)
+     * @param  string|null  $place_type  Közterület jellege (csak részletes bontás esetén)
      *
      * @return self
      */
@@ -473,7 +460,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets house_number
      *
-     * @param string|null $house_number Házszám (csak részletes bontás esetén)
+     * @param  string|null  $house_number  Házszám (csak részletes bontás esetén)
      *
      * @return self
      */
@@ -486,12 +473,11 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
 
         return $this;
     }
+
     /**
      * Returns true if offset exists. False otherwise.
      *
-     * @param integer|string $offset Offset
-     *
-     * @return boolean
+     * @param  int|string  $offset  Offset
      */
     public function offsetExists(mixed $offset): bool
     {
@@ -501,7 +487,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets offset.
      *
-     * @param integer|string $offset Offset
+     * @param  int|string  $offset  Offset
      *
      * @return mixed|null
      */
@@ -514,10 +500,8 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
-     *
-     * @return void
+     * @param  int|null  $offset  Offset
+     * @param  mixed  $value  Value to be set
      */
     public function offsetSet($offset, $value): void
     {
@@ -531,9 +515,7 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Unsets offset.
      *
-     * @param integer|string $offset Offset
-     *
-     * @return void
+     * @param  int|string  $offset  Offset
      */
     public function offsetUnset(mixed $offset): void
     {
@@ -545,12 +527,12 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
      * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
      *
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
+     *               of any type other than a resource.
      */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
-       return ObjectSerializer::sanitizeForSerialization($this);
+        return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -576,5 +558,3 @@ class Address implements ModelInterface, ArrayAccess, \JsonSerializable
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

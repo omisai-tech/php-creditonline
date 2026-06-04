@@ -1,11 +1,11 @@
 <?php
+
 /**
  * Company
  *
  * PHP version 8.1
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -29,34 +29,40 @@
 
 namespace Omisai\CreditOnline\Model;
 
-use \ArrayAccess;
-use \Omisai\CreditOnline\ObjectSerializer;
+use ArrayAccess;
+use Omisai\CreditOnline\ObjectSerializer;
+use OmisaiCreditOnline\Model\Address;
+use OmisaiCreditOnline\Model\Auditor;
+use OmisaiCreditOnline\Model\FinancialSummary;
+use OmisaiCreditOnline\Model\Member;
+use OmisaiCreditOnline\Model\NegativeInfo;
+use OmisaiCreditOnline\Model\PositiveInfo;
+use OmisaiCreditOnline\Model\Signer;
 
 /**
  * Company Class Doc Comment
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @implements ArrayAccess<string, mixed>
  */
-class Company implements ModelInterface, ArrayAccess, \JsonSerializable
+class Company implements \JsonSerializable, ArrayAccess, ModelInterface
 {
     public const DISCRIMINATOR = null;
 
     /**
-      * The original name of the model.
-      *
-      * @var string
-      */
+     * The original name of the model.
+     *
+     * @var string
+     */
     protected static $openAPIModelName = 'Company';
 
     /**
-      * Array of property to type mappings. Used for (de)serialization
-      *
-      * @var string[]
-      */
+     * Array of property to type mappings. Used for (de)serialization
+     *
+     * @var string[]
+     */
     protected static $openAPITypes = [
         'regnumber' => 'string',
         'taxnumber' => 'string',
@@ -96,16 +102,16 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
         'has_prohibited_member' => 'bool',
         'signer_change_in12_months' => 'bool',
         'member_change_in12_months' => 'bool',
-        'headquarter_change_in12_months' => 'bool'
+        'headquarter_change_in12_months' => 'bool',
     ];
 
     /**
-      * Array of property to format mappings. Used for (de)serialization
-      *
-      * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
-      */
+     * Array of property to format mappings. Used for (de)serialization
+     *
+     * @var string[]
+     * @phpstan-var array<string, string|null>
+     * @psalm-var array<string, string|null>
+     */
     protected static $openAPIFormats = [
         'regnumber' => null,
         'taxnumber' => null,
@@ -145,14 +151,14 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
         'has_prohibited_member' => null,
         'signer_change_in12_months' => null,
         'member_change_in12_months' => null,
-        'headquarter_change_in12_months' => null
+        'headquarter_change_in12_months' => null,
     ];
 
     /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
+     * Array of nullable properties. Used for (de)serialization
+     *
+     * @var bool[]
+     */
     protected static array $openAPINullables = [
         'regnumber' => false,
         'taxnumber' => false,
@@ -192,14 +198,14 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
         'has_prohibited_member' => false,
         'signer_change_in12_months' => false,
         'member_change_in12_months' => false,
-        'headquarter_change_in12_months' => false
+        'headquarter_change_in12_months' => false,
     ];
 
     /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
+     * If a nullable field gets set to null, insert it here
+     *
+     * @var bool[]
+     */
     protected array $openAPINullablesSetToNull = [];
 
     /**
@@ -224,8 +230,6 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
 
     /**
      * Array of nullable properties
-     *
-     * @return array
      */
     protected static function openAPINullables(): array
     {
@@ -235,7 +239,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Array of nullable field names deliberately set to null
      *
-     * @return boolean[]
+     * @return bool[]
      */
     private function getOpenAPINullablesSetToNull(): array
     {
@@ -245,7 +249,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Setter - Array of nullable field names deliberately set to null
      *
-     * @param boolean[] $openAPINullablesSetToNull
+     * @param  bool[]  $openAPINullablesSetToNull
      */
     private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
     {
@@ -254,9 +258,6 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
 
     /**
      * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
      */
     public static function isNullable(string $property): bool
     {
@@ -265,9 +266,6 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
 
     /**
      * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
      */
     public function isNullableSetToNull(string $property): bool
     {
@@ -319,7 +317,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
         'has_prohibited_member' => 'HasProhibitedMember',
         'signer_change_in12_months' => 'SignerChangeIn12Months',
         'member_change_in12_months' => 'MemberChangeIn12Months',
-        'headquarter_change_in12_months' => 'HeadquarterChangeIn12Months'
+        'headquarter_change_in12_months' => 'HeadquarterChangeIn12Months',
     ];
 
     /**
@@ -366,7 +364,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
         'has_prohibited_member' => 'setHasProhibitedMember',
         'signer_change_in12_months' => 'setSignerChangeIn12Months',
         'member_change_in12_months' => 'setMemberChangeIn12Months',
-        'headquarter_change_in12_months' => 'setHeadquarterChangeIn12Months'
+        'headquarter_change_in12_months' => 'setHeadquarterChangeIn12Months',
     ];
 
     /**
@@ -413,7 +411,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
         'has_prohibited_member' => 'getHasProhibitedMember',
         'signer_change_in12_months' => 'getSignerChangeIn12Months',
         'member_change_in12_months' => 'getMemberChangeIn12Months',
-        'headquarter_change_in12_months' => 'getHeadquarterChangeIn12Months'
+        'headquarter_change_in12_months' => 'getHeadquarterChangeIn12Months',
     ];
 
     /**
@@ -458,7 +456,9 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     public const STATUS_MKD = 'Működő';
+
     public const STATUS_ELJRS_FOLYAMATBAN = 'Eljárás folyamatban';
+
     public const STATUS_MEGSZNT = 'Megszűnt';
 
     /**
@@ -485,8 +485,8 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Constructor
      *
-     * @param mixed[]|null $data Associated array of property values
-     *                      initializing the model
+     * @param  mixed[]|null  $data  Associated array of property values
+     *                              initializing the model
      */
     public function __construct(?array $data = null)
     {
@@ -532,14 +532,12 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
+     * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
+     * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
+     * $this->openAPINullablesSetToNull array
+     *
+     * @param  mixed  $defaultValue
+     */
     private function setIfExists(string $variableName, array $fields, $defaultValue): void
     {
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
@@ -581,7 +579,6 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
         return count($this->listInvalidProperties()) === 0;
     }
 
-
     /**
      * Gets regnumber
      *
@@ -595,7 +592,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets regnumber
      *
-     * @param string|null $regnumber Cégjegyzékszám
+     * @param  string|null  $regnumber  Cégjegyzékszám
      *
      * @return self
      */
@@ -622,7 +619,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets taxnumber
      *
-     * @param string|null $taxnumber Adószám
+     * @param  string|null  $taxnumber  Adószám
      *
      * @return self
      */
@@ -649,7 +646,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets name
      *
-     * @param string|null $name Rövidített elnevezés
+     * @param  string|null  $name  Rövidített elnevezés
      *
      * @return self
      */
@@ -676,7 +673,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets long_name
      *
-     * @param string|null $long_name A cég elnevezése
+     * @param  string|null  $long_name  A cég elnevezése
      *
      * @return self
      */
@@ -693,7 +690,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets headquarter
      *
-     * @return \OmisaiCreditOnline\Model\Address|null
+     * @return Address|null
      */
     public function getHeadquarter()
     {
@@ -703,7 +700,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets headquarter
      *
-     * @param \OmisaiCreditOnline\Model\Address|null $headquarter headquarter
+     * @param  Address|null  $headquarter  headquarter
      *
      * @return self
      */
@@ -730,7 +727,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets status
      *
-     * @param string|null $status Állapot
+     * @param  string|null  $status  Állapot
      *
      * @return self
      */
@@ -767,7 +764,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets foundation
      *
-     * @param \DateTime|null $foundation Alapítás dátuma
+     * @param  \DateTime|null  $foundation  Alapítás dátuma
      *
      * @return self
      */
@@ -794,7 +791,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets funds
      *
-     * @param string|null $funds Alaptőke
+     * @param  string|null  $funds  Alaptőke
      *
      * @return self
      */
@@ -821,7 +818,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets employees
      *
-     * @param int|null $employees Alkalmazottak száma
+     * @param  int|null  $employees  Alkalmazottak száma
      *
      * @return self
      */
@@ -848,7 +845,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets last_turnover
      *
-     * @param int|null $last_turnover Utolsó árbevétel
+     * @param  int|null  $last_turnover  Utolsó árbevétel
      *
      * @return self
      */
@@ -875,7 +872,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets main_activity_code
      *
-     * @param string|null $main_activity_code Főtevékenység kódja
+     * @param  string|null  $main_activity_code  Főtevékenység kódja
      *
      * @return self
      */
@@ -902,7 +899,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets main_activity_description
      *
-     * @param string|null $main_activity_description Főtevékenység neve
+     * @param  string|null  $main_activity_description  Főtevékenység neve
      *
      * @return self
      */
@@ -929,7 +926,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets rating
      *
-     * @param int|null $rating Besorolás
+     * @param  int|null  $rating  Besorolás
      *
      * @return self
      */
@@ -956,7 +953,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets credit_limit
      *
-     * @param int|null $credit_limit Hitelképesség
+     * @param  int|null  $credit_limit  Hitelképesség
      *
      * @return self
      */
@@ -983,7 +980,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets industry
      *
-     * @param string|null $industry Iparág
+     * @param  string|null  $industry  Iparág
      *
      * @return self
      */
@@ -1010,7 +1007,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets type
      *
-     * @param string|null $type Gazdálkodási forma
+     * @param  string|null  $type  Gazdálkodási forma
      *
      * @return self
      */
@@ -1037,7 +1034,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets ksh_number
      *
-     * @param string|null $ksh_number KSH szám
+     * @param  string|null  $ksh_number  KSH szám
      *
      * @return self
      */
@@ -1064,7 +1061,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets eu_taxnumber
      *
-     * @param string|null $eu_taxnumber EU adószám
+     * @param  string|null  $eu_taxnumber  EU adószám
      *
      * @return self
      */
@@ -1091,7 +1088,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets link
      *
-     * @param string|null $link Credit Online adatlapra mutató link
+     * @param  string|null  $link  Credit Online adatlapra mutató link
      *
      * @return self
      */
@@ -1118,7 +1115,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets bank_accounts
      *
-     * @param string[]|null $bank_accounts Bankszámlák
+     * @param  string[]|null  $bank_accounts  Bankszámlák
      *
      * @return self
      */
@@ -1145,7 +1142,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets phones
      *
-     * @param string[]|null $phones Telefonszámok (max. 3 db)
+     * @param  string[]|null  $phones  Telefonszámok (max. 3 db)
      *
      * @return self
      */
@@ -1172,7 +1169,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets emails
      *
-     * @param string[]|null $emails Email címek (max. 3 db)
+     * @param  string[]|null  $emails  Email címek (max. 3 db)
      *
      * @return self
      */
@@ -1199,7 +1196,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets webpages
      *
-     * @param string[]|null $webpages Weblapok (max. 3 db)
+     * @param  string[]|null  $webpages  Weblapok (max. 3 db)
      *
      * @return self
      */
@@ -1216,7 +1213,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets negative_info
      *
-     * @return \OmisaiCreditOnline\Model\NegativeInfo[]|null
+     * @return NegativeInfo[]|null
      */
     public function getNegativeInfo()
     {
@@ -1226,7 +1223,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets negative_info
      *
-     * @param \OmisaiCreditOnline\Model\NegativeInfo[]|null $negative_info Negatív információk
+     * @param  NegativeInfo[]|null  $negative_info  Negatív információk
      *
      * @return self
      */
@@ -1243,7 +1240,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets positive_info
      *
-     * @return \OmisaiCreditOnline\Model\PositiveInfo[]|null
+     * @return PositiveInfo[]|null
      */
     public function getPositiveInfo()
     {
@@ -1253,7 +1250,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets positive_info
      *
-     * @param \OmisaiCreditOnline\Model\PositiveInfo[]|null $positive_info Pozitív információk
+     * @param  PositiveInfo[]|null  $positive_info  Pozitív információk
      *
      * @return self
      */
@@ -1270,7 +1267,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets financial_summaries
      *
-     * @return \OmisaiCreditOnline\Model\FinancialSummary[]|null
+     * @return FinancialSummary[]|null
      */
     public function getFinancialSummaries()
     {
@@ -1280,7 +1277,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets financial_summaries
      *
-     * @param \OmisaiCreditOnline\Model\FinancialSummary[]|null $financial_summaries Pénzügyi adatok (utolsó 3 év)
+     * @param  FinancialSummary[]|null  $financial_summaries  Pénzügyi adatok (utolsó 3 év)
      *
      * @return self
      */
@@ -1297,7 +1294,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets signers
      *
-     * @return \OmisaiCreditOnline\Model\Signer[]|null
+     * @return Signer[]|null
      */
     public function getSigners()
     {
@@ -1307,7 +1304,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets signers
      *
-     * @param \OmisaiCreditOnline\Model\Signer[]|null $signers Cégjegyzésre jogosultak
+     * @param  Signer[]|null  $signers  Cégjegyzésre jogosultak
      *
      * @return self
      */
@@ -1324,7 +1321,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets members
      *
-     * @return \OmisaiCreditOnline\Model\Member[]|null
+     * @return Member[]|null
      */
     public function getMembers()
     {
@@ -1334,7 +1331,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets members
      *
-     * @param \OmisaiCreditOnline\Model\Member[]|null $members Tulajdonosok
+     * @param  Member[]|null  $members  Tulajdonosok
      *
      * @return self
      */
@@ -1351,7 +1348,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets auditors
      *
-     * @return \OmisaiCreditOnline\Model\Auditor[]|null
+     * @return Auditor[]|null
      */
     public function getAuditors()
     {
@@ -1361,7 +1358,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets auditors
      *
-     * @param \OmisaiCreditOnline\Model\Auditor[]|null $auditors Könyvvizsgálók
+     * @param  Auditor[]|null  $auditors  Könyvvizsgálók
      *
      * @return self
      */
@@ -1378,7 +1375,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets sites
      *
-     * @return \OmisaiCreditOnline\Model\Address[]|null
+     * @return Address[]|null
      */
     public function getSites()
     {
@@ -1388,7 +1385,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets sites
      *
-     * @param \OmisaiCreditOnline\Model\Address[]|null $sites Telephelyek
+     * @param  Address[]|null  $sites  Telephelyek
      *
      * @return self
      */
@@ -1415,7 +1412,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets has_deleted_tax_number
      *
-     * @param bool|null $has_deleted_tax_number Az adószáma törölt-e?
+     * @param  bool|null  $has_deleted_tax_number  Az adószáma törölt-e?
      *
      * @return self
      */
@@ -1442,7 +1439,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets has_active_positive_info
      *
-     * @param bool|null $has_active_positive_info Hatályos pozitív infó van-e a cég ellen?
+     * @param  bool|null  $has_active_positive_info  Hatályos pozitív infó van-e a cég ellen?
      *
      * @return self
      */
@@ -1469,7 +1466,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets has_active_negative_info
      *
-     * @param bool|null $has_active_negative_info Hatályos negatív infó van-e a cég ellen?
+     * @param  bool|null  $has_active_negative_info  Hatályos negatív infó van-e a cég ellen?
      *
      * @return self
      */
@@ -1496,7 +1493,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_koztartozasmentes
      *
-     * @param bool|null $is_koztartozasmentes Szerepel-e a köztartozásmentes adózók listáján?
+     * @param  bool|null  $is_koztartozasmentes  Szerepel-e a köztartozásmentes adózók listáján?
      *
      * @return self
      */
@@ -1523,7 +1520,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_megbizhato_adozo
      *
-     * @param bool|null $is_megbizhato_adozo Szerepel-e a megbízható adózók listáján?
+     * @param  bool|null  $is_megbizhato_adozo  Szerepel-e a megbízható adózók listáján?
      *
      * @return self
      */
@@ -1550,7 +1547,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets has_prohibited_member
      *
-     * @param bool|null $has_prohibited_member Cégvezetéstől eltiltott személy található?
+     * @param  bool|null  $has_prohibited_member  Cégvezetéstől eltiltott személy található?
      *
      * @return self
      */
@@ -1577,7 +1574,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets signer_change_in12_months
      *
-     * @param bool|null $signer_change_in12_months Cégjegyzésre jogosult változás az elmúlt 12 hónapban?
+     * @param  bool|null  $signer_change_in12_months  Cégjegyzésre jogosult változás az elmúlt 12 hónapban?
      *
      * @return self
      */
@@ -1604,7 +1601,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets member_change_in12_months
      *
-     * @param bool|null $member_change_in12_months Tulajdonos jogosult változás az elmúlt 12 hónapban?
+     * @param  bool|null  $member_change_in12_months  Tulajdonos jogosult változás az elmúlt 12 hónapban?
      *
      * @return self
      */
@@ -1631,7 +1628,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets headquarter_change_in12_months
      *
-     * @param bool|null $headquarter_change_in12_months Székhely jogosult változás az elmúlt 12 hónapban?
+     * @param  bool|null  $headquarter_change_in12_months  Székhely jogosult változás az elmúlt 12 hónapban?
      *
      * @return self
      */
@@ -1644,12 +1641,11 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
 
         return $this;
     }
+
     /**
      * Returns true if offset exists. False otherwise.
      *
-     * @param integer|string $offset Offset
-     *
-     * @return boolean
+     * @param  int|string  $offset  Offset
      */
     public function offsetExists(mixed $offset): bool
     {
@@ -1659,7 +1655,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets offset.
      *
-     * @param integer|string $offset Offset
+     * @param  int|string  $offset  Offset
      *
      * @return mixed|null
      */
@@ -1672,10 +1668,8 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
-     *
-     * @return void
+     * @param  int|null  $offset  Offset
+     * @param  mixed  $value  Value to be set
      */
     public function offsetSet($offset, $value): void
     {
@@ -1689,9 +1683,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Unsets offset.
      *
-     * @param integer|string $offset Offset
-     *
-     * @return void
+     * @param  int|string  $offset  Offset
      */
     public function offsetUnset(mixed $offset): void
     {
@@ -1703,12 +1695,12 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
      * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
      *
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
+     *               of any type other than a resource.
      */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
-       return ObjectSerializer::sanitizeForSerialization($this);
+        return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -1734,5 +1726,3 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

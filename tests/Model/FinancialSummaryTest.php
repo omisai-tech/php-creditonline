@@ -3,7 +3,7 @@
 use Omisai\CreditOnline\Model\FinancialSummary;
 
 beforeEach(function () {
-    $this->model = new FinancialSummary();
+    $this->model = new FinancialSummary;
 });
 
 it('getModelName returns FinancialSummary', function () {
@@ -101,7 +101,7 @@ it('setter throws on null for non-nullable properties', function (string $proper
     $setters = FinancialSummary::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['year'],
     ['total_sales'],
     ['income_from_operations'],
@@ -111,7 +111,7 @@ it('setter throws on null for non-nullable properties', function (string $proper
 ]);
 
 it('constructor with null sets all properties to null', function () {
-    $model = new FinancialSummary();
+    $model = new FinancialSummary;
     expect($model->getYear())->toBeNull();
     expect($model->getTotalSales())->toBeNull();
     expect($model->getIncomeFromOperations())->toBeNull();

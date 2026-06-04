@@ -1,8 +1,8 @@
 <?php
 
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -15,12 +15,12 @@ use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\Model\Event;
 
 beforeEach(function () {
-    $this->mock = new MockHandler();
+    $this->mock = new MockHandler;
     $this->handlerStack = HandlerStack::create($this->mock);
     $this->client = new Client(['handler' => $this->handlerStack]);
-    $this->config = new Configuration();
+    $this->config = new Configuration;
     $this->api = new GetDailyMonitoringService($this->client, $this->config);
-    $this->date = new \DateTime('2024-01-15');
+    $this->date = new DateTime('2024-01-15');
 });
 
 it('can inject custom Guzzle ClientInterface', function () {
@@ -36,7 +36,7 @@ it('can inject custom Guzzle ClientInterface', function () {
 });
 
 it('can inject custom Configuration', function () {
-    $config = new Configuration();
+    $config = new Configuration;
     $config->setHost('https://custom.example.com/v2');
 
     $api = new GetDailyMonitoringService(null, $config);
@@ -45,7 +45,7 @@ it('can inject custom Configuration', function () {
 });
 
 it('can inject custom HeaderSelector', function () {
-    $selector = new HeaderSelector();
+    $selector = new HeaderSelector;
     $api = new GetDailyMonitoringService(null, null, $selector);
 
     $request = $api->dailyMonitoringGetRequest('token', $this->date);
@@ -68,7 +68,7 @@ it('getConfig returns the Configuration instance', function () {
 });
 
 it('has contentTypes static property', function () {
-    expect(defined(GetDailyMonitoringService::class . '::contentTypes'))->toBeTrue();
+    expect(defined(GetDailyMonitoringService::class.'::contentTypes'))->toBeTrue();
 });
 
 it('contentTypes has dailyMonitoringGet with application/json', function () {
@@ -219,11 +219,11 @@ it('dailyMonitoringGetRequest includes token and date query parameters', functio
 
 it('dailyMonitoringGetRequest throws InvalidArgumentException when token is null', function () {
     $this->api->dailyMonitoringGetRequest(null, $this->date);
-})->throws(\InvalidArgumentException::class, 'Missing the required parameter $token when calling dailyMonitoringGet');
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling dailyMonitoringGet');
 
 it('dailyMonitoringGetRequest throws InvalidArgumentException when date is null', function () {
     $this->api->dailyMonitoringGetRequest('token', null);
-})->throws(\InvalidArgumentException::class, 'Missing the required parameter $date when calling dailyMonitoringGet');
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $date when calling dailyMonitoringGet');
 
 it('throws ApiException on 400 bad request', function () {
     $this->mock->append(new Response(400, [], json_encode(['error' => 'Bad Request'])));
@@ -270,7 +270,7 @@ it('dailyMonitoringGetRequest allows empty string token', function () {
 
 it('dailyMonitoringGetRequest throws InvalidArgumentException when date is empty array', function () {
     $this->api->dailyMonitoringGetRequest('token', []);
-})->throws(\InvalidArgumentException::class, 'Missing the required parameter $date when calling dailyMonitoringGet');
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $date when calling dailyMonitoringGet');
 
 it('dailyMonitoringGetWithHttpInfo handles 201 non-200 2xx response', function () {
     $this->mock->append(new Response(201, ['X-Created' => 'yes'], json_encode([
@@ -291,7 +291,7 @@ it('dailyMonitoringGetWithHttpInfo handles 201 non-200 2xx response', function (
 
 it('throws ApiException on RequestException', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Server error',
             new Request('GET', 'test'),
             new Response(502, [], json_encode(['error' => 'Bad Gateway']))
@@ -303,7 +303,7 @@ it('throws ApiException on RequestException', function () {
 
 it('ApiException from RequestException captures status code and body', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Validation failed',
             new Request('GET', 'test'),
             new Response(422, ['X-Reason' => 'invalid'], json_encode(['field' => 'date']))
@@ -333,7 +333,7 @@ it('ApiException from ConnectException has null body and headers', function () {
 
 it('dailyMonitoringGetAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Async failure',
             new Request('GET', 'test'),
             new Response(503, [], json_encode(['error' => 'Down']))
@@ -345,7 +345,7 @@ it('dailyMonitoringGetAsyncWithHttpInfo rejects with ApiException on RequestExce
 });
 
 it('createHttpClientOption enables debug logging', function () {
-    $tempFile = sys_get_temp_dir() . '/creditonline-monitoring-debug-' . uniqid() . '.log';
+    $tempFile = sys_get_temp_dir().'/creditonline-monitoring-debug-'.uniqid().'.log';
     $this->config->setDebug(true);
     $this->config->setDebugFile($tempFile);
 
@@ -363,7 +363,7 @@ it('createHttpClientOption with debug throws RuntimeException for bad path', fun
 
     $this->mock->append(new Response(200, [], json_encode([])));
     $this->api->dailyMonitoringGetWithHttpInfo('token', $this->date);
-})->throws(\RuntimeException::class);
+})->throws(RuntimeException::class);
 
 it('createHttpClientOption sets cert and ssl_key', function () {
     $this->config->setCertFile('/fake/cert.pem');

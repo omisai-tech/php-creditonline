@@ -3,7 +3,7 @@
 use Omisai\CreditOnline\Model\Event;
 
 beforeEach(function () {
-    $this->model = new Event();
+    $this->model = new Event;
 });
 
 it('getModelName returns Event', function () {
@@ -81,7 +81,7 @@ it('setter throws on null for non-nullable properties', function (string $proper
     $setters = Event::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['taxnumber'],
     ['name'],
     ['category'],
@@ -89,7 +89,7 @@ it('setter throws on null for non-nullable properties', function (string $proper
 ]);
 
 it('constructor with null sets all properties to null', function () {
-    $model = new Event();
+    $model = new Event;
     expect($model->getTaxnumber())->toBeNull();
     expect($model->getName())->toBeNull();
     expect($model->getCategory())->toBeNull();

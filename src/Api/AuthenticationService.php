@@ -1,10 +1,10 @@
 <?php
+
 /**
  * AuthenticationService
  * PHP version 8.1
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -32,22 +32,22 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Utils;
 use Omisai\CreditOnline\ApiException;
 use Omisai\CreditOnline\Configuration;
-use Omisai\CreditOnline\FormDataProcessor;
 use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\ObjectSerializer;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * AuthenticationService Class Doc Comment
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -73,7 +73,7 @@ class AuthenticationService
      */
     protected $hostIndex;
 
-    /** @var string[] $contentTypes **/
+    /** @var string[] * */
     public const contentTypes = [
         'tokenGet' => [
             'application/json',
@@ -81,10 +81,7 @@ class AuthenticationService
     ];
 
     /**
-     * @param ClientInterface $client
-     * @param Configuration   $config
-     * @param HeaderSelector  $selector
-     * @param int             $hostIndex (Optional) host index to select the list of hosts if defined in the OpenAPI spec
+     * @param  int  $hostIndex  (Optional) host index to select the list of hosts if defined in the OpenAPI spec
      */
     public function __construct(
         ?ClientInterface $client = null,
@@ -92,16 +89,16 @@ class AuthenticationService
         ?HeaderSelector $selector = null,
         int $hostIndex = 0
     ) {
-        $this->client = $client ?: new Client();
+        $this->client = $client ?: new Client;
         $this->config = $config ?: Configuration::getDefaultConfiguration();
-        $this->headerSelector = $selector ?: new HeaderSelector();
+        $this->headerSelector = $selector ?: new HeaderSelector;
         $this->hostIndex = $hostIndex;
     }
 
     /**
      * Set the host index
      *
-     * @param int $hostIndex Host index (required)
+     * @param  int  $hostIndex  Host index (required)
      */
     public function setHostIndex($hostIndex): void
     {
@@ -129,14 +126,14 @@ class AuthenticationService
     /**
      * Operation tokenGet
      *
-     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
-     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
-     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string  $api_key  Az előfizető egyedi API kulcsa (required)
+     * @param  string|null  $format  A lekérések eredményének formátuma (optional, default to 'json')
+     * @param  string|null  $language  Az adatok nyelve (optional, default to 'hu')
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
+     * @return void
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return void
      */
     public function tokenGet($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
     {
@@ -146,14 +143,14 @@ class AuthenticationService
     /**
      * Operation tokenGetWithHttpInfo
      *
-     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
-     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
-     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string  $api_key  Az előfizető egyedi API kulcsa (required)
+     * @param  string|null  $format  A lekérések eredményének formátuma (optional, default to 'json')
+     * @param  string|null  $language  Az adatok nyelve (optional, default to 'hu')
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
+     * @return array of null, HTTP status code, HTTP response headers (array of strings)
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
     public function tokenGetWithHttpInfo($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
     {
@@ -181,12 +178,10 @@ class AuthenticationService
 
             $statusCode = $response->getStatusCode();
 
-
             return [null, $statusCode, $response->getHeaders()];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
             }
-
 
             throw $e;
         }
@@ -195,13 +190,13 @@ class AuthenticationService
     /**
      * Operation tokenGetAsync
      *
-     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
-     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
-     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string  $api_key  Az előfizető egyedi API kulcsa (required)
+     * @param  string|null  $format  A lekérések eredményének formátuma (optional, default to 'json')
+     * @param  string|null  $language  Az adatok nyelve (optional, default to 'hu')
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
+     * @return PromiseInterface
      * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function tokenGetAsync($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
     {
@@ -216,13 +211,13 @@ class AuthenticationService
     /**
      * Operation tokenGetAsyncWithHttpInfo
      *
-     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
-     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
-     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string  $api_key  Az előfizető egyedi API kulcsa (required)
+     * @param  string|null  $format  A lekérések eredményének formátuma (optional, default to 'json')
+     * @param  string|null  $language  Az adatok nyelve (optional, default to 'hu')
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
+     * @return PromiseInterface
      * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function tokenGetAsyncWithHttpInfo($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
     {
@@ -232,7 +227,7 @@ class AuthenticationService
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
-                function ($response) use ($returnType) {
+                function ($response) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
                 function ($exception) {
@@ -255,13 +250,13 @@ class AuthenticationService
     /**
      * Create request for operation 'tokenGet'
      *
-     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
-     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
-     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string  $api_key  Az előfizető egyedi API kulcsa (required)
+     * @param  string|null  $format  A lekérések eredményének formátuma (optional, default to 'json')
+     * @param  string|null  $language  Az adatok nyelve (optional, default to 'hu')
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
+     * @return Request
      * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
      */
     public function tokenGetRequest($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
     {
@@ -272,9 +267,6 @@ class AuthenticationService
                 'Missing the required parameter $api_key when calling tokenGet'
             );
         }
-
-
-
 
         $resourcePath = '/Token';
         $formParams = [];
@@ -311,9 +303,6 @@ class AuthenticationService
             false // required
         ) ?? []);
 
-
-
-
         $headers = $this->headerSelector->selectHeaders(
             [],
             $contentType,
@@ -329,7 +318,7 @@ class AuthenticationService
                     foreach ($formParamValueItems as $formParamValueItem) {
                         $multipartContents[] = [
                             'name' => $formParamName,
-                            'contents' => $formParamValueItem
+                            'contents' => $formParamValueItem,
                         ];
                     }
                 }
@@ -337,14 +326,13 @@ class AuthenticationService
                 $httpBody = new MultipartStream($multipartContents);
 
             } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
-                # if Content-Type contains "application/json", json_encode the form parameters
-                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+                // if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = Utils::jsonEncode($formParams);
             } else {
                 // for HTTP post (form)
                 $httpBody = ObjectSerializer::buildQuery($formParams);
             }
         }
-
 
         $defaultHeaders = [];
         if ($this->config->getUserAgent()) {
@@ -359,9 +347,10 @@ class AuthenticationService
 
         $operationHost = $this->config->getHost();
         $query = ObjectSerializer::buildQuery($queryParams);
+
         return new Request(
             'GET',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost.$resourcePath.($query ? "?{$query}" : ''),
             $headers,
             $httpBody
         );
@@ -370,8 +359,8 @@ class AuthenticationService
     /**
      * Create http client option
      *
-     * @throws \RuntimeException on file opening failure
      * @return array of http client options
+     * @throws \RuntimeException on file opening failure
      */
     protected function createHttpClientOption()
     {
@@ -379,7 +368,7 @@ class AuthenticationService
         if ($this->config->getDebug()) {
             $options[RequestOptions::DEBUG] = fopen($this->config->getDebugFile(), 'a');
             if (!$options[RequestOptions::DEBUG]) {
-                throw new \RuntimeException('Failed to open the debug file: ' . $this->config->getDebugFile());
+                throw new \RuntimeException('Failed to open the debug file: '.$this->config->getDebugFile());
             }
         }
 
@@ -400,7 +389,7 @@ class AuthenticationService
         ResponseInterface $response
     ): array {
         if ($dataType === '\SplFileObject') {
-            $content = $response->getBody(); //stream goes to serializer
+            $content = $response->getBody(); // stream goes to serializer
         } else {
             $content = (string) $response->getBody();
             if ($dataType !== 'string') {
@@ -423,7 +412,7 @@ class AuthenticationService
         return [
             ObjectSerializer::deserialize($content, $dataType, []),
             $response->getStatusCode(),
-            $response->getHeaders()
+            $response->getHeaders(),
         ];
     }
 

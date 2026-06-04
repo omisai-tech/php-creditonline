@@ -1,10 +1,10 @@
 <?php
 
-use Omisai\CreditOnline\Model\Profile;
 use Omisai\CreditOnline\Model\ActualUsage;
+use Omisai\CreditOnline\Model\Profile;
 
 beforeEach(function () {
-    $this->model = new Profile();
+    $this->model = new Profile;
 });
 
 it('getModelName returns Profile', function () {
@@ -73,7 +73,7 @@ it('setActualLanguage sets value and returns $this', function () {
 });
 
 it('setActualUsages sets ActualUsage value and returns $this', function () {
-    $usage = new ActualUsage();
+    $usage = new ActualUsage;
     $result = $this->model->setActualUsages($usage);
     expect($result)->toBe($this->model);
     expect($this->model->getActualUsages())->toBe($usage);
@@ -83,7 +83,7 @@ it('setter throws on null for non-nullable properties', function (string $proper
     $setters = Profile::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['company_name'],
     ['actual_format'],
     ['actual_language'],
@@ -91,7 +91,7 @@ it('setter throws on null for non-nullable properties', function (string $proper
 ]);
 
 it('constructor with null sets all properties to null', function () {
-    $model = new Profile();
+    $model = new Profile;
     expect($model->getCompanyName())->toBeNull();
     expect($model->getActualFormat())->toBeNull();
     expect($model->getActualLanguage())->toBeNull();
@@ -99,7 +99,7 @@ it('constructor with null sets all properties to null', function () {
 });
 
 it('constructor with data sets provided properties', function () {
-    $usage = new ActualUsage();
+    $usage = new ActualUsage;
     $model = new Profile([
         'company_name' => 'Test Kft.',
         'actual_format' => 'json',

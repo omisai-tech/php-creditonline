@@ -3,7 +3,7 @@
 use Omisai\CreditOnline\Model\ActualUsage;
 
 beforeEach(function () {
-    $this->model = new ActualUsage();
+    $this->model = new ActualUsage;
 });
 
 it('getModelName returns ActualUsage', function () {
@@ -90,14 +90,14 @@ it('setter throws on null for all properties', function (string $property) {
     $setters = ActualUsage::setters();
     $setter = $setters[$property];
     $this->model->{$setter}(null);
-})->throws(\InvalidArgumentException::class)->with([
+})->throws(InvalidArgumentException::class)->with([
     ['ids'],
     ['limit'],
     ['type'],
 ]);
 
 it('constructor with null sets all properties to null', function () {
-    $model = new ActualUsage();
+    $model = new ActualUsage;
     expect($model->getIds())->toBeNull();
     expect($model->getLimit())->toBeNull();
     expect($model->getType())->toBeNull();

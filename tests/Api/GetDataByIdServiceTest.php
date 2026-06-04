@@ -1,8 +1,8 @@
 <?php
 
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -15,10 +15,10 @@ use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\Model\ApiResult;
 
 beforeEach(function () {
-    $this->mock = new MockHandler();
+    $this->mock = new MockHandler;
     $this->handlerStack = HandlerStack::create($this->mock);
     $this->client = new Client(['handler' => $this->handlerStack]);
-    $this->config = new Configuration();
+    $this->config = new Configuration;
     $this->api = new GetDataByIdService($this->client, $this->config);
 });
 
@@ -35,7 +35,7 @@ it('can inject custom Guzzle ClientInterface', function () {
 });
 
 it('can inject custom Configuration', function () {
-    $config = new Configuration();
+    $config = new Configuration;
     $config->setHost('https://custom.example.com/v2');
 
     $api = new GetDataByIdService(null, $config);
@@ -44,7 +44,7 @@ it('can inject custom Configuration', function () {
 });
 
 it('can inject custom HeaderSelector', function () {
-    $selector = new HeaderSelector();
+    $selector = new HeaderSelector;
     $api = new GetDataByIdService(null, null, $selector);
 
     $request = $api->dataGetRequest('token');
@@ -67,7 +67,7 @@ it('getConfig returns the Configuration instance', function () {
 });
 
 it('has contentTypes static property', function () {
-    expect(defined(GetDataByIdService::class . '::contentTypes'))->toBeTrue();
+    expect(defined(GetDataByIdService::class.'::contentTypes'))->toBeTrue();
 });
 
 it('contentTypes has dataGet with application/json', function () {
@@ -131,11 +131,11 @@ it('dataGet with limitReached true', function () {
 
 it('throws InvalidArgumentException when token is null', function () {
     $this->api->dataGet(null, '01-09-123456');
-})->throws(\InvalidArgumentException::class, 'Missing the required parameter $token when calling dataGet');
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling dataGet');
 
 it('throws InvalidArgumentException when token is empty array', function () {
     $this->api->dataGet([], '01-09-123456');
-})->throws(\InvalidArgumentException::class, 'Missing the required parameter $token when calling dataGet');
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling dataGet');
 
 it('dataGetRequest creates GET request to /Data', function () {
     $request = $this->api->dataGetRequest('my-token');
@@ -316,7 +316,7 @@ it('dataGetWithHttpInfo fallback handles non-explicit status codes', function ()
 
 it('throws ApiException on RequestException', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Server error',
             new Request('GET', 'test'),
             new Response(502, [], json_encode(['error' => 'Bad Gateway']))
@@ -328,7 +328,7 @@ it('throws ApiException on RequestException', function () {
 
 it('ApiException from RequestException captures status code and body', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Validation failed',
             new Request('GET', 'test'),
             new Response(422, ['X-Reason' => 'invalid'], json_encode(['field' => 'regnumber']))
@@ -358,7 +358,7 @@ it('ApiException from ConnectException has null body and headers', function () {
 
 it('dataGetAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
     $this->mock->append(
-        new \GuzzleHttp\Exception\RequestException(
+        new RequestException(
             'Async failure',
             new Request('GET', 'test'),
             new Response(503, [], json_encode(['error' => 'Down']))
@@ -370,7 +370,7 @@ it('dataGetAsyncWithHttpInfo rejects with ApiException on RequestException', fun
 });
 
 it('createHttpClientOption enables debug logging', function () {
-    $tempFile = sys_get_temp_dir() . '/creditonline-data-debug-' . uniqid() . '.log';
+    $tempFile = sys_get_temp_dir().'/creditonline-data-debug-'.uniqid().'.log';
     $this->config->setDebug(true);
     $this->config->setDebugFile($tempFile);
 
@@ -391,7 +391,7 @@ it('createHttpClientOption with debug throws RuntimeException for bad path', fun
 
     $this->mock->append(new Response(200, [], json_encode([])));
     $this->api->dataGetWithHttpInfo('token', '01-09-123456');
-})->throws(\RuntimeException::class);
+})->throws(RuntimeException::class);
 
 it('createHttpClientOption sets cert and ssl_key', function () {
     $this->config->setCertFile('/fake/cert.pem');

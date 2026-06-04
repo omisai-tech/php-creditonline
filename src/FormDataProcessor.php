@@ -1,10 +1,10 @@
 <?php
+
 /**
  * FormDataProcessor
  * PHP version 7.4
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -31,15 +31,14 @@ namespace Omisai\CreditOnline;
 use ArrayAccess;
 use DateTime;
 use GuzzleHttp\Psr7\Utils;
+use Omisai\CreditOnline\Model\ModelInterface;
 use Psr\Http\Message\StreamInterface;
 use SplFileObject;
-use Omisai\CreditOnline\Model\ModelInterface;
 
 /**
  * FormDataProcessor Class Doc Comment
  *
  * @category Class
- * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -56,7 +55,7 @@ class FormDataProcessor
      * the http body (form parameter). If it's a string, pass through unchanged
      * If it's a datetime object, format it in ISO8601
      *
-     * @param array<string|bool|array|DateTime|ArrayAccess|SplFileObject> $values the value of the form parameter
+     * @param  array<string|bool|array|DateTime|ArrayAccess|SplFileObject>  $values  the value of the form parameter
      *
      * @return array [key => value] of formdata
      */
@@ -86,25 +85,25 @@ class FormDataProcessor
     public static function flatten(array $source, string $start = ''): array
     {
         $opt = [
-            'prefix'          => '[',
-            'suffix'          => ']',
-            'suffix-end'      => true,
-            'prefix-list'     => '[',
-            'suffix-list'     => ']',
+            'prefix' => '[',
+            'suffix' => ']',
+            'suffix-end' => true,
+            'prefix-list' => '[',
+            'suffix-list' => ']',
             'suffix-list-end' => true,
         ];
 
         if ($start === '') {
-            $currentPrefix    = '';
-            $currentSuffix    = '';
+            $currentPrefix = '';
+            $currentSuffix = '';
             $currentSuffixEnd = false;
         } elseif (array_is_list($source)) {
-            $currentPrefix    = $opt['prefix-list'];
-            $currentSuffix    = $opt['suffix-list'];
+            $currentPrefix = $opt['prefix-list'];
+            $currentSuffix = $opt['suffix-list'];
             $currentSuffixEnd = $opt['suffix-list-end'];
         } else {
-            $currentPrefix    = $opt['prefix'];
-            $currentSuffix    = $opt['suffix'];
+            $currentPrefix = $opt['prefix'];
+            $currentSuffix = $opt['suffix'];
             $currentSuffixEnd = $opt['suffix-end'];
         }
 

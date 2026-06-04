@@ -4,7 +4,7 @@ use Omisai\CreditOnline\Model\ApiResult;
 use Omisai\CreditOnline\Model\Company;
 
 beforeEach(function () {
-    $this->model = new ApiResult();
+    $this->model = new ApiResult;
 });
 
 it('getModelName returns ApiResult', function () {
@@ -56,10 +56,10 @@ it('setLimitReached sets value and returns $this', function () {
 
 it('setLimitReached throws on null', function () {
     $this->model->setLimitReached(null);
-})->throws(\InvalidArgumentException::class, 'non-nullable limit_reached cannot be null');
+})->throws(InvalidArgumentException::class, 'non-nullable limit_reached cannot be null');
 
 it('setCompanies sets value and returns $this', function () {
-    $companies = [new Company()];
+    $companies = [new Company];
     $result = $this->model->setCompanies($companies);
     expect($result)->toBe($this->model);
     expect($this->model->getCompanies())->toBe($companies);
@@ -67,16 +67,16 @@ it('setCompanies sets value and returns $this', function () {
 
 it('setCompanies throws on null', function () {
     $this->model->setCompanies(null);
-})->throws(\InvalidArgumentException::class, 'non-nullable companies cannot be null');
+})->throws(InvalidArgumentException::class, 'non-nullable companies cannot be null');
 
 it('constructor with null parameter initializes with null defaults', function () {
-    $model = new ApiResult();
+    $model = new ApiResult;
     expect($model->getLimitReached())->toBeNull();
     expect($model->getCompanies())->toBeNull();
 });
 
 it('constructor with data sets properties', function () {
-    $companies = [new Company()];
+    $companies = [new Company];
     $model = new ApiResult([
         'limit_reached' => true,
         'companies' => $companies,
