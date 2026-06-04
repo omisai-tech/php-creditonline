@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Documentation Issue
+    url: https://github.com/omisai-tech/php-creditonline/blob/master/README.md
+    about: For documentation issues, please check the README first
+  - name: 💬 General Discussion
+    url: https://github.com/omisai-tech/php-creditonline/discussions
+    about: For general questions, ideas, or discussions
+  - name: 🆘 Security Issue
+    url: https://github.com/omisai-tech/php-creditonline/security/advisories/new
+    about: For security vulnerabilities, please use the security advisory form
