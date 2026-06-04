@@ -16,7 +16,10 @@ use Omisai\CreditOnline\Configuration;
 $config = new Configuration();
 
 // Use the test environment
+$config->setTestHost();
+// or
 $config->setHost('https://api-test.creditonline.hu/v3');
+
 
 // Enable debug mode (logs to stdout)
 $config->setDebug(true);
