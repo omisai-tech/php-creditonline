@@ -1,0 +1,7 @@
+/vendor
+composer.lock
+.vscode/
+AGENTS.md
+/.agents
+.phpunit.cache
+.env
