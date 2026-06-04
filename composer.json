@@ -29,6 +29,15 @@
         "pestphp/pest": "^4.3",
         "laravel/pint": "^1.27"
     },
+    "scripts": {
+        "test": "pest --colors=always",
+        "lint": [
+            "pint --parallel"
+        ],
+        "test:lint": [
+            "pint --parallel --test"
+        ]
+    },
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true
