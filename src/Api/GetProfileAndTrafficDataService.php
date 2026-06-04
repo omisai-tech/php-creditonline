@@ -1,6 +1,6 @@
 <?php
 /**
- * TokenGenerlsApi
+ * GetProfileAndTrafficDataService
  * PHP version 8.1
  *
  * @category Class
@@ -44,14 +44,14 @@ use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\ObjectSerializer;
 
 /**
- * TokenGenerlsApi Class Doc Comment
+ * GetProfileAndTrafficDataService Class Doc Comment
  *
  * @category Class
  * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
-class TokenGenerlsApi
+class GetProfileAndTrafficDataService
 {
     /**
      * @var ClientInterface
@@ -75,7 +75,7 @@ class TokenGenerlsApi
 
     /** @var string[] $contentTypes **/
     public const contentTypes = [
-        'tokenGet' => [
+        'profileGet' => [
             'application/json',
         ],
     ];
@@ -127,37 +127,34 @@ class TokenGenerlsApi
     }
 
     /**
-     * Operation tokenGet
+     * Operation profileGet
      *
-     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
-     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
-     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string $token Egyedi token (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return void
+     * @return \OmisaiCreditOnline\Model\Profile
      */
-    public function tokenGet($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
+    public function profileGet($token, string $contentType = self::contentTypes['profileGet'][0])
     {
-        $this->tokenGetWithHttpInfo($api_key, $format, $language, $contentType);
+        list($response) = $this->profileGetWithHttpInfo($token, $contentType);
+        return $response;
     }
 
     /**
-     * Operation tokenGetWithHttpInfo
+     * Operation profileGetWithHttpInfo
      *
-     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
-     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
-     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string $token Egyedi token (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of null, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \OmisaiCreditOnline\Model\Profile, HTTP status code, HTTP response headers (array of strings)
      */
-    public function tokenGetWithHttpInfo($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
+    public function profileGetWithHttpInfo($token, string $contentType = self::contentTypes['profileGet'][0])
     {
-        $request = $this->tokenGetRequest($api_key, $format, $language, $contentType);
+        $request = $this->profileGetRequest($token, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -182,9 +179,45 @@ class TokenGenerlsApi
             $statusCode = $response->getStatusCode();
 
 
-            return [null, $statusCode, $response->getHeaders()];
+            switch($statusCode) {
+                case 200:
+                    return $this->handleResponseWithDataType(
+                        '\Omisai\CreditOnline\Model\Profile',
+                        $request,
+                        $response,
+                    );
+            }
+
+
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            return $this->handleResponseWithDataType(
+                '\Omisai\CreditOnline\Model\Profile',
+                $request,
+                $response,
+            );
         } catch (ApiException $e) {
             switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Omisai\CreditOnline\Model\Profile',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
             }
 
 
@@ -193,19 +226,17 @@ class TokenGenerlsApi
     }
 
     /**
-     * Operation tokenGetAsync
+     * Operation profileGetAsync
      *
-     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
-     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
-     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string $token Egyedi token (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function tokenGetAsync($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
+    public function profileGetAsync($token, string $contentType = self::contentTypes['profileGet'][0])
     {
-        return $this->tokenGetAsyncWithHttpInfo($api_key, $format, $language, $contentType)
+        return $this->profileGetAsyncWithHttpInfo($token, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -214,26 +245,37 @@ class TokenGenerlsApi
     }
 
     /**
-     * Operation tokenGetAsyncWithHttpInfo
+     * Operation profileGetAsyncWithHttpInfo
      *
-     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
-     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
-     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string $token Egyedi token (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function tokenGetAsyncWithHttpInfo($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
+    public function profileGetAsyncWithHttpInfo($token, string $contentType = self::contentTypes['profileGet'][0])
     {
-        $returnType = '';
-        $request = $this->tokenGetRequest($api_key, $format, $language, $contentType);
+        $returnType = '\Omisai\CreditOnline\Model\Profile';
+        $request = $this->profileGetRequest($token, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
-                    return [null, $response->getStatusCode(), $response->getHeaders()];
+                    if ($returnType === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
                 },
                 function ($exception) {
                     $response = $exception->getResponse();
@@ -253,30 +295,26 @@ class TokenGenerlsApi
     }
 
     /**
-     * Create request for operation 'tokenGet'
+     * Create request for operation 'profileGet'
      *
-     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
-     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
-     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string $token Egyedi token (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function tokenGetRequest($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
+    public function profileGetRequest($token, string $contentType = self::contentTypes['profileGet'][0])
     {
 
-        // verify the required parameter 'api_key' is set
-        if ($api_key === null || (is_array($api_key) && count($api_key) === 0)) {
+        // verify the required parameter 'token' is set
+        if ($token === null || (is_array($token) && count($token) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $api_key when calling tokenGet'
+                'Missing the required parameter $token when calling profileGet'
             );
         }
 
 
-
-
-        $resourcePath = '/Token';
+        $resourcePath = '/Profile';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -285,37 +323,19 @@ class TokenGenerlsApi
 
         // query params
         $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $api_key,
-            'apiKey', // param base name
+            $token,
+            'token', // param base name
             'string', // openApiType
             'form', // style
             true, // explode
             true // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $format,
-            'format', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $language,
-            'language', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
         ) ?? []);
 
 
 
 
         $headers = $this->headerSelector->selectHeaders(
-            [],
+            ['application/json', 'application/xml', ],
             $contentType,
             $multipart
         );

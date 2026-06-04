@@ -37,7 +37,7 @@ $config->setKeyFile('/path/to/key.pem');
 Each API class constructor accepts a `$hostIndex` (default `0` = production). Use `1` for the test environment:
 
 ```php
-$api = new AdatokLekrseAzonostAlapjnApi(config: $config, hostIndex: 1);
+$api = new GetDataByIdService(config: $config, hostIndex: 1);
 ```
 
 Or set it after construction:
@@ -52,19 +52,19 @@ You can inject a custom `GuzzleHttp\ClientInterface` for custom HTTP behaviour (
 
 ```php
 $client = new \GuzzleHttp\Client(['timeout' => 30]);
-$api = new TokenGenerlsApi(client: $client);
+$api = new AuthenticationService(client: $client);
 ```
 
 ## API Endpoints
 
-### 1. Token Generation — `TokenGenerlsApi`
+### 1. Token Generation — `AuthenticationService`
 
 Generates a session token required by all other endpoints. The token is valid for 24 hours and is returned in the response headers.
 
 ```php
-use Omisai\CreditOnline\Api\TokenGenerlsApi;
+use Omisai\CreditOnline\Api\AuthenticationService;
 
-$api = new TokenGenerlsApi();
+$api = new AuthenticationService();
 
 // Simple call (returns void — token is set server-side)
 $api->tokenGet('your-api-key');
@@ -86,15 +86,15 @@ list($body, $statusCode, $headers) = $api->tokenGetWithHttpInfo('your-api-key');
 
 ---
 
-### 2. Company Data — `AdatokLekrseAzonostAlapjnApi`
+### 2. Company Data — `GetDataByIdService`
 
 Retrieves company data by registration number or tax number.
 
 ```php
-use Omisai\CreditOnline\Api\AdatokLekrseAzonostAlapjnApi;
+use Omisai\CreditOnline\Api\GetDataByIdService;
 use Omisai\CreditOnline\Model\ApiResult;
 
-$api = new AdatokLekrseAzonostAlapjnApi();
+$api = new GetDataByIdService();
 
 // By registration number
 $result = $api->dataGet($token, regnumber: '01-09-562111');
@@ -123,14 +123,14 @@ At least one of `$regnumber` or `$taxnumber` must be provided.
 
 ---
 
-### 3. Daily Monitoring — `NapiMonitoringLekrdezseApi`
+### 3. Daily Monitoring — `GetDailyMonitoringService`
 
 Fetches monitoring events (changes) for a given date.
 
 ```php
-use Omisai\CreditOnline\Api\NapiMonitoringLekrdezseApi;
+use Omisai\CreditOnline\Api\GetDailyMonitoringService;
 
-$api = new NapiMonitoringLekrdezseApi();
+$api = new GetDailyMonitoringService();
 
 $events = $api->dailyMonitoringGet($token, new \DateTime('2025-01-15'));
 
@@ -151,14 +151,14 @@ foreach ($events as $event) {
 
 ---
 
-### 4. Subscriber Profile — `ProfilSForgalmiAdatokLekrdezseApi`
+### 4. Subscriber Profile — `GetProfileAndTrafficDataService`
 
 Retrieves subscriber profile information including usage quotas.
 
 ```php
-use Omisai\CreditOnline\Api\ProfilSForgalmiAdatokLekrdezseApi;
+use Omisai\CreditOnline\Api\GetProfileAndTrafficDataService;
 
-$api = new ProfilSForgalmiAdatokLekrdezseApi();
+$api = new GetProfileAndTrafficDataService();
 
 $profile = $api->profileGet($token);
 
@@ -251,10 +251,10 @@ $promise = $api->dataGetAsyncWithHttpInfo($token, regnumber: '01-09-562111');
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Omisai\CreditOnline\Api\TokenGenerlsApi;
-use Omisai\CreditOnline\Api\AdatokLekrseAzonostAlapjnApi;
-use Omisai\CreditOnline\Api\NapiMonitoringLekrdezseApi;
-use Omisai\CreditOnline\Api\ProfilSForgalmiAdatokLekrdezseApi;
+use Omisai\CreditOnline\Api\AuthenticationService;
+use Omisai\CreditOnline\Api\GetDataByIdService;
+use Omisai\CreditOnline\Api\GetDailyMonitoringService;
+use Omisai\CreditOnline\Api\GetProfileAndTrafficDataService;
 use Omisai\CreditOnline\Configuration;
 
 $apiKey = 'your-api-key';
@@ -264,12 +264,12 @@ $config = new Configuration();
 $config->setHost('https://api-test.creditonline.hu/v3');
 
 // 1. Generate token
-$tokenApi = new TokenGenerlsApi($config);
+$tokenApi = new AuthenticationService($config);
 list(, , $headers) = $tokenApi->tokenGetWithHttpInfo($apiKey);
 $token = $headers['Token'][0] ?? null; // Token returned in response headers
 
 // 2. Look up a company by registration number
-$dataApi = new AdatokLekrseAzonostAlapjnApi($config);
+$dataApi = new GetDataByIdService($config);
 $result = $dataApi->dataGet($token, regnumber: '01-09-562111');
 
 echo 'Limit reached: ' . ($result->getLimitReached() ? 'Yes' : 'No') . "\n\n";
@@ -282,7 +282,7 @@ foreach ($result->getCompanies() as $company) {
 }
 
 // 3. Fetch daily monitoring events
-$monitoringApi = new NapiMonitoringLekrdezseApi($config);
+$monitoringApi = new GetDailyMonitoringService($config);
 $events = $monitoringApi->dailyMonitoringGet($token, new \DateTime('yesterday'));
 
 foreach ($events as $event) {
@@ -290,7 +290,7 @@ foreach ($events as $event) {
 }
 
 // 4. Check profile usage
-$profileApi = new ProfilSForgalmiAdatokLekrdezseApi($config);
+$profileApi = new GetProfileAndTrafficDataService($config);
 $profile = $profileApi->profileGet($token);
 
 echo 'Profile: ' . $profile->getCompanyName() . "\n";

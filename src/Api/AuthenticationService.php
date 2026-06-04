@@ -1,6 +1,6 @@
 <?php
 /**
- * NapiMonitoringLekrdezseApi
+ * AuthenticationService
  * PHP version 8.1
  *
  * @category Class
@@ -44,14 +44,14 @@ use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\ObjectSerializer;
 
 /**
- * NapiMonitoringLekrdezseApi Class Doc Comment
+ * AuthenticationService Class Doc Comment
  *
  * @category Class
  * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
-class NapiMonitoringLekrdezseApi
+class AuthenticationService
 {
     /**
      * @var ClientInterface
@@ -75,7 +75,7 @@ class NapiMonitoringLekrdezseApi
 
     /** @var string[] $contentTypes **/
     public const contentTypes = [
-        'dailyMonitoringGet' => [
+        'tokenGet' => [
             'application/json',
         ],
     ];
@@ -127,36 +127,37 @@ class NapiMonitoringLekrdezseApi
     }
 
     /**
-     * Operation dailyMonitoringGet
+     * Operation tokenGet
      *
-     * @param  string $token Egyedi token (required)
-     * @param  \DateTime $date Lekért értesítők dátuma (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
+     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
+     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
+     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \OmisaiCreditOnline\Model\Event[]
+     * @return void
      */
-    public function dailyMonitoringGet($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
+    public function tokenGet($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
     {
-        list($response) = $this->dailyMonitoringGetWithHttpInfo($token, $date, $contentType);
-        return $response;
+        $this->tokenGetWithHttpInfo($api_key, $format, $language, $contentType);
     }
 
     /**
-     * Operation dailyMonitoringGetWithHttpInfo
+     * Operation tokenGetWithHttpInfo
      *
-     * @param  string $token Egyedi token (required)
-     * @param  \DateTime $date Lekért értesítők dátuma (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
+     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
+     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
+     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \OmisaiCreditOnline\Model\Event[], HTTP status code, HTTP response headers (array of strings)
+     * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function dailyMonitoringGetWithHttpInfo($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
+    public function tokenGetWithHttpInfo($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
     {
-        $request = $this->dailyMonitoringGetRequest($token, $date, $contentType);
+        $request = $this->tokenGetRequest($api_key, $format, $language, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -181,45 +182,9 @@ class NapiMonitoringLekrdezseApi
             $statusCode = $response->getStatusCode();
 
 
-            switch($statusCode) {
-                case 200:
-                    return $this->handleResponseWithDataType(
-                        '\Omisai\CreditOnline\Model\Event[]',
-                        $request,
-                        $response,
-                    );
-            }
-
-
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        (string) $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    (string) $response->getBody()
-                );
-            }
-
-            return $this->handleResponseWithDataType(
-                '\Omisai\CreditOnline\Model\Event[]',
-                $request,
-                $response,
-            );
+            return [null, $statusCode, $response->getHeaders()];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
-                case 200:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Omisai\CreditOnline\Model\Event[]',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    throw $e;
             }
 
 
@@ -228,18 +193,19 @@ class NapiMonitoringLekrdezseApi
     }
 
     /**
-     * Operation dailyMonitoringGetAsync
+     * Operation tokenGetAsync
      *
-     * @param  string $token Egyedi token (required)
-     * @param  \DateTime $date Lekért értesítők dátuma (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
+     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
+     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
+     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function dailyMonitoringGetAsync($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
+    public function tokenGetAsync($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
     {
-        return $this->dailyMonitoringGetAsyncWithHttpInfo($token, $date, $contentType)
+        return $this->tokenGetAsyncWithHttpInfo($api_key, $format, $language, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -248,38 +214,26 @@ class NapiMonitoringLekrdezseApi
     }
 
     /**
-     * Operation dailyMonitoringGetAsyncWithHttpInfo
+     * Operation tokenGetAsyncWithHttpInfo
      *
-     * @param  string $token Egyedi token (required)
-     * @param  \DateTime $date Lekért értesítők dátuma (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
+     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
+     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
+     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function dailyMonitoringGetAsyncWithHttpInfo($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
+    public function tokenGetAsyncWithHttpInfo($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
     {
-        $returnType = '\Omisai\CreditOnline\Model\Event[]';
-        $request = $this->dailyMonitoringGetRequest($token, $date, $contentType);
+        $returnType = '';
+        $request = $this->tokenGetRequest($api_key, $format, $language, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
-                    if ($returnType === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
+                    return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
                 function ($exception) {
                     $response = $exception->getResponse();
@@ -299,34 +253,30 @@ class NapiMonitoringLekrdezseApi
     }
 
     /**
-     * Create request for operation 'dailyMonitoringGet'
+     * Create request for operation 'tokenGet'
      *
-     * @param  string $token Egyedi token (required)
-     * @param  \DateTime $date Lekért értesítők dátuma (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
+     * @param  string $api_key Az előfizető egyedi API kulcsa (required)
+     * @param  string|null $format A lekérések eredményének formátuma (optional, default to 'json')
+     * @param  string|null $language Az adatok nyelve (optional, default to 'hu')
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function dailyMonitoringGetRequest($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
+    public function tokenGetRequest($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
     {
 
-        // verify the required parameter 'token' is set
-        if ($token === null || (is_array($token) && count($token) === 0)) {
+        // verify the required parameter 'api_key' is set
+        if ($api_key === null || (is_array($api_key) && count($api_key) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $token when calling dailyMonitoringGet'
-            );
-        }
-
-        // verify the required parameter 'date' is set
-        if ($date === null || (is_array($date) && count($date) === 0)) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $date when calling dailyMonitoringGet'
+                'Missing the required parameter $api_key when calling tokenGet'
             );
         }
 
 
-        $resourcePath = '/DailyMonitoring';
+
+
+        $resourcePath = '/Token';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -335,8 +285,8 @@ class NapiMonitoringLekrdezseApi
 
         // query params
         $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $token,
-            'token', // param base name
+            $api_key,
+            'apiKey', // param base name
             'string', // openApiType
             'form', // style
             true, // explode
@@ -344,19 +294,28 @@ class NapiMonitoringLekrdezseApi
         ) ?? []);
         // query params
         $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $date,
-            'date', // param base name
-            '\\DateTime', // openApiType
+            $format,
+            'format', // param base name
+            'string', // openApiType
             'form', // style
             true, // explode
-            true // required
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $language,
+            'language', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
         ) ?? []);
 
 
 
 
         $headers = $this->headerSelector->selectHeaders(
-            ['application/json', 'application/xml', ],
+            [],
             $contentType,
             $multipart
         );

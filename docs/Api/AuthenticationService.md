@@ -1,4 +1,4 @@
-# Omisai\CreditOnline\TokenGenerlsApi
+# Omisai\CreditOnline\AuthenticationService
 
 
 
@@ -6,7 +6,7 @@ All URIs are relative to https://api.creditonline.hu/v3, except if the operation
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**tokenGet()**](TokenGenerlsApi.md#tokenGet) | **GET** /Token |  |
+| [**tokenGet()**](AuthenticationService.md#tokenGet) | **GET** /Token |  |
 
 
 ## `tokenGet()`
@@ -27,7 +27,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new Omisai\CreditOnline\Api\TokenGenerlsApi(
+$apiInstance = new Omisai\CreditOnline\Api\AuthenticationService(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -39,7 +39,7 @@ $language = 'hu'; // string | Az adatok nyelve
 try {
     $apiInstance->tokenGet($api_key, $format, $language);
 } catch (Exception $e) {
-    echo 'Exception when calling TokenGenerlsApi->tokenGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling AuthenticationService->tokenGet: ', $e->getMessage(), PHP_EOL;
 }
 ```
 

@@ -1,4 +1,4 @@
-# Omisai\CreditOnline\AdatokLekrseAzonostAlapjnApi
+# Omisai\CreditOnline\GetDataByIdService
 
 
 
@@ -6,7 +6,7 @@ All URIs are relative to https://api.creditonline.hu/v3, except if the operation
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**dataGet()**](AdatokLekrseAzonostAlapjnApi.md#dataGet) | **GET** /Data |  |
+| [**dataGet()**](GetDataByIdService.md#dataGet) | **GET** /Data |  |
 
 
 ## `dataGet()`
@@ -27,7 +27,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new Omisai\CreditOnline\Api\AdatokLekrseAzonostAlapjnApi(
+$apiInstance = new Omisai\CreditOnline\Api\GetDataByIdService(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -40,7 +40,7 @@ try {
     $result = $apiInstance->dataGet($token, $regnumber, $taxnumber);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling AdatokLekrseAzonostAlapjnApi->dataGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling GetDataByIdService->dataGet: ', $e->getMessage(), PHP_EOL;
 }
 ```
 

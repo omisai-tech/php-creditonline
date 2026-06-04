@@ -1,4 +1,4 @@
-# Omisai\CreditOnline\ProfilSForgalmiAdatokLekrdezseApi
+# Omisai\CreditOnline\GetDailyMonitoringService
 
 
 
@@ -6,18 +6,18 @@ All URIs are relative to https://api.creditonline.hu/v3, except if the operation
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**profileGet()**](ProfilSForgalmiAdatokLekrdezseApi.md#profileGet) | **GET** /Profile |  |
+| [**dailyMonitoringGet()**](GetDailyMonitoringService.md#dailyMonitoringGet) | **GET** /DailyMonitoring |  |
 
 
-## `profileGet()`
+## `dailyMonitoringGet()`
 
 ```php
-profileGet($token): \Omisai\CreditOnline\Model\Profile
+dailyMonitoringGet($token, $date): \Omisai\CreditOnline\Model\Event[]
 ```
 
 
 
-Az aktuális tokenhez tartozó beállítások, profil és forgalmi adatok lekérdezése.
+Az adott napi monitoring értesítőben foglalt adatváltozások kérhetőek le struktúrált, cégenként csoportosított formátumban.
 
 ### Example
 
@@ -27,18 +27,19 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new Omisai\CreditOnline\Api\ProfilSForgalmiAdatokLekrdezseApi(
+$apiInstance = new Omisai\CreditOnline\Api\GetDailyMonitoringService(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
 $token = 'token_example'; // string | Egyedi token
+$date = new \DateTime('2013-10-20T19:20:30+01:00'); // \DateTime | Lekért értesítők dátuma
 
 try {
-    $result = $apiInstance->profileGet($token);
+    $result = $apiInstance->dailyMonitoringGet($token, $date);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling ProfilSForgalmiAdatokLekrdezseApi->profileGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling GetDailyMonitoringService->dailyMonitoringGet: ', $e->getMessage(), PHP_EOL;
 }
 ```
 
@@ -47,10 +48,11 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **token** | **string**| Egyedi token | |
+| **date** | **\DateTime**| Lekért értesítők dátuma | |
 
 ### Return type
 
-[**\Omisai\CreditOnline\Model\Profile**](../Model/Profile.md)
+[**\Omisai\CreditOnline\Model\Event[]**](../Model/Event.md)
 
 ### Authorization
 

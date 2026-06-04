@@ -1,6 +1,6 @@
 <?php
 /**
- * ProfilSForgalmiAdatokLekrdezseApi
+ * GetDailyMonitoringService
  * PHP version 8.1
  *
  * @category Class
@@ -44,14 +44,14 @@ use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\ObjectSerializer;
 
 /**
- * ProfilSForgalmiAdatokLekrdezseApi Class Doc Comment
+ * GetDailyMonitoringService Class Doc Comment
  *
  * @category Class
  * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
-class ProfilSForgalmiAdatokLekrdezseApi
+class GetDailyMonitoringService
 {
     /**
      * @var ClientInterface
@@ -75,7 +75,7 @@ class ProfilSForgalmiAdatokLekrdezseApi
 
     /** @var string[] $contentTypes **/
     public const contentTypes = [
-        'profileGet' => [
+        'dailyMonitoringGet' => [
             'application/json',
         ],
     ];
@@ -127,34 +127,36 @@ class ProfilSForgalmiAdatokLekrdezseApi
     }
 
     /**
-     * Operation profileGet
+     * Operation dailyMonitoringGet
      *
      * @param  string $token Egyedi token (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  \DateTime $date Lekért értesítők dátuma (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
      *
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \OmisaiCreditOnline\Model\Profile
+     * @return \OmisaiCreditOnline\Model\Event[]
      */
-    public function profileGet($token, string $contentType = self::contentTypes['profileGet'][0])
+    public function dailyMonitoringGet($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
     {
-        list($response) = $this->profileGetWithHttpInfo($token, $contentType);
+        list($response) = $this->dailyMonitoringGetWithHttpInfo($token, $date, $contentType);
         return $response;
     }
 
     /**
-     * Operation profileGetWithHttpInfo
+     * Operation dailyMonitoringGetWithHttpInfo
      *
      * @param  string $token Egyedi token (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  \DateTime $date Lekért értesítők dátuma (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
      *
      * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \OmisaiCreditOnline\Model\Profile, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \OmisaiCreditOnline\Model\Event[], HTTP status code, HTTP response headers (array of strings)
      */
-    public function profileGetWithHttpInfo($token, string $contentType = self::contentTypes['profileGet'][0])
+    public function dailyMonitoringGetWithHttpInfo($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
     {
-        $request = $this->profileGetRequest($token, $contentType);
+        $request = $this->dailyMonitoringGetRequest($token, $date, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -182,7 +184,7 @@ class ProfilSForgalmiAdatokLekrdezseApi
             switch($statusCode) {
                 case 200:
                     return $this->handleResponseWithDataType(
-                        '\Omisai\CreditOnline\Model\Profile',
+                        '\Omisai\CreditOnline\Model\Event[]',
                         $request,
                         $response,
                     );
@@ -204,7 +206,7 @@ class ProfilSForgalmiAdatokLekrdezseApi
             }
 
             return $this->handleResponseWithDataType(
-                '\Omisai\CreditOnline\Model\Profile',
+                '\Omisai\CreditOnline\Model\Event[]',
                 $request,
                 $response,
             );
@@ -213,7 +215,7 @@ class ProfilSForgalmiAdatokLekrdezseApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Omisai\CreditOnline\Model\Profile',
+                        '\Omisai\CreditOnline\Model\Event[]',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -226,17 +228,18 @@ class ProfilSForgalmiAdatokLekrdezseApi
     }
 
     /**
-     * Operation profileGetAsync
+     * Operation dailyMonitoringGetAsync
      *
      * @param  string $token Egyedi token (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  \DateTime $date Lekért értesítők dátuma (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function profileGetAsync($token, string $contentType = self::contentTypes['profileGet'][0])
+    public function dailyMonitoringGetAsync($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
     {
-        return $this->profileGetAsyncWithHttpInfo($token, $contentType)
+        return $this->dailyMonitoringGetAsyncWithHttpInfo($token, $date, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -245,18 +248,19 @@ class ProfilSForgalmiAdatokLekrdezseApi
     }
 
     /**
-     * Operation profileGetAsyncWithHttpInfo
+     * Operation dailyMonitoringGetAsyncWithHttpInfo
      *
      * @param  string $token Egyedi token (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  \DateTime $date Lekért értesítők dátuma (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function profileGetAsyncWithHttpInfo($token, string $contentType = self::contentTypes['profileGet'][0])
+    public function dailyMonitoringGetAsyncWithHttpInfo($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
     {
-        $returnType = '\Omisai\CreditOnline\Model\Profile';
-        $request = $this->profileGetRequest($token, $contentType);
+        $returnType = '\Omisai\CreditOnline\Model\Event[]';
+        $request = $this->dailyMonitoringGetRequest($token, $date, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -295,26 +299,34 @@ class ProfilSForgalmiAdatokLekrdezseApi
     }
 
     /**
-     * Create request for operation 'profileGet'
+     * Create request for operation 'dailyMonitoringGet'
      *
      * @param  string $token Egyedi token (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  \DateTime $date Lekért értesítők dátuma (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function profileGetRequest($token, string $contentType = self::contentTypes['profileGet'][0])
+    public function dailyMonitoringGetRequest($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
     {
 
         // verify the required parameter 'token' is set
         if ($token === null || (is_array($token) && count($token) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $token when calling profileGet'
+                'Missing the required parameter $token when calling dailyMonitoringGet'
+            );
+        }
+
+        // verify the required parameter 'date' is set
+        if ($date === null || (is_array($date) && count($date) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $date when calling dailyMonitoringGet'
             );
         }
 
 
-        $resourcePath = '/Profile';
+        $resourcePath = '/DailyMonitoring';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -326,6 +338,15 @@ class ProfilSForgalmiAdatokLekrdezseApi
             $token,
             'token', // param base name
             'string', // openApiType
+            'form', // style
+            true, // explode
+            true // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $date,
+            'date', // param base name
+            '\\DateTime', // openApiType
             'form', // style
             true, // explode
             true // required

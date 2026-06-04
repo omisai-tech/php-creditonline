@@ -1,6 +1,6 @@
 <?php
 /**
- * AdatokLekrseAzonostAlapjnApi
+ * GetDataByIdService
  * PHP version 8.1
  *
  * @category Class
@@ -44,14 +44,14 @@ use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\ObjectSerializer;
 
 /**
- * AdatokLekrseAzonostAlapjnApi Class Doc Comment
+ * GetDataByIdService Class Doc Comment
  *
  * @category Class
  * @package  OmisaiCreditOnline
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
-class AdatokLekrseAzonostAlapjnApi
+class GetDataByIdService
 {
     /**
      * @var ClientInterface
