@@ -1,0 +1,47 @@
+# # Company
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**regnumber** | **string** | Cégjegyzékszám | [optional]
+**taxnumber** | **string** | Adószám | [optional]
+**name** | **string** | Rövidített elnevezés | [optional]
+**long_name** | **string** | A cég elnevezése | [optional]
+**headquarter** | [**\Omisai\CreditOnline\Model\Address**](Address.md) |  | [optional]
+**status** | **string** | Állapot | [optional]
+**foundation** | **\DateTime** | Alapítás dátuma | [optional]
+**funds** | **string** | Alaptőke | [optional]
+**employees** | **int** | Alkalmazottak száma | [optional]
+**last_turnover** | **int** | Utolsó árbevétel | [optional]
+**main_activity_code** | **string** | Főtevékenység kódja | [optional]
+**main_activity_description** | **string** | Főtevékenység neve | [optional]
+**rating** | **int** | Besorolás | [optional]
+**credit_limit** | **int** | Hitelképesség | [optional]
+**industry** | **string** | Iparág | [optional]
+**type** | **string** | Gazdálkodási forma | [optional]
+**ksh_number** | **string** | KSH szám | [optional]
+**eu_taxnumber** | **string** | EU adószám | [optional]
+**link** | **string** | Credit Online adatlapra mutató link | [optional]
+**bank_accounts** | **string[]** | Bankszámlák | [optional]
+**phones** | **string[]** | Telefonszámok (max. 3 db) | [optional]
+**emails** | **string[]** | Email címek (max. 3 db) | [optional]
+**webpages** | **string[]** | Weblapok (max. 3 db) | [optional]
+**negative_info** | [**\Omisai\CreditOnline\Model\NegativeInfo[]**](NegativeInfo.md) | Negatív információk | [optional]
+**positive_info** | [**\Omisai\CreditOnline\Model\PositiveInfo[]**](PositiveInfo.md) | Pozitív információk | [optional]
+**financial_summaries** | [**\Omisai\CreditOnline\Model\FinancialSummary[]**](FinancialSummary.md) | Pénzügyi adatok (utolsó 3 év) | [optional]
+**signers** | [**\Omisai\CreditOnline\Model\Signer[]**](Signer.md) | Cégjegyzésre jogosultak | [optional]
+**members** | [**\Omisai\CreditOnline\Model\Member[]**](Member.md) | Tulajdonosok | [optional]
+**auditors** | [**\Omisai\CreditOnline\Model\Auditor[]**](Auditor.md) | Könyvvizsgálók | [optional]
+**sites** | [**\Omisai\CreditOnline\Model\Address[]**](Address.md) | Telephelyek | [optional]
+**has_deleted_tax_number** | **bool** | Az adószáma törölt-e? | [optional]
+**has_active_positive_info** | **bool** | Hatályos pozitív infó van-e a cég ellen? | [optional]
+**has_active_negative_info** | **bool** | Hatályos negatív infó van-e a cég ellen? | [optional]
+**is_koztartozasmentes** | **bool** | Szerepel-e a köztartozásmentes adózók listáján? | [optional]
+**is_megbizhato_adozo** | **bool** | Szerepel-e a megbízható adózók listáján? | [optional]
+**has_prohibited_member** | **bool** | Cégvezetéstől eltiltott személy található? | [optional]
+**signer_change_in12_months** | **bool** | Cégjegyzésre jogosult változás az elmúlt 12 hónapban? | [optional]
+**member_change_in12_months** | **bool** | Tulajdonos jogosult változás az elmúlt 12 hónapban? | [optional]
+**headquarter_change_in12_months** | **bool** | Székhely jogosult változás az elmúlt 12 hónapban? | [optional]
+
+[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
