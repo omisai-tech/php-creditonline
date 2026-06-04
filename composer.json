@@ -41,7 +41,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Omisai\\CreditOnline\\Test\\": "test/"
+            "Omisai\\CreditOnline\\Tests\\": "tests/"
         }
     }
 }
