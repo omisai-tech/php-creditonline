@@ -37,11 +37,11 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use OmisaiCreditOnline\ApiException;
-use OmisaiCreditOnline\Configuration;
-use OmisaiCreditOnline\FormDataProcessor;
-use OmisaiCreditOnline\HeaderSelector;
-use OmisaiCreditOnline\ObjectSerializer;
+use Omisai\CreditOnline\ApiException;
+use Omisai\CreditOnline\Configuration;
+use Omisai\CreditOnline\FormDataProcessor;
+use Omisai\CreditOnline\HeaderSelector;
+use Omisai\CreditOnline\ObjectSerializer;
 
 /**
  * TokenGenerlsApi Class Doc Comment

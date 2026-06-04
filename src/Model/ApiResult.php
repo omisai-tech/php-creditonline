@@ -30,7 +30,7 @@
 namespace Omisai\CreditOnline\Model;
 
 use \ArrayAccess;
-use \OmisaiCreditOnline\ObjectSerializer;
+use \Omisai\CreditOnline\ObjectSerializer;
 
 /**
  * ApiResult Class Doc Comment
@@ -59,7 +59,7 @@ class ApiResult implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPITypes = [
         'limit_reached' => 'bool',
-        'companies' => '\OmisaiCreditOnline\Model\Company[]'
+        'companies' => '\Omisai\CreditOnline\Model\Company[]'
     ];
 
     /**

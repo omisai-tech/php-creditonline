@@ -33,7 +33,7 @@ use DateTime;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\StreamInterface;
 use SplFileObject;
-use OmisaiCreditOnline\Model\ModelInterface;
+use Omisai\CreditOnline\Model\ModelInterface;
 
 /**
  * FormDataProcessor Class Doc Comment

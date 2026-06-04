@@ -37,11 +37,11 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use OmisaiCreditOnline\ApiException;
-use OmisaiCreditOnline\Configuration;
-use OmisaiCreditOnline\FormDataProcessor;
-use OmisaiCreditOnline\HeaderSelector;
-use OmisaiCreditOnline\ObjectSerializer;
+use Omisai\CreditOnline\ApiException;
+use Omisai\CreditOnline\Configuration;
+use Omisai\CreditOnline\FormDataProcessor;
+use Omisai\CreditOnline\HeaderSelector;
+use Omisai\CreditOnline\ObjectSerializer;
 
 /**
  * ProfilSForgalmiAdatokLekrdezseApi Class Doc Comment
@@ -182,7 +182,7 @@ class ProfilSForgalmiAdatokLekrdezseApi
             switch($statusCode) {
                 case 200:
                     return $this->handleResponseWithDataType(
-                        '\OmisaiCreditOnline\Model\Profile',
+                        '\Omisai\CreditOnline\Model\Profile',
                         $request,
                         $response,
                     );
@@ -204,7 +204,7 @@ class ProfilSForgalmiAdatokLekrdezseApi
             }
 
             return $this->handleResponseWithDataType(
-                '\OmisaiCreditOnline\Model\Profile',
+                '\Omisai\CreditOnline\Model\Profile',
                 $request,
                 $response,
             );
@@ -213,7 +213,7 @@ class ProfilSForgalmiAdatokLekrdezseApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\OmisaiCreditOnline\Model\Profile',
+                        '\Omisai\CreditOnline\Model\Profile',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -255,7 +255,7 @@ class ProfilSForgalmiAdatokLekrdezseApi
      */
     public function profileGetAsyncWithHttpInfo($token, string $contentType = self::contentTypes['profileGet'][0])
     {
-        $returnType = '\OmisaiCreditOnline\Model\Profile';
+        $returnType = '\Omisai\CreditOnline\Model\Profile';
         $request = $this->profileGetRequest($token, $contentType);
 
         return $this->client

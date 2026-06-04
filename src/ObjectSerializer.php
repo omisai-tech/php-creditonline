@@ -30,7 +30,7 @@
 namespace Omisai\CreditOnline;
 
 use GuzzleHttp\Psr7\Utils;
-use OmisaiCreditOnline\Model\ModelInterface;
+use Omisai\CreditOnline\Model\ModelInterface;
 
 /**
  * ObjectSerializer Class Doc Comment
@@ -504,7 +504,7 @@ class ObjectSerializer
             // If a discriminator is defined and points to a valid subclass, use it.
             $discriminator = $class::DISCRIMINATOR;
             if (!empty($discriminator) && isset($data->{$discriminator}) && is_string($data->{$discriminator})) {
-                $subclass = '\OmisaiCreditOnline\Model\\' . $data->{$discriminator};
+                $subclass = '\Omisai\CreditOnline\Model\\' . $data->{$discriminator};
                 if (is_subclass_of($subclass, $class)) {
                     $class = $subclass;
                 }

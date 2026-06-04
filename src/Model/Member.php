@@ -30,7 +30,7 @@
 namespace Omisai\CreditOnline\Model;
 
 use \ArrayAccess;
-use \OmisaiCreditOnline\ObjectSerializer;
+use \Omisai\CreditOnline\ObjectSerializer;
 
 /**
  * Member Class Doc Comment
@@ -61,7 +61,7 @@ class Member implements ModelInterface, ArrayAccess, \JsonSerializable
         'regnumber' => 'string',
         'name' => 'string',
         'mother_name' => 'string',
-        'address' => '\OmisaiCreditOnline\Model\Address',
+        'address' => '\Omisai\CreditOnline\Model\Address',
         'start' => '\DateTime'
     ];
 

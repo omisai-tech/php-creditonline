@@ -37,11 +37,11 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use OmisaiCreditOnline\ApiException;
-use OmisaiCreditOnline\Configuration;
-use OmisaiCreditOnline\FormDataProcessor;
-use OmisaiCreditOnline\HeaderSelector;
-use OmisaiCreditOnline\ObjectSerializer;
+use Omisai\CreditOnline\ApiException;
+use Omisai\CreditOnline\Configuration;
+use Omisai\CreditOnline\FormDataProcessor;
+use Omisai\CreditOnline\HeaderSelector;
+use Omisai\CreditOnline\ObjectSerializer;
 
 /**
  * NapiMonitoringLekrdezseApi Class Doc Comment
@@ -184,7 +184,7 @@ class NapiMonitoringLekrdezseApi
             switch($statusCode) {
                 case 200:
                     return $this->handleResponseWithDataType(
-                        '\OmisaiCreditOnline\Model\Event[]',
+                        '\Omisai\CreditOnline\Model\Event[]',
                         $request,
                         $response,
                     );
@@ -206,7 +206,7 @@ class NapiMonitoringLekrdezseApi
             }
 
             return $this->handleResponseWithDataType(
-                '\OmisaiCreditOnline\Model\Event[]',
+                '\Omisai\CreditOnline\Model\Event[]',
                 $request,
                 $response,
             );
@@ -215,7 +215,7 @@ class NapiMonitoringLekrdezseApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\OmisaiCreditOnline\Model\Event[]',
+                        '\Omisai\CreditOnline\Model\Event[]',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -259,7 +259,7 @@ class NapiMonitoringLekrdezseApi
      */
     public function dailyMonitoringGetAsyncWithHttpInfo($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
     {
-        $returnType = '\OmisaiCreditOnline\Model\Event[]';
+        $returnType = '\Omisai\CreditOnline\Model\Event[]';
         $request = $this->dailyMonitoringGetRequest($token, $date, $contentType);
 
         return $this->client
@@ -346,7 +346,7 @@ class NapiMonitoringLekrdezseApi
         $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
             $date,
             'date', // param base name
-            'string', // openApiType
+            '\\DateTime', // openApiType
             'form', // style
             true, // explode
             true // required

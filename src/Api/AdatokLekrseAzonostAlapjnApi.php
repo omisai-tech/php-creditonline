@@ -37,11 +37,11 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use OmisaiCreditOnline\ApiException;
-use OmisaiCreditOnline\Configuration;
-use OmisaiCreditOnline\FormDataProcessor;
-use OmisaiCreditOnline\HeaderSelector;
-use OmisaiCreditOnline\ObjectSerializer;
+use Omisai\CreditOnline\ApiException;
+use Omisai\CreditOnline\Configuration;
+use Omisai\CreditOnline\FormDataProcessor;
+use Omisai\CreditOnline\HeaderSelector;
+use Omisai\CreditOnline\ObjectSerializer;
 
 /**
  * AdatokLekrseAzonostAlapjnApi Class Doc Comment
@@ -186,7 +186,7 @@ class AdatokLekrseAzonostAlapjnApi
             switch($statusCode) {
                 case 200:
                     return $this->handleResponseWithDataType(
-                        '\OmisaiCreditOnline\Model\ApiResult',
+                        '\Omisai\CreditOnline\Model\ApiResult',
                         $request,
                         $response,
                     );
@@ -208,7 +208,7 @@ class AdatokLekrseAzonostAlapjnApi
             }
 
             return $this->handleResponseWithDataType(
-                '\OmisaiCreditOnline\Model\ApiResult',
+                '\Omisai\CreditOnline\Model\ApiResult',
                 $request,
                 $response,
             );
@@ -217,7 +217,7 @@ class AdatokLekrseAzonostAlapjnApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\OmisaiCreditOnline\Model\ApiResult',
+                        '\Omisai\CreditOnline\Model\ApiResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -263,7 +263,7 @@ class AdatokLekrseAzonostAlapjnApi
      */
     public function dataGetAsyncWithHttpInfo($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
     {
-        $returnType = '\OmisaiCreditOnline\Model\ApiResult';
+        $returnType = '\Omisai\CreditOnline\Model\ApiResult';
         $request = $this->dataGetRequest($token, $regnumber, $taxnumber, $contentType);
 
         return $this->client

@@ -30,7 +30,7 @@
 namespace Omisai\CreditOnline\Model;
 
 use \ArrayAccess;
-use \OmisaiCreditOnline\ObjectSerializer;
+use \Omisai\CreditOnline\ObjectSerializer;
 
 /**
  * Profile Class Doc Comment
@@ -61,7 +61,7 @@ class Profile implements ModelInterface, ArrayAccess, \JsonSerializable
         'company_name' => 'string',
         'actual_format' => 'string',
         'actual_language' => 'string',
-        'actual_usages' => '\OmisaiCreditOnline\Model\ActualUsage'
+        'actual_usages' => '\Omisai\CreditOnline\Model\ActualUsage'
     ];
 
     /**

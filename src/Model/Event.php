@@ -30,7 +30,7 @@
 namespace Omisai\CreditOnline\Model;
 
 use \ArrayAccess;
-use \OmisaiCreditOnline\ObjectSerializer;
+use \Omisai\CreditOnline\ObjectSerializer;
 
 /**
  * Event Class Doc Comment

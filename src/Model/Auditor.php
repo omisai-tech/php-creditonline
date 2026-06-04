@@ -30,7 +30,7 @@
 namespace Omisai\CreditOnline\Model;
 
 use \ArrayAccess;
-use \OmisaiCreditOnline\ObjectSerializer;
+use \Omisai\CreditOnline\ObjectSerializer;
 
 /**
  * Auditor Class Doc Comment
@@ -60,7 +60,7 @@ class Auditor implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $openAPITypes = [
         'regnumber' => 'string',
         'name' => 'string',
-        'address' => '\OmisaiCreditOnline\Model\Address',
+        'address' => '\Omisai\CreditOnline\Model\Address',
         'start' => '\DateTime'
     ];
 

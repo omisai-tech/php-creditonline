@@ -30,7 +30,7 @@
 namespace Omisai\CreditOnline\Model;
 
 use \ArrayAccess;
-use \OmisaiCreditOnline\ObjectSerializer;
+use \Omisai\CreditOnline\ObjectSerializer;
 
 /**
  * Company Class Doc Comment
@@ -62,7 +62,7 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
         'taxnumber' => 'string',
         'name' => 'string',
         'long_name' => 'string',
-        'headquarter' => '\OmisaiCreditOnline\Model\Address',
+        'headquarter' => '\Omisai\CreditOnline\Model\Address',
         'status' => 'string',
         'foundation' => '\DateTime',
         'funds' => 'string',
@@ -81,13 +81,13 @@ class Company implements ModelInterface, ArrayAccess, \JsonSerializable
         'phones' => 'string[]',
         'emails' => 'string[]',
         'webpages' => 'string[]',
-        'negative_info' => '\OmisaiCreditOnline\Model\NegativeInfo[]',
-        'positive_info' => '\OmisaiCreditOnline\Model\PositiveInfo[]',
-        'financial_summaries' => '\OmisaiCreditOnline\Model\FinancialSummary[]',
-        'signers' => '\OmisaiCreditOnline\Model\Signer[]',
-        'members' => '\OmisaiCreditOnline\Model\Member[]',
-        'auditors' => '\OmisaiCreditOnline\Model\Auditor[]',
-        'sites' => '\OmisaiCreditOnline\Model\Address[]',
+        'negative_info' => '\Omisai\CreditOnline\Model\NegativeInfo[]',
+        'positive_info' => '\Omisai\CreditOnline\Model\PositiveInfo[]',
+        'financial_summaries' => '\Omisai\CreditOnline\Model\FinancialSummary[]',
+        'signers' => '\Omisai\CreditOnline\Model\Signer[]',
+        'members' => '\Omisai\CreditOnline\Model\Member[]',
+        'auditors' => '\Omisai\CreditOnline\Model\Auditor[]',
+        'sites' => '\Omisai\CreditOnline\Model\Address[]',
         'has_deleted_tax_number' => 'bool',
         'has_active_positive_info' => 'bool',
         'has_active_negative_info' => 'bool',
