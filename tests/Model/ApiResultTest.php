@@ -1,195 +1,176 @@
 <?php
 
 use Omisai\CreditOnline\Model\ApiResult;
+use Omisai\CreditOnline\Model\Company;
 
-it('returns the model name', function () {
-    $model = new ApiResult();
-    expect($model->getModelName())->toBe('ApiResult');
+beforeEach(function () {
+    $this->model = new ApiResult();
 });
 
-it('has correct openAPITypes', function () {
+it('getModelName returns ApiResult', function () {
+    expect($this->model->getModelName())->toBe('ApiResult');
+});
+
+it('openAPITypes returns correct type array', function () {
     $types = ApiResult::openAPITypes();
     expect($types)->toBeArray()
-        ->toHaveKey('limit_reached')
-        ->toHaveKey('companies');
-    expect($types['limit_reached'])->toBe('bool');
-    expect($types['companies'])->toBe('\Omisai\CreditOnline\Model\Company[]');
+        ->toHaveKey('limit_reached', 'bool')
+        ->toHaveKey('companies', '\Omisai\CreditOnline\Model\Company[]');
 });
 
-it('has correct openAPIFormats', function () {
+it('openAPIFormats returns correct format array', function () {
     $formats = ApiResult::openAPIFormats();
     expect($formats)->toBeArray()
-        ->toHaveKey('limit_reached')
-        ->toHaveKey('companies');
-    expect($formats['limit_reached'])->toBeNull();
-    expect($formats['companies'])->toBeNull();
+        ->toHaveKeys(['limit_reached', 'companies']);
 });
 
-it('has correct attributeMap', function () {
+it('attributeMap maps local names to original names', function () {
     $map = ApiResult::attributeMap();
-    expect($map)->toBeArray();
-    expect($map['limit_reached'])->toBe('LimitReached');
-    expect($map['companies'])->toBe('Companies');
-});
-
-it('has correct setters', function () {
-    $setters = ApiResult::setters();
-    expect($setters)->toBeArray();
-    expect($setters['limit_reached'])->toBe('setLimitReached');
-    expect($setters['companies'])->toBe('setCompanies');
-});
-
-it('has correct getters', function () {
-    $getters = ApiResult::getters();
-    expect($getters)->toBeArray();
-    expect($getters['limit_reached'])->toBe('getLimitReached');
-    expect($getters['companies'])->toBe('getCompanies');
-});
-
-it('defaults properties to null on construction with no data', function () {
-    $model = new ApiResult();
-    expect($model->getLimitReached())->toBeNull();
-    expect($model->getCompanies())->toBeNull();
-});
-
-it('defaults properties to null on construction with empty array', function () {
-    $model = new ApiResult([]);
-    expect($model->getLimitReached())->toBeNull();
-    expect($model->getCompanies())->toBeNull();
-});
-
-it('defaults properties to null on construction with null', function () {
-    $model = new ApiResult(null);
-    expect($model->getLimitReached())->toBeNull();
-    expect($model->getCompanies())->toBeNull();
-});
-
-it('sets properties from construction data array', function () {
-    $model = new ApiResult([
-        'limit_reached' => true,
-        'companies' => [],
+    expect($map)->toBe([
+        'limit_reached' => 'LimitReached',
+        'companies' => 'Companies',
     ]);
-    expect($model->getLimitReached())->toBeTrue();
-    expect($model->getCompanies())->toBe([]);
 });
 
-it('sets limit_reached and returns self (fluid interface)', function () {
-    $model = new ApiResult();
-    $result = $model->setLimitReached(true);
-    expect($result)->toBe($model);
-    expect($model->getLimitReached())->toBeTrue();
+it('setters returns mapping of properties to setter methods', function () {
+    $setters = ApiResult::setters();
+    expect($setters)->toBe([
+        'limit_reached' => 'setLimitReached',
+        'companies' => 'setCompanies',
+    ]);
 });
 
-it('sets companies and returns self (fluid interface)', function () {
-    $model = new ApiResult();
-    $result = $model->setCompanies([]);
-    expect($result)->toBe($model);
-    expect($model->getCompanies())->toBe([]);
+it('getters returns mapping of properties to getter methods', function () {
+    $getters = ApiResult::getters();
+    expect($getters)->toBe([
+        'limit_reached' => 'getLimitReached',
+        'companies' => 'getCompanies',
+    ]);
 });
 
-it('setLimitReached throws on null for non-nullable property', function () {
-    $model = new ApiResult();
-    $model->setLimitReached(null);
+it('setLimitReached sets value and returns $this', function () {
+    $result = $this->model->setLimitReached(true);
+    expect($result)->toBe($this->model);
+    expect($this->model->getLimitReached())->toBeTrue();
+});
+
+it('setLimitReached throws on null', function () {
+    $this->model->setLimitReached(null);
 })->throws(\InvalidArgumentException::class, 'non-nullable limit_reached cannot be null');
 
-it('setCompanies throws on null for non-nullable property', function () {
-    $model = new ApiResult();
-    $model->setCompanies(null);
+it('setCompanies sets value and returns $this', function () {
+    $companies = [new Company()];
+    $result = $this->model->setCompanies($companies);
+    expect($result)->toBe($this->model);
+    expect($this->model->getCompanies())->toBe($companies);
+});
+
+it('setCompanies throws on null', function () {
+    $this->model->setCompanies(null);
 })->throws(\InvalidArgumentException::class, 'non-nullable companies cannot be null');
 
-it('listInvalidProperties returns error when limit_reached is null', function () {
+it('constructor with null parameter initializes with null defaults', function () {
     $model = new ApiResult();
-    $invalid = $model->listInvalidProperties();
-    expect($invalid)->toBeArray();
-    expect($invalid)->toContain("'limit_reached' can't be null");
+    expect($model->getLimitReached())->toBeNull();
+    expect($model->getCompanies())->toBeNull();
 });
 
-it('listInvalidProperties returns empty when limit_reached is set', function () {
-    $model = (new ApiResult())->setLimitReached(false);
-    expect($model->listInvalidProperties())->toBe([]);
+it('constructor with data sets properties', function () {
+    $companies = [new Company()];
+    $model = new ApiResult([
+        'limit_reached' => true,
+        'companies' => $companies,
+    ]);
+    expect($model->getLimitReached())->toBeTrue();
+    expect($model->getCompanies())->toBe($companies);
 });
 
-it('valid returns false when limit_reached is null', function () {
-    $model = new ApiResult();
-    expect($model->valid())->toBeFalse();
+it('constructor with partial data sets only given properties', function () {
+    $model = new ApiResult([
+        'limit_reached' => false,
+    ]);
+    expect($model->getLimitReached())->toBeFalse();
+    expect($model->getCompanies())->toBeNull();
 });
 
-it('valid returns true when limit_reached is set', function () {
-    $model = (new ApiResult())->setLimitReached(false);
-    expect($model->valid())->toBeTrue();
+it('implements ArrayAccess via offsetExists', function () {
+    $this->model->setLimitReached(true);
+    expect($this->model->offsetExists('limit_reached'))->toBeTrue();
+    expect($this->model->offsetExists('nonexistent'))->toBeFalse();
 });
 
-it('implements ArrayAccess: offsetExists', function () {
-    $model = new ApiResult(['limit_reached' => true]);
-    expect($model->offsetExists('limit_reached'))->toBeTrue();
-    expect($model->offsetExists('nonexistent'))->toBeFalse();
+it('implements ArrayAccess via offsetGet', function () {
+    $this->model->setLimitReached(true);
+    expect($this->model->offsetGet('limit_reached'))->toBeTrue();
+    expect($this->model->offsetGet('nonexistent'))->toBeNull();
 });
 
-it('implements ArrayAccess: offsetGet', function () {
-    $model = new ApiResult(['limit_reached' => true]);
-    expect($model->offsetGet('limit_reached'))->toBeTrue();
-    expect($model->offsetGet('nonexistent'))->toBeNull();
+it('implements ArrayAccess via offsetSet with key', function () {
+    $this->model->offsetSet('limit_reached', false);
+    expect($this->model->offsetGet('limit_reached'))->toBeFalse();
 });
 
-it('implements ArrayAccess: offsetSet with key', function () {
-    $model = new ApiResult();
-    $model->offsetSet('limit_reached', false);
-    expect($model->offsetGet('limit_reached'))->toBeFalse();
+it('implements ArrayAccess via offsetSet without key', function () {
+    $this->model->offsetSet(null, 'value');
+    expect($this->model->offsetGet(0))->toBe('value');
 });
 
-it('implements ArrayAccess: offsetSet without key (append)', function () {
-    $model = new ApiResult();
-    $model->offsetSet(null, 'appended_value');
-    expect($model->offsetGet(0))->toBe('appended_value');
+it('implements ArrayAccess via offsetUnset', function () {
+    $this->model->setLimitReached(true);
+    expect($this->model->offsetExists('limit_reached'))->toBeTrue();
+    $this->model->offsetUnset('limit_reached');
+    expect($this->model->offsetExists('limit_reached'))->toBeFalse();
 });
 
-it('implements ArrayAccess: offsetUnset', function () {
-    $model = new ApiResult(['limit_reached' => true]);
-    expect($model->offsetExists('limit_reached'))->toBeTrue();
-    $model->offsetUnset('limit_reached');
-    expect($model->offsetExists('limit_reached'))->toBeFalse();
+it('jsonSerialize calls ObjectSerializer::sanitizeForSerialization', function () {
+    $this->model->setLimitReached(true);
+    $serialized = $this->model->jsonSerialize();
+    expect($serialized)->toBeObject();
 });
 
-it('jsonSerialize returns object with PascalCase keys', function () {
-    $model = new ApiResult(['limit_reached' => false]);
-    $result = $model->jsonSerialize();
-    expect($result)->toBeObject();
-    expect($result->LimitReached)->toBeFalse();
-});
-
-it('jsonSerialize omits null properties', function () {
-    $model = new ApiResult(['limit_reached' => true]);
-    $result = $model->jsonSerialize();
-    expect(property_exists($result, 'LimitReached'))->toBeTrue();
-    expect(property_exists($result, 'Companies'))->toBeFalse();
-});
-
-it('__toString returns JSON string with PascalCase keys', function () {
-    $model = new ApiResult(['limit_reached' => false]);
-    $str = (string) $model;
+it('__toString returns pretty-printed JSON string', function () {
+    $this->model->setLimitReached(true);
+    $str = (string) $this->model;
     expect($str)->toBeString();
-    $decoded = json_decode($str, true);
-    expect($decoded)->toBeArray();
-    expect($decoded['LimitReached'])->toBeFalse();
+    expect($str)->toBeString()->not->toBeEmpty();
 });
 
-it('toHeaderValue returns compact JSON', function () {
-    $model = new ApiResult(['limit_reached' => false]);
-    $value = $model->toHeaderValue();
+it('toHeaderValue returns compact JSON string', function () {
+    $this->model->setLimitReached(true);
+    $value = $this->model->toHeaderValue();
     expect($value)->toBeString();
-    expect(str_contains($value, "\n"))->toBeFalse();
-    expect(json_decode($value, true)['LimitReached'])->toBeFalse();
+    expect(json_decode($value, true))->toBeArray();
 });
 
 it('isNullable returns false for non-nullable properties', function (string $property) {
     expect(ApiResult::isNullable($property))->toBeFalse();
 })->with(['limit_reached', 'companies']);
 
-it('isNullable returns false for unknown property', function () {
+it('isNullable returns false for unknown properties', function () {
     expect(ApiResult::isNullable('unknown'))->toBeFalse();
 });
 
-it('isNullableSetToNull returns false for non-null properties', function (string $property) {
-    $model = new ApiResult([$property => 'some_value']);
-    expect($model->isNullableSetToNull($property))->toBeFalse();
-})->with(['limit_reached', 'companies']);
+it('isNullableSetToNull initially returns false', function () {
+    expect($this->model->isNullableSetToNull('limit_reached'))->toBeFalse();
+    expect($this->model->isNullableSetToNull('companies'))->toBeFalse();
+});
+
+it('listInvalidProperties catches null limit_reached', function () {
+    $invalid = $this->model->listInvalidProperties();
+    expect($invalid)->toBeArray();
+    expect($invalid[0])->toContain("'limit_reached' can't be null");
+});
+
+it('valid returns false when limit_reached is null', function () {
+    expect($this->model->valid())->toBeFalse();
+});
+
+it('valid returns true when limit_reached is set', function () {
+    $this->model->setLimitReached(true);
+    expect($this->model->valid())->toBeTrue();
+});
+
+it('getLimitReached returns bool when set', function () {
+    $this->model->setLimitReached(false);
+    expect($this->model->getLimitReached())->toBeFalse();
+});

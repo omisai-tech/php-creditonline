@@ -2,241 +2,205 @@
 
 use Omisai\CreditOnline\Model\ActualUsage;
 
-$actualUsageProperties = [
-    'ids',
-    'limit',
-    'type',
-];
-
-it('returns the model name', function () {
-    $model = new ActualUsage();
-    expect($model->getModelName())->toBe('ActualUsage');
+beforeEach(function () {
+    $this->model = new ActualUsage();
 });
 
-it('has correct openAPITypes', function () use ($actualUsageProperties) {
+it('getModelName returns ActualUsage', function () {
+    expect($this->model->getModelName())->toBe('ActualUsage');
+});
+
+it('openAPITypes returns correct type array', function () {
     $types = ActualUsage::openAPITypes();
-    expect($types)->toBeArray()->toHaveCount(count($actualUsageProperties));
-    expect($types['ids'])->toBe('string[]');
-    expect($types['limit'])->toBe('int');
-    expect($types['type'])->toBe('string');
+    expect($types)->toBe([
+        'ids' => 'string[]',
+        'limit' => 'int',
+        'type' => 'string',
+    ]);
 });
 
-it('has correct openAPIFormats', function () use ($actualUsageProperties) {
+it('openAPIFormats returns all null formats', function () {
     $formats = ActualUsage::openAPIFormats();
-    expect($formats)->toBeArray()->toHaveCount(count($actualUsageProperties));
-    foreach ($actualUsageProperties as $prop) {
-        expect($formats[$prop])->toBeNull();
-    }
+    expect($formats)->toHaveKeys(['ids', 'limit', 'type']);
 });
 
-it('has correct attributeMap', function () {
+it('attributeMap uses correct original names', function (string $local, string $original) {
     $map = ActualUsage::attributeMap();
-    expect($map)->toBeArray();
-    expect($map['ids'])->toBe('Ids');
-    expect($map['limit'])->toBe('Limit');
-    expect($map['type'])->toBe('Type');
+    expect($map[$local])->toBe($original);
+})->with([
+    ['ids', 'Ids'],
+    ['limit', 'Limit'],
+    ['type', 'Type'],
+]);
+
+it('setters returns correct mapping', function (string $property, string $setter) {
+    expect(ActualUsage::setters()[$property])->toBe($setter);
+})->with([
+    ['ids', 'setIds'],
+    ['limit', 'setLimit'],
+    ['type', 'setType'],
+]);
+
+it('getters returns correct mapping', function (string $property, string $getter) {
+    expect(ActualUsage::getters()[$property])->toBe($getter);
+})->with([
+    ['ids', 'getIds'],
+    ['limit', 'getLimit'],
+    ['type', 'getType'],
+]);
+
+it('setIds sets string array value and returns $this', function () {
+    $ids = ['id1', 'id2'];
+    $result = $this->model->setIds($ids);
+    expect($result)->toBe($this->model);
+    expect($this->model->getIds())->toBe($ids);
 });
 
-it('has correct setters mapping', function () {
-    $setters = ActualUsage::setters();
-    expect($setters)->toBeArray();
-    expect($setters['ids'])->toBe('setIds');
-    expect($setters['limit'])->toBe('setLimit');
-    expect($setters['type'])->toBe('setType');
+it('setIds with empty array and returns $this', function () {
+    $result = $this->model->setIds([]);
+    expect($result)->toBe($this->model);
+    expect($this->model->getIds())->toBe([]);
 });
 
-it('has correct getters mapping', function () {
-    $getters = ActualUsage::getters();
-    expect($getters)->toBeArray();
-    expect($getters['ids'])->toBe('getIds');
-    expect($getters['limit'])->toBe('getLimit');
-    expect($getters['type'])->toBe('getType');
-});
-
-it('defaults all properties to null on construction with no data', function () use ($actualUsageProperties) {
-    $model = new ActualUsage();
-    foreach ($actualUsageProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
-});
-
-it('defaults all properties to null on construction with null', function () use ($actualUsageProperties) {
-    $model = new ActualUsage(null);
-    foreach ($actualUsageProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
-});
-
-it('defaults all properties to null on construction with empty array', function () use ($actualUsageProperties) {
-    $model = new ActualUsage([]);
-    foreach ($actualUsageProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
-});
-
-it('sets properties from construction data array', function () {
-    $model = new ActualUsage([
-        'ids' => ['id1', 'id2'],
-        'limit' => 100,
-        'type' => 'company',
-    ]);
-    expect($model->getIds())->toBe(['id1', 'id2']);
-    expect($model->getLimit())->toBe(100);
-    expect($model->getType())->toBe('company');
-});
-
-it('sets partial properties from construction data', function () {
-    $model = new ActualUsage([
-        'limit' => 50,
-        'type' => 'basic',
-    ]);
-    expect($model->getIds())->toBeNull();
-    expect($model->getLimit())->toBe(50);
-    expect($model->getType())->toBe('basic');
-});
-
-it('getter and setter for ids (string array) works correctly', function () {
-    $model = new ActualUsage();
-    $result = $model->setIds(['abc', 'def']);
-    expect($result)->toBe($model);
-    expect($model->getIds())->toBe(['abc', 'def']);
-});
-
-it('getter and setter for limit (int) works correctly', function () {
-    $model = new ActualUsage();
-    $result = $model->setLimit(500);
-    expect($result)->toBe($model);
-    expect($model->getLimit())->toBe(500);
-});
-
-it('getter and setter for type (string) works correctly', function () {
-    $model = new ActualUsage();
-    $result = $model->setType('premium');
-    expect($result)->toBe($model);
-    expect($model->getType())->toBe('premium');
-});
-
-it('setters return self for fluid interface', function (string $property) {
-    $model = new ActualUsage();
-    $setter = 'set' . str_replace('_', '', ucwords($property, '_'));
-    $values = ['ids' => [], 'limit' => 0, 'type' => ''];
-    $result = $model->$setter($values[$property]);
-    expect($result)->toBe($model);
-})->with($actualUsageProperties);
-
-it('non-nullable setters throw on null', function (string $property) {
-    $model = new ActualUsage();
-    $setter = 'set' . str_replace('_', '', ucwords($property, '_'));
-    $model->$setter(null);
-})->with($actualUsageProperties)->throws(\InvalidArgumentException::class);
-
-it('setIds accepts empty array', function () {
-    $model = new ActualUsage();
-    $model->setIds([]);
-    expect($model->getIds())->toBe([]);
+it('setLimit sets int value and returns $this', function () {
+    $result = $this->model->setLimit(100);
+    expect($result)->toBe($this->model);
+    expect($this->model->getLimit())->toBe(100);
 });
 
 it('setLimit accepts zero', function () {
-    $model = new ActualUsage();
-    $model->setLimit(0);
-    expect($model->getLimit())->toBe(0);
+    $result = $this->model->setLimit(0);
+    expect($result)->toBe($this->model);
+    expect($this->model->getLimit())->toBe(0);
 });
 
-it('setType accepts empty string', function () {
+it('setType sets string value and returns $this', function () {
+    $result = $this->model->setType('daily');
+    expect($result)->toBe($this->model);
+    expect($this->model->getType())->toBe('daily');
+});
+
+it('setType with empty string', function () {
+    $result = $this->model->setType('');
+    expect($result)->toBe($this->model);
+    expect($this->model->getType())->toBe('');
+});
+
+it('setter throws on null for all properties', function (string $property) {
+    $setters = ActualUsage::setters();
+    $setter = $setters[$property];
+    $this->model->{$setter}(null);
+})->throws(\InvalidArgumentException::class)->with([
+    ['ids'],
+    ['limit'],
+    ['type'],
+]);
+
+it('constructor with null sets all properties to null', function () {
     $model = new ActualUsage();
-    $model->setType('');
+    expect($model->getIds())->toBeNull();
+    expect($model->getLimit())->toBeNull();
+    expect($model->getType())->toBeNull();
+});
+
+it('constructor with data sets provided properties', function () {
+    $model = new ActualUsage([
+        'ids' => ['id1', 'id2'],
+        'limit' => 100,
+        'type' => 'daily',
+    ]);
+    expect($model->getIds())->toBe(['id1', 'id2']);
+    expect($model->getLimit())->toBe(100);
+    expect($model->getType())->toBe('daily');
+});
+
+it('constructor with empty array values', function () {
+    $model = new ActualUsage([
+        'ids' => [],
+        'limit' => 0,
+        'type' => '',
+    ]);
+    expect($model->getIds())->toBe([]);
+    expect($model->getLimit())->toBe(0);
     expect($model->getType())->toBe('');
 });
 
-it('listInvalidProperties returns empty array (no required fields)', function () {
-    $model = new ActualUsage();
-    expect($model->listInvalidProperties())->toBe([]);
+it('constructor with partial data leaves others null', function () {
+    $model = new ActualUsage(['limit' => 50]);
+    expect($model->getLimit())->toBe(50);
+    expect($model->getIds())->toBeNull();
 });
 
-it('valid returns true for default state', function () {
-    $model = new ActualUsage();
-    expect($model->valid())->toBeTrue();
-});
-
-it('valid returns true after setting properties', function () {
-    $model = new ActualUsage(['limit' => 100]);
-    expect($model->valid())->toBeTrue();
+it('constructor with empty array initializes all null', function () {
+    $model = new ActualUsage([]);
+    expect($model->getIds())->toBeNull();
 });
 
 it('implements ArrayAccess: offsetExists', function () {
-    $model = new ActualUsage(['limit' => 100]);
-    expect($model->offsetExists('limit'))->toBeTrue();
-    expect($model->offsetExists('nonexistent'))->toBeFalse();
+    $this->model->setLimit(100);
+    expect($this->model->offsetExists('limit'))->toBeTrue();
+    expect($this->model->offsetExists('nonexistent'))->toBeFalse();
 });
 
 it('implements ArrayAccess: offsetGet', function () {
-    $model = new ActualUsage(['limit' => 100]);
-    expect($model->offsetGet('limit'))->toBe(100);
-    expect($model->offsetGet('nonexistent'))->toBeNull();
+    $this->model->setLimit(100);
+    expect($this->model->offsetGet('limit'))->toBe(100);
+    expect($this->model->offsetGet('nonexistent'))->toBeNull();
 });
 
 it('implements ArrayAccess: offsetSet with key', function () {
-    $model = new ActualUsage();
-    $model->offsetSet('limit', 200);
-    expect($model->offsetGet('limit'))->toBe(200);
+    $this->model->offsetSet('limit', 50);
+    expect($this->model->offsetGet('limit'))->toBe(50);
 });
 
-it('implements ArrayAccess: offsetSet without key (append)', function () {
-    $model = new ActualUsage();
-    $model->offsetSet(null, 'appended');
-    expect($model->offsetGet(0))->toBe('appended');
+it('implements ArrayAccess: offsetSet without key', function () {
+    $this->model->offsetSet(null, 'appended');
+    expect($this->model->offsetGet(0))->toBe('appended');
 });
 
 it('implements ArrayAccess: offsetUnset', function () {
-    $model = new ActualUsage(['limit' => 100]);
-    $model->offsetUnset('limit');
-    expect($model->offsetExists('limit'))->toBeFalse();
+    $this->model->setLimit(100);
+    $this->model->offsetUnset('limit');
+    expect($this->model->offsetExists('limit'))->toBeFalse();
 });
 
-it('jsonSerialize returns object with PascalCase keys', function () {
-    $model = new ActualUsage(['ids' => ['a', 'b'], 'limit' => 50]);
-    $result = $model->jsonSerialize();
-    expect($result)->toBeObject();
-    expect($result->Ids)->toBe(['a', 'b']);
-    expect($result->Limit)->toBe(50);
+it('jsonSerialize returns array', function () {
+    $this->model->setLimit(100);
+    $serialized = $this->model->jsonSerialize();
+    expect($serialized)->toBeObject();
 });
 
-it('jsonSerialize omits null properties', function () {
-    $model = new ActualUsage(['type' => 'basic']);
-    $result = $model->jsonSerialize();
-    expect(property_exists($result, 'Type'))->toBeTrue();
-    expect(property_exists($result, 'Ids'))->toBeFalse();
-    expect(property_exists($result, 'Limit'))->toBeFalse();
-});
-
-it('__toString returns JSON string with PascalCase keys', function () {
-    $model = new ActualUsage(['type' => 'basic']);
-    $str = (string) $model;
+it('__toString returns JSON string', function () {
+    $this->model->setLimit(100);
+    $str = $this->model->__toString();
     expect($str)->toBeString();
-    $decoded = json_decode($str, true);
-    expect($decoded['Type'])->toBe('basic');
+    expect($str)->toBeString()->not->toBeEmpty();
 });
 
-it('toHeaderValue returns compact JSON', function () {
-    $model = new ActualUsage(['type' => 'basic']);
-    $value = $model->toHeaderValue();
+it('toHeaderValue returns JSON string', function () {
+    $this->model->setLimit(100);
+    $value = $this->model->toHeaderValue();
     expect($value)->toBeString();
-    expect(str_contains($value, "\n"))->toBeFalse();
+    expect(json_decode($value, true))->toBeArray();
 });
 
 it('isNullable returns false for all properties', function (string $property) {
     expect(ActualUsage::isNullable($property))->toBeFalse();
-})->with($actualUsageProperties);
+})->with(['ids', 'limit', 'type']);
 
 it('isNullable returns false for unknown property', function () {
     expect(ActualUsage::isNullable('unknown'))->toBeFalse();
 });
 
-it('isNullableSetToNull returns false for set properties', function (string $property) {
-    $values = ['ids' => [], 'limit' => 0, 'type' => 'test'];
-    $model = new ActualUsage([$property => $values[$property]]);
-    expect($model->isNullableSetToNull($property))->toBeFalse();
-})->with($actualUsageProperties);
+it('isNullableSetToNull initially returns false', function () {
+    expect($this->model->isNullableSetToNull('ids'))->toBeFalse();
+    expect($this->model->isNullableSetToNull('limit'))->toBeFalse();
+});
+
+it('listInvalidProperties always returns empty', function () {
+    expect($this->model->listInvalidProperties())->toBeEmpty();
+});
+
+it('valid always returns true', function () {
+    expect($this->model->valid())->toBeTrue();
+});

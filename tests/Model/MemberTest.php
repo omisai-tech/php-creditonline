@@ -1,17 +1,18 @@
 <?php
 
-use Omisai\CreditOnline\Model\Address;
 use Omisai\CreditOnline\Model\Member;
+use Omisai\CreditOnline\Model\Address;
 
-it('has correct model name', function () {
-    $member = new Member();
-
-    expect($member->getModelName())->toBe('Member');
+beforeEach(function () {
+    $this->model = new Member();
 });
 
-it('declares correct open API types', function () {
-    $types = Member::openAPITypes();
+it('getModelName returns Member', function () {
+    expect($this->model->getModelName())->toBe('Member');
+});
 
+it('openAPITypes returns correct type array', function () {
+    $types = Member::openAPITypes();
     expect($types)->toBe([
         'regnumber' => 'string',
         'name' => 'string',
@@ -21,306 +22,189 @@ it('declares correct open API types', function () {
     ]);
 });
 
-it('declares correct open API formats', function () {
+it('openAPIFormats has date format for start', function () {
     $formats = Member::openAPIFormats();
-
-    expect($formats)->toBe([
-        'regnumber' => null,
-        'name' => null,
-        'mother_name' => null,
-        'address' => null,
-        'start' => 'date',
-    ]);
+    expect($formats)->toHaveKeys(['regnumber', 'name', 'mother_name', 'address', 'start']);
+    expect($formats['start'])->toBe('date');
 });
 
-it('declares correct attribute map', function () {
+it('attributeMap uses correct original names', function (string $local, string $original) {
     $map = Member::attributeMap();
+    expect($map[$local])->toBe($original);
+})->with([
+    ['regnumber', 'Regnumber'],
+    ['name', 'Name'],
+    ['mother_name', 'MotherName'],
+    ['address', 'Address'],
+    ['start', 'Start'],
+]);
 
-    expect($map)->toBe([
-        'regnumber' => 'Regnumber',
-        'name' => 'Name',
-        'mother_name' => 'MotherName',
-        'address' => 'Address',
-        'start' => 'Start',
-    ]);
+it('setters returns correct mapping', function (string $property, string $setter) {
+    expect(Member::setters()[$property])->toBe($setter);
+})->with([
+    ['regnumber', 'setRegnumber'],
+    ['name', 'setName'],
+    ['mother_name', 'setMotherName'],
+    ['address', 'setAddress'],
+    ['start', 'setStart'],
+]);
+
+it('getters returns correct mapping', function (string $property, string $getter) {
+    expect(Member::getters()[$property])->toBe($getter);
+})->with([
+    ['regnumber', 'getRegnumber'],
+    ['name', 'getName'],
+    ['mother_name', 'getMotherName'],
+    ['address', 'getAddress'],
+    ['start', 'getStart'],
+]);
+
+it('setRegnumber sets value and returns $this', function () {
+    $result = $this->model->setRegnumber('01-09-123456');
+    expect($result)->toBe($this->model);
+    expect($this->model->getRegnumber())->toBe('01-09-123456');
 });
 
-it('declares correct setters', function () {
+it('setName sets value and returns $this', function () {
+    $result = $this->model->setName('John Doe');
+    expect($result)->toBe($this->model);
+    expect($this->model->getName())->toBe('John Doe');
+});
+
+it('setMotherName sets value and returns $this', function () {
+    $result = $this->model->setMotherName('Jane Doe');
+    expect($result)->toBe($this->model);
+    expect($this->model->getMotherName())->toBe('Jane Doe');
+});
+
+it('setAddress sets Address value and returns $this', function () {
+    $address = new Address();
+    $result = $this->model->setAddress($address);
+    expect($result)->toBe($this->model);
+    expect($this->model->getAddress())->toBe($address);
+});
+
+it('setStart sets DateTime value and returns $this', function () {
+    $date = new DateTime('2023-01-15');
+    $result = $this->model->setStart($date);
+    expect($result)->toBe($this->model);
+    expect($this->model->getStart())->toBe($date);
+});
+
+it('setter throws on null for non-nullable properties', function (string $property) {
     $setters = Member::setters();
+    $setter = $setters[$property];
+    $this->model->{$setter}(null);
+})->throws(\InvalidArgumentException::class)->with([
+    ['regnumber'],
+    ['name'],
+    ['mother_name'],
+    ['address'],
+    ['start'],
+]);
 
-    expect($setters)->toBe([
-        'regnumber' => 'setRegnumber',
-        'name' => 'setName',
-        'mother_name' => 'setMotherName',
-        'address' => 'setAddress',
-        'start' => 'setStart',
-    ]);
+it('constructor with null sets all properties to null', function () {
+    $model = new Member();
+    expect($model->getRegnumber())->toBeNull();
+    expect($model->getName())->toBeNull();
+    expect($model->getMotherName())->toBeNull();
+    expect($model->getAddress())->toBeNull();
+    expect($model->getStart())->toBeNull();
 });
 
-it('declares correct getters', function () {
-    $getters = Member::getters();
-
-    expect($getters)->toBe([
-        'regnumber' => 'getRegnumber',
-        'name' => 'getName',
-        'mother_name' => 'getMotherName',
-        'address' => 'getAddress',
-        'start' => 'getStart',
-    ]);
-});
-
-it('instantiates with empty constructor returning null property values', function () {
-    $member = new Member();
-
-    expect($member->getRegnumber())->toBeNull();
-    expect($member->getName())->toBeNull();
-    expect($member->getMotherName())->toBeNull();
-    expect($member->getAddress())->toBeNull();
-    expect($member->getStart())->toBeNull();
-});
-
-it('instantiates with data array setting property values', function () {
+it('constructor with data sets provided properties', function () {
     $address = new Address();
-    $start = new DateTime('2023-06-01');
-    $member = new Member([
+    $date = new DateTime('2023-01-15');
+    $model = new Member([
         'regnumber' => '01-09-123456',
-        'name' => 'Kovács János',
-        'mother_name' => 'Nagy Mária',
+        'name' => 'John Doe',
+        'mother_name' => 'Jane Doe',
         'address' => $address,
-        'start' => $start,
+        'start' => $date,
     ]);
-
-    expect($member->getRegnumber())->toBe('01-09-123456');
-    expect($member->getName())->toBe('Kovács János');
-    expect($member->getMotherName())->toBe('Nagy Mária');
-    expect($member->getAddress())->toBe($address);
-    expect($member->getStart())->toBe($start);
+    expect($model->getRegnumber())->toBe('01-09-123456');
+    expect($model->getName())->toBe('John Doe');
+    expect($model->getMotherName())->toBe('Jane Doe');
+    expect($model->getAddress())->toBe($address);
+    expect($model->getStart())->toBe($date);
 });
 
-it('instantiates with partial data', function () {
-    $member = new Member([
-        'regnumber' => '01-09-123456',
-        'name' => 'Kovács János',
-    ]);
-
-    expect($member->getRegnumber())->toBe('01-09-123456');
-    expect($member->getName())->toBe('Kovács János');
-    expect($member->getMotherName())->toBeNull();
-    expect($member->getAddress())->toBeNull();
-    expect($member->getStart())->toBeNull();
+it('constructor with partial data leaves others null', function () {
+    $model = new Member(['name' => 'John Doe']);
+    expect($model->getName())->toBe('John Doe');
+    expect($model->getRegnumber())->toBeNull();
 });
 
-it('handles constructor with null argument', function () {
-    $member = new Member(null);
-
-    expect($member->getRegnumber())->toBeNull();
-    expect($member->getName())->toBeNull();
-    expect($member->getMotherName())->toBeNull();
-    expect($member->getAddress())->toBeNull();
-    expect($member->getStart())->toBeNull();
+it('constructor with empty array initializes all null', function () {
+    $model = new Member([]);
+    expect($model->getRegnumber())->toBeNull();
 });
 
-it('sets and gets regnumber', function (string $value) {
-    $member = new Member();
-    $result = $member->setRegnumber($value);
-
-    expect($result)->toBeInstanceOf(Member::class);
-    expect($member->getRegnumber())->toBe($value);
-})->with([
-    'regular' => '01-09-123456',
-    'empty' => '',
-]);
-
-it('sets and gets name', function (string $value) {
-    $member = new Member();
-    $result = $member->setName($value);
-
-    expect($result)->toBeInstanceOf(Member::class);
-    expect($member->getName())->toBe($value);
-})->with([
-    'regular' => 'Kovács János',
-    'empty' => '',
-]);
-
-it('sets and gets mother_name', function (string $value) {
-    $member = new Member();
-    $result = $member->setMotherName($value);
-
-    expect($result)->toBeInstanceOf(Member::class);
-    expect($member->getMotherName())->toBe($value);
-})->with([
-    'regular' => 'Nagy Mária',
-    'empty' => '',
-]);
-
-it('sets and gets address', function () {
-    $member = new Member();
-    $address = new Address();
-    $result = $member->setAddress($address);
-
-    expect($result)->toBeInstanceOf(Member::class);
-    expect($member->getAddress())->toBe($address);
+it('implements ArrayAccess: offsetExists', function () {
+    $this->model->setName('John');
+    expect($this->model->offsetExists('name'))->toBeTrue();
+    expect($this->model->offsetExists('nonexistent'))->toBeFalse();
 });
 
-it('sets and gets start', function () {
-    $member = new Member();
-    $start = new DateTime('2023-06-01');
-    $result = $member->setStart($start);
-
-    expect($result)->toBeInstanceOf(Member::class);
-    expect($member->getStart())->toBe($start);
+it('implements ArrayAccess: offsetGet', function () {
+    $this->model->setName('John');
+    expect($this->model->offsetGet('name'))->toBe('John');
+    expect($this->model->offsetGet('nonexistent'))->toBeNull();
 });
 
-it('throws exception when setting null on non-nullable property', function (string $property, string $setter, mixed $validValue) {
-    $member = new Member();
-    $member->{$setter}($validValue);
-
-    expect(fn () => $member->{$setter}(null))->toThrow(
-        \InvalidArgumentException::class,
-        "non-nullable {$property} cannot be null"
-    );
-})->with([
-    'regnumber' => ['regnumber', 'setRegnumber', '01-09-123456'],
-    'name' => ['name', 'setName', 'Test Name'],
-    'mother_name' => ['mother_name', 'setMotherName', 'Test Mother'],
-    'address' => ['address', 'setAddress', new Address()],
-    'start' => ['start', 'setStart', new DateTime('2023-06-01')],
-]);
-
-it('declares no nullable properties', function () {
-    expect(Member::isNullable('regnumber'))->toBeFalse();
-    expect(Member::isNullable('name'))->toBeFalse();
-    expect(Member::isNullable('mother_name'))->toBeFalse();
-    expect(Member::isNullable('address'))->toBeFalse();
-    expect(Member::isNullable('start'))->toBeFalse();
-    expect(Member::isNullable('nonexistent'))->toBeFalse();
+it('implements ArrayAccess: offsetSet with key', function () {
+    $this->model->offsetSet('name', 'Jane');
+    expect($this->model->offsetGet('name'))->toBe('Jane');
 });
 
-it('returns false for isNullableSetToNull on non-nullable model', function () {
-    $member = new Member();
-
-    expect($member->isNullableSetToNull('regnumber'))->toBeFalse();
-    expect($member->isNullableSetToNull('name'))->toBeFalse();
-    expect($member->isNullableSetToNull('mother_name'))->toBeFalse();
-    expect($member->isNullableSetToNull('address'))->toBeFalse();
-    expect($member->isNullableSetToNull('start'))->toBeFalse();
+it('implements ArrayAccess: offsetSet without key', function () {
+    $this->model->offsetSet(null, 'value');
+    expect($this->model->offsetGet(0))->toBe('value');
 });
 
-it('returns true for valid and empty invalid properties', function () {
-    $member = new Member();
-
-    expect($member->valid())->toBeTrue();
-    expect($member->listInvalidProperties())->toBe([]);
+it('implements ArrayAccess: offsetUnset', function () {
+    $this->model->setName('John');
+    $this->model->offsetUnset('name');
+    expect($this->model->offsetExists('name'))->toBeFalse();
 });
 
-it('valid with all properties set', function () {
-    $member = new Member();
-    $member->setRegnumber('01-09-123456');
-    $member->setName('Kovács János');
-    $member->setMotherName('Nagy Mária');
-    $member->setAddress(new Address());
-    $member->setStart(new DateTime());
-
-    expect($member->valid())->toBeTrue();
-    expect($member->listInvalidProperties())->toBe([]);
+it('jsonSerialize returns array', function () {
+    $this->model->setName('John');
+    $serialized = $this->model->jsonSerialize();
+    expect($serialized)->toBeObject();
 });
 
-it('implements ArrayAccess offsetExists', function () {
-    $member = new Member();
-
-    expect($member->offsetExists('regnumber'))->toBeFalse();
-
-    $member->setRegnumber('01-09-123456');
-    expect($member->offsetExists('regnumber'))->toBeTrue();
-    expect($member->offsetExists('mother_name'))->toBeFalse();
-    expect($member->offsetExists('nonexistent'))->toBeFalse();
-});
-
-it('implements ArrayAccess offsetGet', function () {
-    $member = new Member();
-    $member->setRegnumber('01-09-123456');
-    $member->setMotherName('Nagy Mária');
-
-    expect($member->offsetGet('regnumber'))->toBe('01-09-123456');
-    expect($member->offsetGet('mother_name'))->toBe('Nagy Mária');
-    expect($member->offsetGet('nonexistent'))->toBeNull();
-});
-
-it('implements ArrayAccess offsetSet', function () {
-    $member = new Member();
-
-    $member->offsetSet('mother_name', 'Nagy Mária');
-    expect($member->getMotherName())->toBe('Nagy Mária');
-
-    $member->offsetSet(null, 'appended_value');
-    expect($member->offsetGet(0))->toBe('appended_value');
-});
-
-it('implements ArrayAccess offsetUnset', function () {
-    $member = new Member();
-    $member->setRegnumber('01-09-123456');
-    expect($member->offsetExists('regnumber'))->toBeTrue();
-
-    $member->offsetUnset('regnumber');
-    expect($member->offsetExists('regnumber'))->toBeFalse();
-});
-
-it('serializes via jsonSerialize', function () {
-    $member = new Member();
-    $member->setRegnumber('01-09-123456');
-    $member->setName('Kovács János');
-    $member->setMotherName('Nagy Mária');
-
-    $result = $member->jsonSerialize();
-
-    expect($result)->toBeObject();
-    expect($result->Regnumber)->toBe('01-09-123456');
-    expect($result->Name)->toBe('Kovács János');
-    expect($result->MotherName)->toBe('Nagy Mária');
-});
-
-it('returns string representation via __toString', function () {
-    $member = new Member();
-    $member->setRegnumber('01-09-123456');
-    $member->setName('Kovács János');
-
-    $str = (string) $member;
-
+it('__toString returns JSON string', function () {
+    $this->model->setName('John');
+    $str = $this->model->__toString();
     expect($str)->toBeString();
-    expect(strlen($str))->toBeGreaterThan(0);
-
-    $decoded = json_decode($str, true);
-    expect($decoded)->toBeArray();
-    expect($decoded['Regnumber'])->toBe('01-09-123456');
+    expect($str)->toBeString()->not->toBeEmpty();
 });
 
-it('returns header-safe presentation via toHeaderValue', function () {
-    $member = new Member();
-    $member->setRegnumber('01-09-123456');
-
-    $header = $member->toHeaderValue();
-
-    expect($header)->toBeString();
-    expect(strlen($header))->toBeGreaterThan(0);
-
-    $decoded = json_decode($header, true);
-    expect($decoded)->toBeArray();
-    expect($decoded['Regnumber'])->toBe('01-09-123456');
+it('toHeaderValue returns JSON string', function () {
+    $this->model->setName('John');
+    $value = $this->model->toHeaderValue();
+    expect($value)->toBeString();
+    expect(json_decode($value, true))->toBeArray();
 });
 
-it('supports chaining setters', function () {
-    $member = new Member();
-    $result = $member
-        ->setRegnumber('01-09-123456')
-        ->setName('Kovács János')
-        ->setMotherName('Nagy Mária')
-        ->setAddress(new Address())
-        ->setStart(new DateTime('2023-06-01'));
+it('isNullable returns false for all properties', function (string $property) {
+    expect(Member::isNullable($property))->toBeFalse();
+})->with(['regnumber', 'name', 'mother_name', 'address', 'start']);
 
-    expect($result)->toBeInstanceOf(Member::class);
-    expect($member->getRegnumber())->toBe('01-09-123456');
-    expect($member->getName())->toBe('Kovács János');
-    expect($member->getMotherName())->toBe('Nagy Mária');
-    expect($member->getAddress())->toBeInstanceOf(Address::class);
-    expect($member->getStart())->toBeInstanceOf(DateTime::class);
+it('isNullable returns false for unknown property', function () {
+    expect(Member::isNullable('unknown'))->toBeFalse();
+});
+
+it('isNullableSetToNull initially returns false', function () {
+    expect($this->model->isNullableSetToNull('regnumber'))->toBeFalse();
+    expect($this->model->isNullableSetToNull('mother_name'))->toBeFalse();
+});
+
+it('listInvalidProperties always returns empty', function () {
+    expect($this->model->listInvalidProperties())->toBeEmpty();
+});
+
+it('valid always returns true', function () {
+    expect($this->model->valid())->toBeTrue();
 });

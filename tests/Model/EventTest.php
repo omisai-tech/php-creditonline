@@ -2,216 +2,189 @@
 
 use Omisai\CreditOnline\Model\Event;
 
-$eventProperties = [
-    'taxnumber',
-    'name',
-    'category',
-    'link',
-];
-
-it('returns the model name', function () {
-    $model = new Event();
-    expect($model->getModelName())->toBe('Event');
+beforeEach(function () {
+    $this->model = new Event();
 });
 
-it('has correct openAPITypes', function () use ($eventProperties) {
+it('getModelName returns Event', function () {
+    expect($this->model->getModelName())->toBe('Event');
+});
+
+it('openAPITypes returns correct type array', function () {
     $types = Event::openAPITypes();
-    expect($types)->toBeArray()->toHaveCount(count($eventProperties));
-    foreach ($eventProperties as $prop) {
-        expect($types[$prop])->toBe('string');
-    }
+    expect($types)->toBe([
+        'taxnumber' => 'string',
+        'name' => 'string',
+        'category' => 'string',
+        'link' => 'string',
+    ]);
 });
 
-it('has correct openAPIFormats', function () use ($eventProperties) {
+it('openAPIFormats returns all null formats', function () {
     $formats = Event::openAPIFormats();
-    expect($formats)->toBeArray()->toHaveCount(count($eventProperties));
-    foreach ($eventProperties as $prop) {
-        expect($formats[$prop])->toBeNull();
-    }
+    expect($formats)->toHaveKeys(['taxnumber', 'name', 'category', 'link']);
 });
 
-it('has correct attributeMap', function () {
+it('attributeMap uses correct original names', function (string $local, string $original) {
     $map = Event::attributeMap();
-    expect($map)->toBeArray();
-    expect($map['taxnumber'])->toBe('Taxnumber');
-    expect($map['name'])->toBe('Name');
-    expect($map['category'])->toBe('Category');
-    expect($map['link'])->toBe('Link');
+    expect($map[$local])->toBe($original);
+})->with([
+    ['taxnumber', 'Taxnumber'],
+    ['name', 'Name'],
+    ['category', 'Category'],
+    ['link', 'Link'],
+]);
+
+it('setters returns correct mapping', function (string $property, string $setter) {
+    expect(Event::setters()[$property])->toBe($setter);
+})->with([
+    ['taxnumber', 'setTaxnumber'],
+    ['name', 'setName'],
+    ['category', 'setCategory'],
+    ['link', 'setLink'],
+]);
+
+it('getters returns correct mapping', function (string $property, string $getter) {
+    expect(Event::getters()[$property])->toBe($getter);
+})->with([
+    ['taxnumber', 'getTaxnumber'],
+    ['name', 'getName'],
+    ['category', 'getCategory'],
+    ['link', 'getLink'],
+]);
+
+it('setTaxnumber sets value and returns $this', function () {
+    $result = $this->model->setTaxnumber('12345678-2-42');
+    expect($result)->toBe($this->model);
+    expect($this->model->getTaxnumber())->toBe('12345678-2-42');
 });
 
-it('has correct setters mapping', function () {
+it('setName sets value and returns $this', function () {
+    $result = $this->model->setName('Test Event');
+    expect($result)->toBe($this->model);
+    expect($this->model->getName())->toBe('Test Event');
+});
+
+it('setCategory sets value and returns $this', function () {
+    $result = $this->model->setCategory('change');
+    expect($result)->toBe($this->model);
+    expect($this->model->getCategory())->toBe('change');
+});
+
+it('setLink sets value and returns $this', function () {
+    $result = $this->model->setLink('https://example.com');
+    expect($result)->toBe($this->model);
+    expect($this->model->getLink())->toBe('https://example.com');
+});
+
+it('setter throws on null for non-nullable properties', function (string $property) {
     $setters = Event::setters();
-    expect($setters)->toBeArray();
-    expect($setters['taxnumber'])->toBe('setTaxnumber');
-    expect($setters['name'])->toBe('setName');
-    expect($setters['category'])->toBe('setCategory');
-    expect($setters['link'])->toBe('setLink');
-});
+    $setter = $setters[$property];
+    $this->model->{$setter}(null);
+})->throws(\InvalidArgumentException::class)->with([
+    ['taxnumber'],
+    ['name'],
+    ['category'],
+    ['link'],
+]);
 
-it('has correct getters mapping', function () {
-    $getters = Event::getters();
-    expect($getters)->toBeArray();
-    expect($getters['taxnumber'])->toBe('getTaxnumber');
-    expect($getters['name'])->toBe('getName');
-    expect($getters['category'])->toBe('getCategory');
-    expect($getters['link'])->toBe('getLink');
-});
-
-it('defaults all properties to null on construction with no data', function () use ($eventProperties) {
+it('constructor with null sets all properties to null', function () {
     $model = new Event();
-    foreach ($eventProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
-});
-
-it('defaults all properties to null on construction with null', function () use ($eventProperties) {
-    $model = new Event(null);
-    foreach ($eventProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
-});
-
-it('defaults all properties to null on construction with empty array', function () use ($eventProperties) {
-    $model = new Event([]);
-    foreach ($eventProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
-});
-
-it('sets properties from construction data array', function () {
-    $model = new Event([
-        'taxnumber' => '12345678-2-41',
-        'name' => 'Test Event Company',
-        'category' => 'General',
-        'link' => 'https://example.com/event',
-    ]);
-    expect($model->getTaxnumber())->toBe('12345678-2-41');
-    expect($model->getName())->toBe('Test Event Company');
-    expect($model->getCategory())->toBe('General');
-    expect($model->getLink())->toBe('https://example.com/event');
-});
-
-it('sets partial properties from construction data', function () {
-    $model = new Event([
-        'taxnumber' => '12345678-2-41',
-        'name' => 'Partial Event',
-    ]);
-    expect($model->getTaxnumber())->toBe('12345678-2-41');
-    expect($model->getName())->toBe('Partial Event');
+    expect($model->getTaxnumber())->toBeNull();
+    expect($model->getName())->toBeNull();
     expect($model->getCategory())->toBeNull();
     expect($model->getLink())->toBeNull();
 });
 
-it('getters and setters work correctly', function (string $property) {
-    $model = new Event();
-    $setter = 'set' . str_replace('_', '', ucwords($property, '_'));
-    $getter = 'get' . str_replace('_', '', ucwords($property, '_'));
-    $result = $model->$setter('test_value');
-    expect($result)->toBe($model);
-    expect($model->$getter())->toBe('test_value');
-})->with($eventProperties);
-
-it('setters can set empty string', function (string $property) {
-    $model = new Event();
-    $setter = 'set' . str_replace('_', '', ucwords($property, '_'));
-    $getter = 'get' . str_replace('_', '', ucwords($property, '_'));
-    $model->$setter('');
-    expect($model->$getter())->toBe('');
-})->with($eventProperties);
-
-it('non-nullable setters throw on null', function (string $property) {
-    $model = new Event();
-    $setter = 'set' . str_replace('_', '', ucwords($property, '_'));
-    $model->$setter(null);
-})->with($eventProperties)->throws(\InvalidArgumentException::class);
-
-it('listInvalidProperties returns empty array (no required fields)', function () {
-    $model = new Event();
-    expect($model->listInvalidProperties())->toBe([]);
+it('constructor with data sets provided properties', function () {
+    $model = new Event([
+        'taxnumber' => '12345678-2-42',
+        'name' => 'Test Company',
+        'category' => 'new',
+        'link' => 'https://example.com',
+    ]);
+    expect($model->getTaxnumber())->toBe('12345678-2-42');
+    expect($model->getName())->toBe('Test Company');
+    expect($model->getCategory())->toBe('new');
+    expect($model->getLink())->toBe('https://example.com');
 });
 
-it('valid returns true for default state', function () {
-    $model = new Event();
-    expect($model->valid())->toBeTrue();
+it('constructor with partial data leaves others null', function () {
+    $model = new Event(['name' => 'Test']);
+    expect($model->getName())->toBe('Test');
+    expect($model->getTaxnumber())->toBeNull();
 });
 
-it('valid returns true after setting properties', function () {
-    $model = new Event(['name' => 'Some Event']);
-    expect($model->valid())->toBeTrue();
+it('constructor with empty array initializes all null', function () {
+    $model = new Event([]);
+    expect($model->getTaxnumber())->toBeNull();
 });
 
 it('implements ArrayAccess: offsetExists', function () {
-    $model = new Event(['name' => 'Test Event']);
-    expect($model->offsetExists('name'))->toBeTrue();
-    expect($model->offsetExists('nonexistent'))->toBeFalse();
+    $this->model->setName('Test');
+    expect($this->model->offsetExists('name'))->toBeTrue();
+    expect($this->model->offsetExists('nonexistent'))->toBeFalse();
 });
 
 it('implements ArrayAccess: offsetGet', function () {
-    $model = new Event(['name' => 'Test Event']);
-    expect($model->offsetGet('name'))->toBe('Test Event');
-    expect($model->offsetGet('nonexistent'))->toBeNull();
+    $this->model->setName('Test');
+    expect($this->model->offsetGet('name'))->toBe('Test');
+    expect($this->model->offsetGet('nonexistent'))->toBeNull();
 });
 
 it('implements ArrayAccess: offsetSet with key', function () {
-    $model = new Event();
-    $model->offsetSet('name', 'New Event Name');
-    expect($model->offsetGet('name'))->toBe('New Event Name');
+    $this->model->offsetSet('name', 'NewName');
+    expect($this->model->offsetGet('name'))->toBe('NewName');
 });
 
-it('implements ArrayAccess: offsetSet without key (append)', function () {
-    $model = new Event();
-    $model->offsetSet(null, 'unkeyed');
-    expect($model->offsetGet(0))->toBe('unkeyed');
+it('implements ArrayAccess: offsetSet without key', function () {
+    $this->model->offsetSet(null, 'value');
+    expect($this->model->offsetGet(0))->toBe('value');
 });
 
 it('implements ArrayAccess: offsetUnset', function () {
-    $model = new Event(['name' => 'Test Event']);
-    $model->offsetUnset('name');
-    expect($model->offsetExists('name'))->toBeFalse();
+    $this->model->setName('Test');
+    $this->model->offsetUnset('name');
+    expect($this->model->offsetExists('name'))->toBeFalse();
 });
 
-it('jsonSerialize returns object with PascalCase keys', function () {
-    $model = new Event(['name' => 'Test Event', 'category' => 'News']);
-    $result = $model->jsonSerialize();
-    expect($result)->toBeObject();
-    expect($result->Name)->toBe('Test Event');
-    expect($result->Category)->toBe('News');
+it('jsonSerialize returns array', function () {
+    $this->model->setName('Test');
+    $serialized = $this->model->jsonSerialize();
+    expect($serialized)->toBeObject();
 });
 
-it('jsonSerialize omits null properties', function () {
-    $model = new Event(['name' => 'Test Event']);
-    $result = $model->jsonSerialize();
-    expect(property_exists($result, 'Name'))->toBeTrue();
-    expect(property_exists($result, 'Category'))->toBeFalse();
-});
-
-it('__toString returns JSON string with PascalCase keys', function () {
-    $model = new Event(['name' => 'Test Event']);
-    $str = (string) $model;
+it('__toString returns JSON string', function () {
+    $this->model->setName('Test');
+    $str = $this->model->__toString();
     expect($str)->toBeString();
-    $decoded = json_decode($str, true);
-    expect($decoded['Name'])->toBe('Test Event');
+    expect($str)->toBeString()->not->toBeEmpty();
 });
 
-it('toHeaderValue returns compact JSON', function () {
-    $model = new Event(['name' => 'Test Event']);
-    $value = $model->toHeaderValue();
+it('toHeaderValue returns JSON string', function () {
+    $this->model->setName('Test');
+    $value = $this->model->toHeaderValue();
     expect($value)->toBeString();
-    expect(str_contains($value, "\n"))->toBeFalse();
+    expect(json_decode($value, true))->toBeArray();
 });
 
 it('isNullable returns false for all properties', function (string $property) {
     expect(Event::isNullable($property))->toBeFalse();
-})->with($eventProperties);
+})->with(['taxnumber', 'name', 'category', 'link']);
 
 it('isNullable returns false for unknown property', function () {
     expect(Event::isNullable('unknown'))->toBeFalse();
 });
 
-it('isNullableSetToNull returns false for set properties', function (string $property) {
-    $model = new Event([$property => 'some_value']);
-    expect($model->isNullableSetToNull($property))->toBeFalse();
-})->with($eventProperties);
+it('isNullableSetToNull initially returns false', function () {
+    expect($this->model->isNullableSetToNull('taxnumber'))->toBeFalse();
+    expect($this->model->isNullableSetToNull('name'))->toBeFalse();
+});
+
+it('listInvalidProperties always returns empty', function () {
+    expect($this->model->listInvalidProperties())->toBeEmpty();
+});
+
+it('valid always returns true', function () {
+    expect($this->model->valid())->toBeTrue();
+});

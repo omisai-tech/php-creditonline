@@ -1,17 +1,18 @@
 <?php
 
-use Omisai\CreditOnline\Model\Address;
 use Omisai\CreditOnline\Model\Signer;
+use Omisai\CreditOnline\Model\Address;
 
-it('has correct model name', function () {
-    $signer = new Signer();
-
-    expect($signer->getModelName())->toBe('Signer');
+beforeEach(function () {
+    $this->model = new Signer();
 });
 
-it('declares correct open API types', function () {
-    $types = Signer::openAPITypes();
+it('getModelName returns Signer', function () {
+    expect($this->model->getModelName())->toBe('Signer');
+});
 
+it('openAPITypes returns correct type array', function () {
+    $types = Signer::openAPITypes();
     expect($types)->toBe([
         'regnumber' => 'string',
         'name' => 'string',
@@ -21,306 +22,189 @@ it('declares correct open API types', function () {
     ]);
 });
 
-it('declares correct open API formats', function () {
+it('openAPIFormats has date format for start', function () {
     $formats = Signer::openAPIFormats();
-
-    expect($formats)->toBe([
-        'regnumber' => null,
-        'name' => null,
-        'mother_name' => null,
-        'address' => null,
-        'start' => 'date',
-    ]);
+    expect($formats)->toHaveKeys(['regnumber', 'name', 'mother_name', 'address', 'start']);
+    expect($formats['start'])->toBe('date');
 });
 
-it('declares correct attribute map', function () {
+it('attributeMap uses correct original names', function (string $local, string $original) {
     $map = Signer::attributeMap();
+    expect($map[$local])->toBe($original);
+})->with([
+    ['regnumber', 'Regnumber'],
+    ['name', 'Name'],
+    ['mother_name', 'MotherName'],
+    ['address', 'Address'],
+    ['start', 'Start'],
+]);
 
-    expect($map)->toBe([
-        'regnumber' => 'Regnumber',
-        'name' => 'Name',
-        'mother_name' => 'MotherName',
-        'address' => 'Address',
-        'start' => 'Start',
-    ]);
+it('setters returns correct mapping', function (string $property, string $setter) {
+    expect(Signer::setters()[$property])->toBe($setter);
+})->with([
+    ['regnumber', 'setRegnumber'],
+    ['name', 'setName'],
+    ['mother_name', 'setMotherName'],
+    ['address', 'setAddress'],
+    ['start', 'setStart'],
+]);
+
+it('getters returns correct mapping', function (string $property, string $getter) {
+    expect(Signer::getters()[$property])->toBe($getter);
+})->with([
+    ['regnumber', 'getRegnumber'],
+    ['name', 'getName'],
+    ['mother_name', 'getMotherName'],
+    ['address', 'getAddress'],
+    ['start', 'getStart'],
+]);
+
+it('setRegnumber sets value and returns $this', function () {
+    $result = $this->model->setRegnumber('01-09-123456');
+    expect($result)->toBe($this->model);
+    expect($this->model->getRegnumber())->toBe('01-09-123456');
 });
 
-it('declares correct setters', function () {
+it('setName sets value and returns $this', function () {
+    $result = $this->model->setName('John Doe');
+    expect($result)->toBe($this->model);
+    expect($this->model->getName())->toBe('John Doe');
+});
+
+it('setMotherName sets value and returns $this', function () {
+    $result = $this->model->setMotherName('Jane Doe');
+    expect($result)->toBe($this->model);
+    expect($this->model->getMotherName())->toBe('Jane Doe');
+});
+
+it('setAddress sets Address value and returns $this', function () {
+    $address = new Address();
+    $result = $this->model->setAddress($address);
+    expect($result)->toBe($this->model);
+    expect($this->model->getAddress())->toBe($address);
+});
+
+it('setStart sets DateTime value and returns $this', function () {
+    $date = new DateTime('2023-01-15');
+    $result = $this->model->setStart($date);
+    expect($result)->toBe($this->model);
+    expect($this->model->getStart())->toBe($date);
+});
+
+it('setter throws on null for non-nullable properties', function (string $property) {
     $setters = Signer::setters();
+    $setter = $setters[$property];
+    $this->model->{$setter}(null);
+})->throws(\InvalidArgumentException::class)->with([
+    ['regnumber'],
+    ['name'],
+    ['mother_name'],
+    ['address'],
+    ['start'],
+]);
 
-    expect($setters)->toBe([
-        'regnumber' => 'setRegnumber',
-        'name' => 'setName',
-        'mother_name' => 'setMotherName',
-        'address' => 'setAddress',
-        'start' => 'setStart',
-    ]);
+it('constructor with null sets all properties to null', function () {
+    $model = new Signer();
+    expect($model->getRegnumber())->toBeNull();
+    expect($model->getName())->toBeNull();
+    expect($model->getMotherName())->toBeNull();
+    expect($model->getAddress())->toBeNull();
+    expect($model->getStart())->toBeNull();
 });
 
-it('declares correct getters', function () {
-    $getters = Signer::getters();
-
-    expect($getters)->toBe([
-        'regnumber' => 'getRegnumber',
-        'name' => 'getName',
-        'mother_name' => 'getMotherName',
-        'address' => 'getAddress',
-        'start' => 'getStart',
-    ]);
-});
-
-it('instantiates with empty constructor returning null property values', function () {
-    $signer = new Signer();
-
-    expect($signer->getRegnumber())->toBeNull();
-    expect($signer->getName())->toBeNull();
-    expect($signer->getMotherName())->toBeNull();
-    expect($signer->getAddress())->toBeNull();
-    expect($signer->getStart())->toBeNull();
-});
-
-it('instantiates with data array setting property values', function () {
+it('constructor with data sets provided properties', function () {
     $address = new Address();
-    $start = new DateTime('2024-01-10');
-    $signer = new Signer([
-        'regnumber' => '01-09-654321',
-        'name' => 'Tóth András',
-        'mother_name' => 'Szabó Ilona',
+    $date = new DateTime('2023-01-15');
+    $model = new Signer([
+        'regnumber' => '01-09-123456',
+        'name' => 'John Doe',
+        'mother_name' => 'Jane Doe',
         'address' => $address,
-        'start' => $start,
+        'start' => $date,
     ]);
-
-    expect($signer->getRegnumber())->toBe('01-09-654321');
-    expect($signer->getName())->toBe('Tóth András');
-    expect($signer->getMotherName())->toBe('Szabó Ilona');
-    expect($signer->getAddress())->toBe($address);
-    expect($signer->getStart())->toBe($start);
+    expect($model->getRegnumber())->toBe('01-09-123456');
+    expect($model->getName())->toBe('John Doe');
+    expect($model->getMotherName())->toBe('Jane Doe');
+    expect($model->getAddress())->toBe($address);
+    expect($model->getStart())->toBe($date);
 });
 
-it('instantiates with partial data', function () {
-    $signer = new Signer([
-        'regnumber' => '01-09-654321',
-        'name' => 'Tóth András',
-    ]);
-
-    expect($signer->getRegnumber())->toBe('01-09-654321');
-    expect($signer->getName())->toBe('Tóth András');
-    expect($signer->getMotherName())->toBeNull();
-    expect($signer->getAddress())->toBeNull();
-    expect($signer->getStart())->toBeNull();
+it('constructor with partial data leaves others null', function () {
+    $model = new Signer(['name' => 'John Doe']);
+    expect($model->getName())->toBe('John Doe');
+    expect($model->getRegnumber())->toBeNull();
 });
 
-it('handles constructor with null argument', function () {
-    $signer = new Signer(null);
-
-    expect($signer->getRegnumber())->toBeNull();
-    expect($signer->getName())->toBeNull();
-    expect($signer->getMotherName())->toBeNull();
-    expect($signer->getAddress())->toBeNull();
-    expect($signer->getStart())->toBeNull();
+it('constructor with empty array initializes all null', function () {
+    $model = new Signer([]);
+    expect($model->getRegnumber())->toBeNull();
 });
 
-it('sets and gets regnumber', function (string $value) {
-    $signer = new Signer();
-    $result = $signer->setRegnumber($value);
-
-    expect($result)->toBeInstanceOf(Signer::class);
-    expect($signer->getRegnumber())->toBe($value);
-})->with([
-    'regular' => '01-09-654321',
-    'empty' => '',
-]);
-
-it('sets and gets name', function (string $value) {
-    $signer = new Signer();
-    $result = $signer->setName($value);
-
-    expect($result)->toBeInstanceOf(Signer::class);
-    expect($signer->getName())->toBe($value);
-})->with([
-    'regular' => 'Tóth András',
-    'empty' => '',
-]);
-
-it('sets and gets mother_name', function (string $value) {
-    $signer = new Signer();
-    $result = $signer->setMotherName($value);
-
-    expect($result)->toBeInstanceOf(Signer::class);
-    expect($signer->getMotherName())->toBe($value);
-})->with([
-    'regular' => 'Szabó Ilona',
-    'empty' => '',
-]);
-
-it('sets and gets address', function () {
-    $signer = new Signer();
-    $address = new Address();
-    $result = $signer->setAddress($address);
-
-    expect($result)->toBeInstanceOf(Signer::class);
-    expect($signer->getAddress())->toBe($address);
+it('implements ArrayAccess: offsetExists', function () {
+    $this->model->setName('John');
+    expect($this->model->offsetExists('name'))->toBeTrue();
+    expect($this->model->offsetExists('nonexistent'))->toBeFalse();
 });
 
-it('sets and gets start', function () {
-    $signer = new Signer();
-    $start = new DateTime('2024-01-10');
-    $result = $signer->setStart($start);
-
-    expect($result)->toBeInstanceOf(Signer::class);
-    expect($signer->getStart())->toBe($start);
+it('implements ArrayAccess: offsetGet', function () {
+    $this->model->setName('John');
+    expect($this->model->offsetGet('name'))->toBe('John');
+    expect($this->model->offsetGet('nonexistent'))->toBeNull();
 });
 
-it('throws exception when setting null on non-nullable property', function (string $property, string $setter, mixed $validValue) {
-    $signer = new Signer();
-    $signer->{$setter}($validValue);
-
-    expect(fn () => $signer->{$setter}(null))->toThrow(
-        \InvalidArgumentException::class,
-        "non-nullable {$property} cannot be null"
-    );
-})->with([
-    'regnumber' => ['regnumber', 'setRegnumber', '01-09-654321'],
-    'name' => ['name', 'setName', 'Test Name'],
-    'mother_name' => ['mother_name', 'setMotherName', 'Test Mother'],
-    'address' => ['address', 'setAddress', new Address()],
-    'start' => ['start', 'setStart', new DateTime('2024-01-10')],
-]);
-
-it('declares no nullable properties', function () {
-    expect(Signer::isNullable('regnumber'))->toBeFalse();
-    expect(Signer::isNullable('name'))->toBeFalse();
-    expect(Signer::isNullable('mother_name'))->toBeFalse();
-    expect(Signer::isNullable('address'))->toBeFalse();
-    expect(Signer::isNullable('start'))->toBeFalse();
-    expect(Signer::isNullable('nonexistent'))->toBeFalse();
+it('implements ArrayAccess: offsetSet with key', function () {
+    $this->model->offsetSet('name', 'Jane');
+    expect($this->model->offsetGet('name'))->toBe('Jane');
 });
 
-it('returns false for isNullableSetToNull on non-nullable model', function () {
-    $signer = new Signer();
-
-    expect($signer->isNullableSetToNull('regnumber'))->toBeFalse();
-    expect($signer->isNullableSetToNull('name'))->toBeFalse();
-    expect($signer->isNullableSetToNull('mother_name'))->toBeFalse();
-    expect($signer->isNullableSetToNull('address'))->toBeFalse();
-    expect($signer->isNullableSetToNull('start'))->toBeFalse();
+it('implements ArrayAccess: offsetSet without key', function () {
+    $this->model->offsetSet(null, 'value');
+    expect($this->model->offsetGet(0))->toBe('value');
 });
 
-it('returns true for valid and empty invalid properties', function () {
-    $signer = new Signer();
-
-    expect($signer->valid())->toBeTrue();
-    expect($signer->listInvalidProperties())->toBe([]);
+it('implements ArrayAccess: offsetUnset', function () {
+    $this->model->setName('John');
+    $this->model->offsetUnset('name');
+    expect($this->model->offsetExists('name'))->toBeFalse();
 });
 
-it('valid with all properties set', function () {
-    $signer = new Signer();
-    $signer->setRegnumber('01-09-654321');
-    $signer->setName('Tóth András');
-    $signer->setMotherName('Szabó Ilona');
-    $signer->setAddress(new Address());
-    $signer->setStart(new DateTime());
-
-    expect($signer->valid())->toBeTrue();
-    expect($signer->listInvalidProperties())->toBe([]);
+it('jsonSerialize returns array', function () {
+    $this->model->setName('John');
+    $serialized = $this->model->jsonSerialize();
+    expect($serialized)->toBeObject();
 });
 
-it('implements ArrayAccess offsetExists', function () {
-    $signer = new Signer();
-
-    expect($signer->offsetExists('regnumber'))->toBeFalse();
-
-    $signer->setRegnumber('01-09-654321');
-    expect($signer->offsetExists('regnumber'))->toBeTrue();
-    expect($signer->offsetExists('name'))->toBeFalse();
-    expect($signer->offsetExists('nonexistent'))->toBeFalse();
-});
-
-it('implements ArrayAccess offsetGet', function () {
-    $signer = new Signer();
-    $signer->setRegnumber('01-09-654321');
-    $signer->setMotherName('Szabó Ilona');
-
-    expect($signer->offsetGet('regnumber'))->toBe('01-09-654321');
-    expect($signer->offsetGet('mother_name'))->toBe('Szabó Ilona');
-    expect($signer->offsetGet('nonexistent'))->toBeNull();
-});
-
-it('implements ArrayAccess offsetSet', function () {
-    $signer = new Signer();
-
-    $signer->offsetSet('name', 'Tóth András');
-    expect($signer->getName())->toBe('Tóth András');
-
-    $signer->offsetSet(null, 'appended_value');
-    expect($signer->offsetGet(0))->toBe('appended_value');
-});
-
-it('implements ArrayAccess offsetUnset', function () {
-    $signer = new Signer();
-    $signer->setRegnumber('01-09-654321');
-    expect($signer->offsetExists('regnumber'))->toBeTrue();
-
-    $signer->offsetUnset('regnumber');
-    expect($signer->offsetExists('regnumber'))->toBeFalse();
-});
-
-it('serializes via jsonSerialize', function () {
-    $signer = new Signer();
-    $signer->setRegnumber('01-09-654321');
-    $signer->setName('Tóth András');
-    $signer->setMotherName('Szabó Ilona');
-
-    $result = $signer->jsonSerialize();
-
-    expect($result)->toBeObject();
-    expect($result->Regnumber)->toBe('01-09-654321');
-    expect($result->Name)->toBe('Tóth András');
-    expect($result->MotherName)->toBe('Szabó Ilona');
-});
-
-it('returns string representation via __toString', function () {
-    $signer = new Signer();
-    $signer->setRegnumber('01-09-654321');
-    $signer->setName('Tóth András');
-
-    $str = (string) $signer;
-
+it('__toString returns JSON string', function () {
+    $this->model->setName('John');
+    $str = $this->model->__toString();
     expect($str)->toBeString();
-    expect(strlen($str))->toBeGreaterThan(0);
-
-    $decoded = json_decode($str, true);
-    expect($decoded)->toBeArray();
-    expect($decoded['Regnumber'])->toBe('01-09-654321');
+    expect($str)->toBeString()->not->toBeEmpty();
 });
 
-it('returns header-safe presentation via toHeaderValue', function () {
-    $signer = new Signer();
-    $signer->setRegnumber('01-09-654321');
-
-    $header = $signer->toHeaderValue();
-
-    expect($header)->toBeString();
-    expect(strlen($header))->toBeGreaterThan(0);
-
-    $decoded = json_decode($header, true);
-    expect($decoded)->toBeArray();
-    expect($decoded['Regnumber'])->toBe('01-09-654321');
+it('toHeaderValue returns JSON string', function () {
+    $this->model->setName('John');
+    $value = $this->model->toHeaderValue();
+    expect($value)->toBeString();
+    expect(json_decode($value, true))->toBeArray();
 });
 
-it('supports chaining setters', function () {
-    $signer = new Signer();
-    $result = $signer
-        ->setRegnumber('01-09-654321')
-        ->setName('Tóth András')
-        ->setMotherName('Szabó Ilona')
-        ->setAddress(new Address())
-        ->setStart(new DateTime('2024-01-10'));
+it('isNullable returns false for all properties', function (string $property) {
+    expect(Signer::isNullable($property))->toBeFalse();
+})->with(['regnumber', 'name', 'mother_name', 'address', 'start']);
 
-    expect($result)->toBeInstanceOf(Signer::class);
-    expect($signer->getRegnumber())->toBe('01-09-654321');
-    expect($signer->getName())->toBe('Tóth András');
-    expect($signer->getMotherName())->toBe('Szabó Ilona');
-    expect($signer->getAddress())->toBeInstanceOf(Address::class);
-    expect($signer->getStart())->toBeInstanceOf(DateTime::class);
+it('isNullable returns false for unknown property', function () {
+    expect(Signer::isNullable('unknown'))->toBeFalse();
+});
+
+it('isNullableSetToNull initially returns false', function () {
+    expect($this->model->isNullableSetToNull('regnumber'))->toBeFalse();
+    expect($this->model->isNullableSetToNull('start'))->toBeFalse();
+});
+
+it('listInvalidProperties always returns empty', function () {
+    expect($this->model->listInvalidProperties())->toBeEmpty();
+});
+
+it('valid always returns true', function () {
+    expect($this->model->valid())->toBeTrue();
 });

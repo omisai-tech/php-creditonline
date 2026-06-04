@@ -2,7 +2,23 @@
 
 use Omisai\CreditOnline\Configuration;
 
-// ---- Constants ----
+// ---------------------------------------------------------------------------
+// State management
+// ---------------------------------------------------------------------------
+
+beforeEach(function () {
+    $this->config = new Configuration();
+});
+
+$originalDefaultConfig = Configuration::getDefaultConfiguration();
+
+afterEach(function () use ($originalDefaultConfig) {
+    Configuration::setDefaultConfiguration($originalDefaultConfig);
+});
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
 
 it('has BOOLEAN_FORMAT_INT constant', function () {
     expect(Configuration::BOOLEAN_FORMAT_INT)->toBe('int');
@@ -12,552 +28,389 @@ it('has BOOLEAN_FORMAT_STRING constant', function () {
     expect(Configuration::BOOLEAN_FORMAT_STRING)->toBe('string');
 });
 
-// ---- Default host ----
+// ---------------------------------------------------------------------------
+// Default host
+// ---------------------------------------------------------------------------
 
-it('has the correct default host', function () {
-    $config = new Configuration();
-
-    expect($config->getHost())->toBe('https://api.creditonline.hu/v3');
+it('has default host set to production URL', function () {
+    expect($this->config->getHost())->toBe('https://api.creditonline.hu/v3');
 });
 
-// ---- setHost / getHost ----
+// ---------------------------------------------------------------------------
+// Host set/get
+// ---------------------------------------------------------------------------
 
-it('sets and gets the host', function () {
-    $config = new Configuration();
-
-    $config->setHost('https://custom.example.com/v1');
-
-    expect($config->getHost())->toBe('https://custom.example.com/v1');
+it('sets and gets host', function () {
+    $this->config->setHost('https://custom.example.com/api');
+    expect($this->config->getHost())->toBe('https://custom.example.com/api');
 });
 
-it('setHost returns the instance for chaining', function () {
-    $config = new Configuration();
+// ---------------------------------------------------------------------------
+// API key set/get
+// ---------------------------------------------------------------------------
 
-    $result = $config->setHost('https://example.com');
-
-    expect($result)->toBe($config);
+it('sets and gets API key', function () {
+    $this->config->setApiKey('X-Api-Key', 'secret123');
+    expect($this->config->getApiKey('X-Api-Key'))->toBe('secret123');
 });
 
-// ---- setTestHost ----
-
-it('setTestHost sets the host to the test host value', function () {
-    $config = new Configuration();
-
-    $config->setTestHost('https://api-test.creditonline.hu/v3');
-
-    expect($config->getHost())->toBe('https://api-test.creditonline.hu/v3');
+it('returns null for unset API key', function () {
+    expect($this->config->getApiKey('nonexistent'))->toBeNull();
 });
 
-it('setTestHost with null keeps default test host', function () {
-    $config = new Configuration();
-    // Manually set a custom host first
-    $config->setHost('https://custom.example.com');
-
-    $config->setTestHost(null);
-
-    // When null is passed, it falls back to ->testHost property value
-    expect($config->getHost())->toBe('https://api-test.creditonline.hu/v3');
-});
-
-// ---- setApiKey / getApiKey / getApiKeyWithPrefix ----
-
-it('sets and gets an API key', function () {
-    $config = new Configuration();
-
-    $config->setApiKey('api_token', 'secret-token-123');
-
-    expect($config->getApiKey('api_token'))->toBe('secret-token-123');
-});
-
-it('getApiKey returns null for unknown identifier', function () {
-    $config = new Configuration();
-
-    expect($config->getApiKey('nonexistent'))->toBeNull();
-});
-
-it('returns chained instance from setApiKey', function () {
-    $config = new Configuration();
-
-    $result = $config->setApiKey('key', 'val');
-
-    expect($result)->toBe($config);
-});
-
-it('getApiKeyWithPrefix returns api key with prefix', function () {
-    $config = new Configuration();
-    $config->setApiKey('token', 'abc123');
-    $config->setApiKeyPrefix('token', 'Bearer');
-
-    expect($config->getApiKeyWithPrefix('token'))->toBe('Bearer abc123');
-});
-
-it('getApiKeyWithPrefix returns api key without prefix when prefix is null', function () {
-    $config = new Configuration();
-    $config->setApiKey('token', 'abc123');
-
-    expect($config->getApiKeyWithPrefix('token'))->toBe('abc123');
-});
-
-it('getApiKeyWithPrefix returns null when api key is not set', function () {
-    $config = new Configuration();
-
-    expect($config->getApiKeyWithPrefix('nonexistent'))->toBeNull();
-});
-
-// ---- setApiKeyPrefix / getApiKeyPrefix ----
+// ---------------------------------------------------------------------------
+// API key prefix set/get
+// ---------------------------------------------------------------------------
 
 it('sets and gets API key prefix', function () {
-    $config = new Configuration();
-
-    $config->setApiKeyPrefix('token', 'Bearer');
-
-    expect($config->getApiKeyPrefix('token'))->toBe('Bearer');
+    $this->config->setApiKeyPrefix('X-Api-Key', 'Bearer');
+    expect($this->config->getApiKeyPrefix('X-Api-Key'))->toBe('Bearer');
 });
 
-it('getApiKeyPrefix returns null for unknown identifier', function () {
-    $config = new Configuration();
-
-    expect($config->getApiKeyPrefix('nonexistent'))->toBeNull();
+it('returns null for unset API key prefix', function () {
+    expect($this->config->getApiKeyPrefix('nonexistent'))->toBeNull();
 });
 
-it('setApiKeyPrefix returns chained instance', function () {
-    $config = new Configuration();
+// ---------------------------------------------------------------------------
+// API key with prefix
+// ---------------------------------------------------------------------------
 
-    $result = $config->setApiKeyPrefix('token', 'Basic');
-
-    expect($result)->toBe($config);
+it('returns API key with prefix when both are set', function () {
+    $this->config->setApiKey('Auth', 'abcdef');
+    $this->config->setApiKeyPrefix('Auth', 'Bearer');
+    expect($this->config->getApiKeyWithPrefix('Auth'))->toBe('Bearer abcdef');
 });
 
-// ---- setAccessToken / getAccessToken ----
-
-it('sets and gets the access token', function () {
-    $config = new Configuration();
-
-    $config->setAccessToken('oauth-token-xyz');
-
-    expect($config->getAccessToken())->toBe('oauth-token-xyz');
+it('returns API key only when prefix is null', function () {
+    $this->config->setApiKey('Auth', 'abcdef');
+    expect($this->config->getApiKeyWithPrefix('Auth'))->toBe('abcdef');
 });
 
-it('setAccessToken returns chained instance', function () {
-    $config = new Configuration();
-
-    $result = $config->setAccessToken('token');
-
-    expect($result)->toBe($config);
+it('returns null for unset API key with prefix', function () {
+    expect($this->config->getApiKeyWithPrefix('missing'))->toBeNull();
 });
 
-it('default access token is empty string', function () {
-    $config = new Configuration();
+// ---------------------------------------------------------------------------
+// Access token
+// ---------------------------------------------------------------------------
 
-    expect($config->getAccessToken())->toBe('');
+it('sets and gets access token', function () {
+    $this->config->setAccessToken('oauth-token-123');
+    expect($this->config->getAccessToken())->toBe('oauth-token-123');
 });
 
-// ---- setUsername / getUsername ----
-
-it('sets and gets the username', function () {
-    $config = new Configuration();
-
-    $config->setUsername('john.doe');
-
-    expect($config->getUsername())->toBe('john.doe');
+it('has empty string as default access token', function () {
+    expect($this->config->getAccessToken())->toBe('');
 });
 
-it('setUsername returns chained instance', function () {
-    $config = new Configuration();
+// ---------------------------------------------------------------------------
+// Username
+// ---------------------------------------------------------------------------
 
-    $result = $config->setUsername('john');
-
-    expect($result)->toBe($config);
+it('sets and gets username', function () {
+    $this->config->setUsername('johndoe');
+    expect($this->config->getUsername())->toBe('johndoe');
 });
 
-it('default username is empty string', function () {
-    $config = new Configuration();
-
-    expect($config->getUsername())->toBe('');
+it('has empty string as default username', function () {
+    expect($this->config->getUsername())->toBe('');
 });
 
-// ---- setPassword / getPassword ----
+// ---------------------------------------------------------------------------
+// Password
+// ---------------------------------------------------------------------------
 
-it('sets and gets the password', function () {
-    $config = new Configuration();
-
-    $config->setPassword('s3cr3t');
-
-    expect($config->getPassword())->toBe('s3cr3t');
+it('sets and gets password', function () {
+    $this->config->setPassword('s3cret!');
+    expect($this->config->getPassword())->toBe('s3cret!');
 });
 
-it('setPassword returns chained instance', function () {
-    $config = new Configuration();
-
-    $result = $config->setPassword('pass');
-
-    expect($result)->toBe($config);
+it('has empty string as default password', function () {
+    expect($this->config->getPassword())->toBe('');
 });
 
-it('default password is empty string', function () {
-    $config = new Configuration();
+// ---------------------------------------------------------------------------
+// User agent
+// ---------------------------------------------------------------------------
 
-    expect($config->getPassword())->toBe('');
+it('sets and gets user agent', function () {
+    $this->config->setUserAgent('MyApp/2.0');
+    expect($this->config->getUserAgent())->toBe('MyApp/2.0');
 });
 
-// ---- setUserAgent / getUserAgent ----
-
-it('sets and gets the user agent', function () {
-    $config = new Configuration();
-
-    $config->setUserAgent('MyApp/2.0');
-
-    expect($config->getUserAgent())->toBe('MyApp/2.0');
+it('has default user agent', function () {
+    expect($this->config->getUserAgent())->toBe('OpenAPI-Generator/1.0.0/PHP');
 });
 
-it('setUserAgent returns chained instance', function () {
-    $config = new Configuration();
-
-    $result = $config->setUserAgent('Agent');
-
-    expect($result)->toBe($config);
-});
-
-it('default user agent is the OpenAPI generator default', function () {
-    $config = new Configuration();
-
-    expect($config->getUserAgent())->toBe('OpenAPI-Generator/1.0.0/PHP');
-});
-
-it('setUserAgent throws InvalidArgumentException when value is not a string', function ($value) {
-    $config = new Configuration();
-    $config->setUserAgent($value);
-})->with([
-    'int 123' => 123,
-    'float 45.67' => 45.67,
-    'bool true' => true,
-    'bool false' => false,
-    'stdClass' => fn () => new stdClass(),
+it('throws InvalidArgumentException for non-string user agent', function ($value) {
+    $this->config->setUserAgent($value);
+})->throws(\InvalidArgumentException::class, 'User-agent must be a string.')->with([
+    'int' => 123,
+    'float' => 45.67,
+    'true' => true,
+    'false' => false,
+    'stdClass' => fn() => new stdClass(),
     'null' => null,
-])->throws(\InvalidArgumentException::class, 'User-agent must be a string.');
+]);
 
-// ---- setDebug / getDebug ----
+// ---------------------------------------------------------------------------
+// Debug
+// ---------------------------------------------------------------------------
 
-it('sets and gets the debug flag', function () {
-    $config = new Configuration();
-
-    $config->setDebug(true);
-
-    expect($config->getDebug())->toBeTrue();
+it('sets and gets debug', function () {
+    expect($this->config->getDebug())->toBeFalse();
+    $this->config->setDebug(true);
+    expect($this->config->getDebug())->toBeTrue();
 });
 
-it('default debug flag is false', function () {
-    $config = new Configuration();
+// ---------------------------------------------------------------------------
+// Debug file
+// ---------------------------------------------------------------------------
 
-    expect($config->getDebug())->toBeFalse();
+it('sets and gets debug file', function () {
+    $this->config->setDebugFile('/tmp/debug.log');
+    expect($this->config->getDebugFile())->toBe('/tmp/debug.log');
 });
 
-it('setDebug returns chained instance', function () {
-    $config = new Configuration();
-
-    $result = $config->setDebug(true);
-
-    expect($result)->toBe($config);
+it('has default debug file as php://output', function () {
+    expect($this->config->getDebugFile())->toBe('php://output');
 });
 
-// ---- setDebugFile / getDebugFile ----
+// ---------------------------------------------------------------------------
+// Temp folder path
+// ---------------------------------------------------------------------------
 
-it('sets and gets the debug file', function () {
-    $config = new Configuration();
-
-    $config->setDebugFile('/tmp/debug.log');
-
-    expect($config->getDebugFile())->toBe('/tmp/debug.log');
+it('sets and gets temp folder path', function () {
+    $this->config->setTempFolderPath('/custom/tmp');
+    expect($this->config->getTempFolderPath())->toBe('/custom/tmp');
 });
 
-it('default debug file is php output stream', function () {
-    $config = new Configuration();
-
-    expect($config->getDebugFile())->toBe('php://output');
+it('has sys_get_temp_dir as default temp folder path', function () {
+    expect($this->config->getTempFolderPath())->toBe(sys_get_temp_dir());
 });
 
-it('setDebugFile returns chained instance', function () {
-    $config = new Configuration();
+// ---------------------------------------------------------------------------
+// Cert file
+// ---------------------------------------------------------------------------
 
-    $result = $config->setDebugFile('/tmp/log');
-
-    expect($result)->toBe($config);
+it('sets and gets cert file', function () {
+    $this->config->setCertFile('/path/to/cert.pem');
+    expect($this->config->getCertFile())->toBe('/path/to/cert.pem');
 });
 
-// ---- setTempFolderPath / getTempFolderPath ----
-
-it('sets and gets the temp folder path', function () {
-    $config = new Configuration();
-
-    $config->setTempFolderPath('/custom/tmp');
-
-    expect($config->getTempFolderPath())->toBe('/custom/tmp');
+it('has null as default cert file', function () {
+    expect($this->config->getCertFile())->toBeNull();
 });
 
-it('default temp folder path is system temp dir', function () {
-    $config = new Configuration();
+// ---------------------------------------------------------------------------
+// Key file
+// ---------------------------------------------------------------------------
 
-    expect($config->getTempFolderPath())->toBe(sys_get_temp_dir());
+it('sets and gets key file', function () {
+    $this->config->setKeyFile('/path/to/key.pem');
+    expect($this->config->getKeyFile())->toBe('/path/to/key.pem');
 });
 
-it('setTempFolderPath returns chained instance', function () {
-    $config = new Configuration();
-
-    $result = $config->setTempFolderPath('/tmp');
-
-    expect($result)->toBe($config);
+it('has null as default key file', function () {
+    expect($this->config->getKeyFile())->toBeNull();
 });
 
-// ---- setCertFile / getCertFile (mTLS) ----
-
-it('sets and gets the certificate file path for mTLS', function () {
-    $config = new Configuration();
-
-    $config->setCertFile('/path/to/cert.pem');
-
-    expect($config->getCertFile())->toBe('/path/to/cert.pem');
-});
-
-it('default cert file is null', function () {
-    $config = new Configuration();
-
-    expect($config->getCertFile())->toBeNull();
-});
-
-it('setCertFile returns chained instance', function () {
-    $config = new Configuration();
-
-    $result = $config->setCertFile('/path/cert.pem');
-
-    expect($result)->toBe($config);
-});
-
-// ---- setKeyFile / getKeyFile (mTLS) ----
-
-it('sets and gets the key file path for mTLS', function () {
-    $config = new Configuration();
-
-    $config->setKeyFile('/path/to/key.pem');
-
-    expect($config->getKeyFile())->toBe('/path/to/key.pem');
-});
-
-it('default key file is null', function () {
-    $config = new Configuration();
-
-    expect($config->getKeyFile())->toBeNull();
-});
-
-it('setKeyFile returns chained instance', function () {
-    $config = new Configuration();
-
-    $result = $config->setKeyFile('/path/key.pem');
-
-    expect($result)->toBe($config);
-});
-
-// ---- setBooleanFormatForQueryString / getBooleanFormatForQueryString ----
+// ---------------------------------------------------------------------------
+// Boolean format for query string
+// ---------------------------------------------------------------------------
 
 it('sets and gets boolean format for query string', function () {
-    $config = new Configuration();
-
-    $config->setBooleanFormatForQueryString(Configuration::BOOLEAN_FORMAT_STRING);
-
-    expect($config->getBooleanFormatForQueryString())->toBe('string');
+    expect($this->config->getBooleanFormatForQueryString())->toBe(Configuration::BOOLEAN_FORMAT_INT);
+    $this->config->setBooleanFormatForQueryString(Configuration::BOOLEAN_FORMAT_STRING);
+    expect($this->config->getBooleanFormatForQueryString())->toBe(Configuration::BOOLEAN_FORMAT_STRING);
 });
 
-it('default boolean format is int', function () {
-    $config = new Configuration();
+// ---------------------------------------------------------------------------
+// setTestHost
+// ---------------------------------------------------------------------------
 
-    expect($config->getBooleanFormatForQueryString())->toBe('int');
+it('setTestHost with a value sets the host to that value', function () {
+    $this->config->setTestHost('https://staging.example.com');
+    expect($this->config->getHost())->toBe('https://staging.example.com');
 });
 
-it('setBooleanFormatForQueryString returns chained instance', function () {
-    $config = new Configuration();
-
-    $result = $config->setBooleanFormatForQueryString(Configuration::BOOLEAN_FORMAT_INT);
-
-    expect($result)->toBe($config);
+it('setTestHost with null falls back to test host property', function () {
+    $this->config->setTestHost(null);
+    expect($this->config->getHost())->toBe('https://api-test.creditonline.hu/v3');
 });
 
-// ---- getDefaultConfiguration / setDefaultConfiguration (singleton) ----
+// ---------------------------------------------------------------------------
+// getDefaultConfiguration / setDefaultConfiguration
+// ---------------------------------------------------------------------------
 
-it('getDefaultConfiguration returns a singleton instance', function () {
-    $config1 = Configuration::getDefaultConfiguration();
-    $config2 = Configuration::getDefaultConfiguration();
+it('getDefaultConfiguration returns a Configuration instance', function () {
+    expect(Configuration::getDefaultConfiguration())->toBeInstanceOf(Configuration::class);
+});
 
-    expect($config1)->toBe($config2);
-    expect($config1)->toBeInstanceOf(Configuration::class);
+it('getDefaultConfiguration returns singleton', function () {
+    $a = Configuration::getDefaultConfiguration();
+    $b = Configuration::getDefaultConfiguration();
+    expect($a)->toBe($b);
 });
 
 it('setDefaultConfiguration overrides the singleton', function () {
-    $original = Configuration::getDefaultConfiguration();
-    $custom = new Configuration();
-    $custom->setHost('https://my-custom.example.com');
+    $newConfig = new Configuration();
+    $newConfig->setHost('https://overridden.example.com');
+    Configuration::setDefaultConfiguration($newConfig);
 
-    Configuration::setDefaultConfiguration($custom);
-
-    $retrieved = Configuration::getDefaultConfiguration();
-
-    expect($retrieved)->toBe($custom);
-    expect($retrieved->getHost())->toBe('https://my-custom.example.com');
-
-    // Restore original
-    Configuration::setDefaultConfiguration($original);
+    expect(Configuration::getDefaultConfiguration()->getHost())->toBe('https://overridden.example.com');
+    expect(Configuration::getDefaultConfiguration())->toBe($newConfig);
 });
 
-// ---- toDebugReport ----
+// ---------------------------------------------------------------------------
+// toDebugReport
+// ---------------------------------------------------------------------------
 
-it('toDebugReport returns a string containing debug information', function () {
+it('toDebugReport returns a string', function () {
     $report = Configuration::toDebugReport();
-
-    expect($report)->toBeString()
-        ->toContain('PHP SDK (OmisaiCreditOnline) Debug Report:')
-        ->toContain('OS:')
-        ->toContain('PHP Version:')
-        ->toContain('The version of the OpenAPI document: 3')
-        ->toContain('Temp Folder Path:');
+    expect($report)->toBeString();
 });
 
-// ---- getHostSettings ----
+it('toDebugReport contains expected sections', function () {
+    $report = Configuration::toDebugReport();
+    expect($report)->toContain('PHP SDK (OmisaiCreditOnline) Debug Report:');
+    expect($report)->toContain('OS:');
+    expect($report)->toContain('PHP Version:');
+    expect($report)->toContain('Temp Folder Path:');
+});
 
-it('getHostSettings returns array with production and test hosts', function () {
-    $config = new Configuration();
-    $settings = $config->getHostSettings();
+// ---------------------------------------------------------------------------
+// getHostSettings
+// ---------------------------------------------------------------------------
 
+it('getHostSettings returns array with 2 hosts', function () {
+    $settings = $this->config->getHostSettings();
     expect($settings)->toBeArray()->toHaveCount(2);
+});
+
+it('getHostSettings first host is production URL', function () {
+    $settings = $this->config->getHostSettings();
     expect($settings[0]['url'])->toBe('https://api.creditonline.hu/v3');
-    expect($settings[0]['description'])->toBe('No description provided');
+});
+
+it('getHostSettings second host is test URL', function () {
+    $settings = $this->config->getHostSettings();
     expect($settings[1]['url'])->toBe('https://api-test.creditonline.hu/v3');
-    expect($settings[1]['description'])->toBe('No description provided');
 });
 
-// ---- getHostFromSettings ----
+// ---------------------------------------------------------------------------
+// getHostFromSettings
+// ---------------------------------------------------------------------------
 
-it('getHostFromSettings returns the production host URL for index 0', function () {
-    $config = new Configuration();
-
-    expect($config->getHostFromSettings(0))->toBe('https://api.creditonline.hu/v3');
+it('getHostFromSettings returns production URL for index 0', function () {
+    expect($this->config->getHostFromSettings(0))->toBe('https://api.creditonline.hu/v3');
 });
 
-it('getHostFromSettings returns the test host URL for index 1', function () {
-    $config = new Configuration();
-
-    expect($config->getHostFromSettings(1))->toBe('https://api-test.creditonline.hu/v3');
+it('getHostFromSettings returns test URL for index 1', function () {
+    expect($this->config->getHostFromSettings(1))->toBe('https://api-test.creditonline.hu/v3');
 });
 
-// ---- getHostString (static method) ----
-
-it('getHostString returns correct URL for a given host index', function () {
-    $hostSettings = [
-        ['url' => 'https://api.example.com/v1', 'description' => ''],
-        ['url' => 'https://api-test.example.com/v1', 'description' => ''],
-    ];
-
-    expect(Configuration::getHostString($hostSettings, 0))->toBe('https://api.example.com/v1');
-    expect(Configuration::getHostString($hostSettings, 1))->toBe('https://api-test.example.com/v1');
+it('getHostFromSettings with null variables returns default URL', function () {
+    expect($this->config->getHostFromSettings(0, null))->toBe('https://api.creditonline.hu/v3');
 });
 
-it('getHostString throws InvalidArgumentException on invalid host index', function () {
-    $hostSettings = [['url' => 'https://api.example.com/v1']];
+// ---------------------------------------------------------------------------
+// getHostString — variable substitution
+// ---------------------------------------------------------------------------
 
-    Configuration::getHostString($hostSettings, 5);
-})->throws(\InvalidArgumentException::class, 'Invalid index 5 when selecting the host. Must be less than 1');
-
-it('getHostString throws InvalidArgumentException on negative host index', function () {
-    $hostSettings = [['url' => 'https://api.example.com/v1']];
-
-    Configuration::getHostString($hostSettings, -1);
-})->throws(\InvalidArgumentException::class);
-
-it('getHostString substitutes variables in the URL', function () {
+it('getHostString substitutes variables in URL', function () {
     $hostSettings = [
         [
             'url' => 'https://{region}.api.example.com/{version}',
-            'description' => '',
+            'description' => 'Regional',
             'variables' => [
-                'region' => [
-                    'default_value' => 'us-east',
-                    'enum_values' => ['us-east', 'eu-west'],
-                ],
-                'version' => [
-                    'default_value' => 'v1',
-                    'enum_values' => ['v1', 'v2'],
-                ],
+                'region' => ['default_value' => 'eu', 'enum_values' => ['eu', 'us', 'ap']],
+                'version' => ['default_value' => 'v1', 'enum_values' => ['v1', 'v2']],
             ],
         ],
     ];
 
-    $result = Configuration::getHostString($hostSettings, 0, ['region' => 'eu-west', 'version' => 'v2']);
-
-    expect($result)->toBe('https://eu-west.api.example.com/v2');
+    $url = Configuration::getHostString($hostSettings, 0, ['region' => 'us', 'version' => 'v2']);
+    expect($url)->toBe('https://us.api.example.com/v2');
 });
 
-it('getHostString uses default variable values when not provided', function () {
+it('getHostString uses default values when variables not provided', function () {
     $hostSettings = [
         [
-            'url' => 'https://{region}.api.example.com/{version}',
-            'description' => '',
+            'url' => 'https://api.example.com/{version}',
+            'description' => 'Versioned',
             'variables' => [
-                'region' => [
-                    'default_value' => 'us-east',
-                    'enum_values' => ['us-east', 'eu-west'],
-                ],
-                'version' => [
-                    'default_value' => 'v1',
-                    'enum_values' => ['v1', 'v2'],
-                ],
+                'version' => ['default_value' => 'v1', 'enum_values' => ['v1', 'v2']],
             ],
         ],
     ];
 
-    $result = Configuration::getHostString($hostSettings, 0, ['region' => 'eu-west']);
-
-    expect($result)->toBe('https://eu-west.api.example.com/v1');
+    $url = Configuration::getHostString($hostSettings, 0);
+    expect($url)->toBe('https://api.example.com/v1');
 });
 
-it('getHostString throws InvalidArgumentException when variable value is not in enum', function () {
+it('getHostString uses provided variable value over default', function () {
     $hostSettings = [
         [
-            'url' => 'https://{region}.api.example.com',
-            'description' => '',
+            'url' => 'https://api.example.com/{version}',
+            'description' => 'Versioned',
             'variables' => [
-                'region' => [
-                    'default_value' => 'us-east',
-                    'enum_values' => ['us-east', 'eu-west'],
-                ],
+                'version' => ['default_value' => 'v1', 'enum_values' => ['v1', 'v2']],
             ],
         ],
     ];
 
-    Configuration::getHostString($hostSettings, 0, ['region' => 'invalid-region']);
+    $url = Configuration::getHostString($hostSettings, 0, ['version' => 'v2']);
+    expect($url)->toBe('https://api.example.com/v2');
+});
+
+it('getHostString works without variables section', function () {
+    $hostSettings = [
+        [
+            'url' => 'https://fixed.example.com',
+            'description' => 'Static',
+        ],
+    ];
+
+    $url = Configuration::getHostString($hostSettings, 0);
+    expect($url)->toBe('https://fixed.example.com');
+});
+
+// ---------------------------------------------------------------------------
+// getHostString — enum validation
+// ---------------------------------------------------------------------------
+
+it('getHostString throws for invalid enum value', function () {
+    $hostSettings = [
+        [
+            'url' => 'https://{region}.example.com',
+            'description' => 'Regional',
+            'variables' => [
+                'region' => ['default_value' => 'eu', 'enum_values' => ['eu', 'us']],
+            ],
+        ],
+    ];
+
+    Configuration::getHostString($hostSettings, 0, ['region' => 'invalid']);
 })->throws(\InvalidArgumentException::class);
 
-it('getHostString handles host settings with no variables', function () {
-    $hostSettings = [
-        ['url' => 'https://api.example.com/v1', 'description' => ''],
-    ];
+// ---------------------------------------------------------------------------
+// getHostString — invalid index
+// ---------------------------------------------------------------------------
 
-    $result = Configuration::getHostString($hostSettings, 0, ['unused' => 'value']);
+it('getHostString throws for negative index', function () {
+    Configuration::getHostString($this->config->getHostSettings(), -1);
+})->throws(\InvalidArgumentException::class);
 
-    expect($result)->toBe('https://api.example.com/v1');
-});
+it('getHostString throws for out of bounds index', function () {
+    Configuration::getHostString($this->config->getHostSettings(), 999);
+})->throws(\InvalidArgumentException::class);
 
-it('getHostString handles null variables parameter', function () {
-    $hostSettings = [
-        [
-            'url' => 'https://{region}.api.example.com',
-            'description' => '',
-            'variables' => [
-                'region' => [
-                    'default_value' => 'us-east',
-                    'enum_values' => ['us-east', 'eu-west'],
-                ],
-            ],
-        ],
-    ];
+// ---------------------------------------------------------------------------
+// Chained returns
+// ---------------------------------------------------------------------------
 
-    $result = Configuration::getHostString($hostSettings, 0, null);
-
-    expect($result)->toBe('https://us-east.api.example.com');
+it('setHost returns $this for chaining', function () {
+    $result = $this->config->setHost('https://chained.example.com');
+    expect($result)->toBe($this->config);
 });

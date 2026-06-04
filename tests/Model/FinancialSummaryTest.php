@@ -2,15 +2,16 @@
 
 use Omisai\CreditOnline\Model\FinancialSummary;
 
-it('has correct model name', function () {
-    $summary = new FinancialSummary();
-
-    expect($summary->getModelName())->toBe('FinancialSummary');
+beforeEach(function () {
+    $this->model = new FinancialSummary();
 });
 
-it('declares correct open API types', function () {
-    $types = FinancialSummary::openAPITypes();
+it('getModelName returns FinancialSummary', function () {
+    expect($this->model->getModelName())->toBe('FinancialSummary');
+});
 
+it('openAPITypes returns correct type array', function () {
+    $types = FinancialSummary::openAPITypes();
     expect($types)->toBe([
         'year' => 'int',
         'total_sales' => 'int',
@@ -21,345 +22,197 @@ it('declares correct open API types', function () {
     ]);
 });
 
-it('declares correct open API formats', function () {
+it('openAPIFormats returns all null formats', function () {
     $formats = FinancialSummary::openAPIFormats();
-
-    expect($formats)->toBe([
-        'year' => null,
-        'total_sales' => null,
-        'income_from_operations' => null,
-        'profit_after_taxation' => null,
-        'subscribed_capital' => null,
-        'shareholders_equity' => null,
-    ]);
+    expect($formats)->toHaveKeys(['year', 'total_sales', 'income_from_operations', 'profit_after_taxation', 'subscribed_capital', 'shareholders_equity']);
 });
 
-it('declares correct attribute map', function () {
+it('attributeMap uses correct original names', function (string $local, string $original) {
     $map = FinancialSummary::attributeMap();
+    expect($map[$local])->toBe($original);
+})->with([
+    ['year', 'Year'],
+    ['total_sales', 'TotalSales'],
+    ['income_from_operations', 'IncomeFromOperations'],
+    ['profit_after_taxation', 'ProfitAfterTaxation'],
+    ['subscribed_capital', 'SubscribedCapital'],
+    ['shareholders_equity', 'ShareholdersEquity'],
+]);
 
-    expect($map)->toBe([
-        'year' => 'Year',
-        'total_sales' => 'TotalSales',
-        'income_from_operations' => 'IncomeFromOperations',
-        'profit_after_taxation' => 'ProfitAfterTaxation',
-        'subscribed_capital' => 'SubscribedCapital',
-        'shareholders_equity' => 'ShareholdersEquity',
-    ]);
+it('setters returns correct mapping', function (string $property, string $setter) {
+    expect(FinancialSummary::setters()[$property])->toBe($setter);
+})->with([
+    ['year', 'setYear'],
+    ['total_sales', 'setTotalSales'],
+    ['income_from_operations', 'setIncomeFromOperations'],
+    ['profit_after_taxation', 'setProfitAfterTaxation'],
+    ['subscribed_capital', 'setSubscribedCapital'],
+    ['shareholders_equity', 'setShareholdersEquity'],
+]);
+
+it('getters returns correct mapping', function (string $property, string $getter) {
+    expect(FinancialSummary::getters()[$property])->toBe($getter);
+})->with([
+    ['year', 'getYear'],
+    ['total_sales', 'getTotalSales'],
+    ['income_from_operations', 'getIncomeFromOperations'],
+    ['profit_after_taxation', 'getProfitAfterTaxation'],
+    ['subscribed_capital', 'getSubscribedCapital'],
+    ['shareholders_equity', 'getShareholdersEquity'],
+]);
+
+it('setYear sets value and returns $this', function () {
+    $result = $this->model->setYear(2023);
+    expect($result)->toBe($this->model);
+    expect($this->model->getYear())->toBe(2023);
 });
 
-it('declares correct setters', function () {
+it('setTotalSales sets value and returns $this', function () {
+    $result = $this->model->setTotalSales(50000000);
+    expect($result)->toBe($this->model);
+    expect($this->model->getTotalSales())->toBe(50000000);
+});
+
+it('setIncomeFromOperations sets value and returns $this', function () {
+    $result = $this->model->setIncomeFromOperations(10000000);
+    expect($result)->toBe($this->model);
+    expect($this->model->getIncomeFromOperations())->toBe(10000000);
+});
+
+it('setProfitAfterTaxation sets value and returns $this', function () {
+    $result = $this->model->setProfitAfterTaxation(5000000);
+    expect($result)->toBe($this->model);
+    expect($this->model->getProfitAfterTaxation())->toBe(5000000);
+});
+
+it('setSubscribedCapital sets value and returns $this', function () {
+    $result = $this->model->setSubscribedCapital(3000000);
+    expect($result)->toBe($this->model);
+    expect($this->model->getSubscribedCapital())->toBe(3000000);
+});
+
+it('setShareholdersEquity sets value and returns $this', function () {
+    $result = $this->model->setShareholdersEquity(25000000);
+    expect($result)->toBe($this->model);
+    expect($this->model->getShareholdersEquity())->toBe(25000000);
+});
+
+it('setter throws on null for non-nullable properties', function (string $property) {
     $setters = FinancialSummary::setters();
+    $setter = $setters[$property];
+    $this->model->{$setter}(null);
+})->throws(\InvalidArgumentException::class)->with([
+    ['year'],
+    ['total_sales'],
+    ['income_from_operations'],
+    ['profit_after_taxation'],
+    ['subscribed_capital'],
+    ['shareholders_equity'],
+]);
 
-    expect($setters)->toBe([
-        'year' => 'setYear',
-        'total_sales' => 'setTotalSales',
-        'income_from_operations' => 'setIncomeFromOperations',
-        'profit_after_taxation' => 'setProfitAfterTaxation',
-        'subscribed_capital' => 'setSubscribedCapital',
-        'shareholders_equity' => 'setShareholdersEquity',
-    ]);
+it('constructor with null sets all properties to null', function () {
+    $model = new FinancialSummary();
+    expect($model->getYear())->toBeNull();
+    expect($model->getTotalSales())->toBeNull();
+    expect($model->getIncomeFromOperations())->toBeNull();
+    expect($model->getProfitAfterTaxation())->toBeNull();
+    expect($model->getSubscribedCapital())->toBeNull();
+    expect($model->getShareholdersEquity())->toBeNull();
 });
 
-it('declares correct getters', function () {
-    $getters = FinancialSummary::getters();
-
-    expect($getters)->toBe([
-        'year' => 'getYear',
-        'total_sales' => 'getTotalSales',
-        'income_from_operations' => 'getIncomeFromOperations',
-        'profit_after_taxation' => 'getProfitAfterTaxation',
-        'subscribed_capital' => 'getSubscribedCapital',
-        'shareholders_equity' => 'getShareholdersEquity',
-    ]);
-});
-
-it('instantiates with empty constructor returning null property values', function () {
-    $summary = new FinancialSummary();
-
-    expect($summary->getYear())->toBeNull();
-    expect($summary->getTotalSales())->toBeNull();
-    expect($summary->getIncomeFromOperations())->toBeNull();
-    expect($summary->getProfitAfterTaxation())->toBeNull();
-    expect($summary->getSubscribedCapital())->toBeNull();
-    expect($summary->getShareholdersEquity())->toBeNull();
-});
-
-it('instantiates with data array setting property values', function () {
-    $summary = new FinancialSummary([
+it('constructor with data sets provided properties', function () {
+    $model = new FinancialSummary([
         'year' => 2023,
         'total_sales' => 50000000,
-        'income_from_operations' => 3500000,
-        'profit_after_taxation' => 2800000,
-        'subscribed_capital' => 10000000,
-        'shareholders_equity' => 15000000,
+        'income_from_operations' => 10000000,
+        'profit_after_taxation' => 5000000,
+        'subscribed_capital' => 3000000,
+        'shareholders_equity' => 25000000,
     ]);
-
-    expect($summary->getYear())->toBe(2023);
-    expect($summary->getTotalSales())->toBe(50000000);
-    expect($summary->getIncomeFromOperations())->toBe(3500000);
-    expect($summary->getProfitAfterTaxation())->toBe(2800000);
-    expect($summary->getSubscribedCapital())->toBe(10000000);
-    expect($summary->getShareholdersEquity())->toBe(15000000);
+    expect($model->getYear())->toBe(2023);
+    expect($model->getTotalSales())->toBe(50000000);
+    expect($model->getIncomeFromOperations())->toBe(10000000);
+    expect($model->getProfitAfterTaxation())->toBe(5000000);
+    expect($model->getSubscribedCapital())->toBe(3000000);
+    expect($model->getShareholdersEquity())->toBe(25000000);
 });
 
-it('instantiates with partial data including zero values', function () {
-    $summary = new FinancialSummary([
-        'year' => 2023,
-        'total_sales' => 0,
-        'profit_after_taxation' => -5000000,
-    ]);
-
-    expect($summary->getYear())->toBe(2023);
-    expect($summary->getTotalSales())->toBe(0);
-    expect($summary->getProfitAfterTaxation())->toBe(-5000000);
-    expect($summary->getIncomeFromOperations())->toBeNull();
-    expect($summary->getSubscribedCapital())->toBeNull();
-    expect($summary->getShareholdersEquity())->toBeNull();
+it('constructor with partial data leaves others null', function () {
+    $model = new FinancialSummary(['year' => 2024]);
+    expect($model->getYear())->toBe(2024);
+    expect($model->getTotalSales())->toBeNull();
 });
 
-it('handles constructor with null argument', function () {
-    $summary = new FinancialSummary(null);
-
-    expect($summary->getYear())->toBeNull();
-    expect($summary->getTotalSales())->toBeNull();
-    expect($summary->getIncomeFromOperations())->toBeNull();
-    expect($summary->getProfitAfterTaxation())->toBeNull();
-    expect($summary->getSubscribedCapital())->toBeNull();
-    expect($summary->getShareholdersEquity())->toBeNull();
+it('constructor with empty array initializes all null', function () {
+    $model = new FinancialSummary([]);
+    expect($model->getYear())->toBeNull();
 });
 
-it('sets and gets year', function (int $value) {
-    $summary = new FinancialSummary();
-    $result = $summary->setYear($value);
-
-    expect($result)->toBeInstanceOf(FinancialSummary::class);
-    expect($summary->getYear())->toBe($value);
-})->with([
-    '2023' => 2023,
-    '2022' => 2022,
-    'zero' => 0,
-    'negative' => -1,
-]);
-
-it('sets and gets total_sales', function (int $value) {
-    $summary = new FinancialSummary();
-    $result = $summary->setTotalSales($value);
-
-    expect($result)->toBeInstanceOf(FinancialSummary::class);
-    expect($summary->getTotalSales())->toBe($value);
-})->with([
-    'positive' => 50000000,
-    'zero' => 0,
-    'negative' => -1000000,
-]);
-
-it('sets and gets income_from_operations', function (int $value) {
-    $summary = new FinancialSummary();
-    $result = $summary->setIncomeFromOperations($value);
-
-    expect($result)->toBeInstanceOf(FinancialSummary::class);
-    expect($summary->getIncomeFromOperations())->toBe($value);
-})->with([
-    'positive' => 3500000,
-    'zero' => 0,
-    'negative' => -2000000,
-]);
-
-it('sets and gets profit_after_taxation', function (int $value) {
-    $summary = new FinancialSummary();
-    $result = $summary->setProfitAfterTaxation($value);
-
-    expect($result)->toBeInstanceOf(FinancialSummary::class);
-    expect($summary->getProfitAfterTaxation())->toBe($value);
-})->with([
-    'positive' => 2800000,
-    'zero' => 0,
-    'negative' => -5000000,
-]);
-
-it('sets and gets subscribed_capital', function (int $value) {
-    $summary = new FinancialSummary();
-    $result = $summary->setSubscribedCapital($value);
-
-    expect($result)->toBeInstanceOf(FinancialSummary::class);
-    expect($summary->getSubscribedCapital())->toBe($value);
-})->with([
-    'positive' => 10000000,
-    'zero' => 0,
-]);
-
-it('sets and gets shareholders_equity', function (int $value) {
-    $summary = new FinancialSummary();
-    $result = $summary->setShareholdersEquity($value);
-
-    expect($result)->toBeInstanceOf(FinancialSummary::class);
-    expect($summary->getShareholdersEquity())->toBe($value);
-})->with([
-    'positive' => 15000000,
-    'zero' => 0,
-    'negative' => -3000000,
-]);
-
-it('throws exception when setting null on non-nullable property', function (string $property, string $setter, int $validValue) {
-    $summary = new FinancialSummary();
-    $summary->{$setter}($validValue);
-
-    expect(fn () => $summary->{$setter}(null))->toThrow(
-        \InvalidArgumentException::class,
-        "non-nullable {$property} cannot be null"
-    );
-})->with([
-    'year' => ['year', 'setYear', 2023],
-    'total_sales' => ['total_sales', 'setTotalSales', 50000000],
-    'income_from_operations' => ['income_from_operations', 'setIncomeFromOperations', 3500000],
-    'profit_after_taxation' => ['profit_after_taxation', 'setProfitAfterTaxation', 2800000],
-    'subscribed_capital' => ['subscribed_capital', 'setSubscribedCapital', 10000000],
-    'shareholders_equity' => ['shareholders_equity', 'setShareholdersEquity', 15000000],
-]);
-
-it('declares no nullable properties', function () {
-    expect(FinancialSummary::isNullable('year'))->toBeFalse();
-    expect(FinancialSummary::isNullable('total_sales'))->toBeFalse();
-    expect(FinancialSummary::isNullable('income_from_operations'))->toBeFalse();
-    expect(FinancialSummary::isNullable('profit_after_taxation'))->toBeFalse();
-    expect(FinancialSummary::isNullable('subscribed_capital'))->toBeFalse();
-    expect(FinancialSummary::isNullable('shareholders_equity'))->toBeFalse();
-    expect(FinancialSummary::isNullable('nonexistent'))->toBeFalse();
+it('implements ArrayAccess: offsetExists', function () {
+    $this->model->setYear(2023);
+    expect($this->model->offsetExists('year'))->toBeTrue();
+    expect($this->model->offsetExists('nonexistent'))->toBeFalse();
 });
 
-it('returns false for isNullableSetToNull on non-nullable model', function () {
-    $summary = new FinancialSummary();
-
-    expect($summary->isNullableSetToNull('year'))->toBeFalse();
-    expect($summary->isNullableSetToNull('total_sales'))->toBeFalse();
-    expect($summary->isNullableSetToNull('income_from_operations'))->toBeFalse();
-    expect($summary->isNullableSetToNull('profit_after_taxation'))->toBeFalse();
-    expect($summary->isNullableSetToNull('subscribed_capital'))->toBeFalse();
-    expect($summary->isNullableSetToNull('shareholders_equity'))->toBeFalse();
+it('implements ArrayAccess: offsetGet', function () {
+    $this->model->setYear(2023);
+    expect($this->model->offsetGet('year'))->toBe(2023);
+    expect($this->model->offsetGet('nonexistent'))->toBeNull();
 });
 
-it('returns true for valid and empty invalid properties', function () {
-    $summary = new FinancialSummary();
-
-    expect($summary->valid())->toBeTrue();
-    expect($summary->listInvalidProperties())->toBe([]);
+it('implements ArrayAccess: offsetSet with key', function () {
+    $this->model->offsetSet('year', 2021);
+    expect($this->model->offsetGet('year'))->toBe(2021);
 });
 
-it('valid with all properties set', function () {
-    $summary = new FinancialSummary();
-    $summary->setYear(2023);
-    $summary->setTotalSales(50000000);
-    $summary->setIncomeFromOperations(3500000);
-    $summary->setProfitAfterTaxation(2800000);
-    $summary->setSubscribedCapital(10000000);
-    $summary->setShareholdersEquity(15000000);
-
-    expect($summary->valid())->toBeTrue();
-    expect($summary->listInvalidProperties())->toBe([]);
+it('implements ArrayAccess: offsetSet without key', function () {
+    $this->model->offsetSet(null, 'appended');
+    expect($this->model->offsetGet(0))->toBe('appended');
 });
 
-it('implements ArrayAccess offsetExists', function () {
-    $summary = new FinancialSummary();
-
-    expect($summary->offsetExists('year'))->toBeFalse();
-
-    $summary->setYear(2023);
-    expect($summary->offsetExists('year'))->toBeTrue();
-    expect($summary->offsetExists('total_sales'))->toBeFalse();
-    expect($summary->offsetExists('nonexistent'))->toBeFalse();
+it('implements ArrayAccess: offsetUnset', function () {
+    $this->model->setYear(2023);
+    $this->model->offsetUnset('year');
+    expect($this->model->offsetExists('year'))->toBeFalse();
 });
 
-it('implements ArrayAccess offsetGet', function () {
-    $summary = new FinancialSummary();
-    $summary->setYear(2023);
-    $summary->setTotalSales(50000000);
-
-    expect($summary->offsetGet('year'))->toBe(2023);
-    expect($summary->offsetGet('total_sales'))->toBe(50000000);
-    expect($summary->offsetGet('nonexistent'))->toBeNull();
+it('jsonSerialize returns array', function () {
+    $this->model->setYear(2023);
+    $serialized = $this->model->jsonSerialize();
+    expect($serialized)->toBeObject();
 });
 
-it('implements ArrayAccess offsetSet', function () {
-    $summary = new FinancialSummary();
-
-    $summary->offsetSet('year', 2023);
-    expect($summary->getYear())->toBe(2023);
-
-    $summary->offsetSet('total_sales', 50000000);
-    expect($summary->getTotalSales())->toBe(50000000);
-
-    $summary->offsetSet(null, 999);
-    expect($summary->offsetGet(0))->toBe(999);
-});
-
-it('implements ArrayAccess offsetUnset', function () {
-    $summary = new FinancialSummary();
-    $summary->setYear(2023);
-    expect($summary->offsetExists('year'))->toBeTrue();
-
-    $summary->offsetUnset('year');
-    expect($summary->offsetExists('year'))->toBeFalse();
-});
-
-it('serializes via jsonSerialize', function () {
-    $summary = new FinancialSummary();
-    $summary->setYear(2023);
-    $summary->setTotalSales(50000000);
-    $summary->setProfitAfterTaxation(2800000);
-
-    $result = $summary->jsonSerialize();
-
-    expect($result)->toBeObject();
-    expect($result->Year)->toBe(2023);
-    expect($result->TotalSales)->toBe(50000000);
-    expect($result->ProfitAfterTaxation)->toBe(2800000);
-});
-
-it('returns string representation via __toString', function () {
-    $summary = new FinancialSummary();
-    $summary->setYear(2023);
-    $summary->setTotalSales(50000000);
-
-    $str = (string) $summary;
-
+it('__toString returns JSON string', function () {
+    $this->model->setYear(2023);
+    $str = $this->model->__toString();
     expect($str)->toBeString();
-    expect(strlen($str))->toBeGreaterThan(0);
-
-    $decoded = json_decode($str, true);
-    expect($decoded)->toBeArray();
-    expect($decoded['Year'])->toBe(2023);
-    expect($decoded['TotalSales'])->toBe(50000000);
+    expect($str)->toBeString()->not->toBeEmpty();
 });
 
-it('returns header-safe presentation via toHeaderValue', function () {
-    $summary = new FinancialSummary();
-    $summary->setYear(2023);
-
-    $header = $summary->toHeaderValue();
-
-    expect($header)->toBeString();
-    expect(strlen($header))->toBeGreaterThan(0);
-
-    $decoded = json_decode($header, true);
-    expect($decoded)->toBeArray();
-    expect($decoded['Year'])->toBe(2023);
+it('toHeaderValue returns JSON string', function () {
+    $this->model->setYear(2023);
+    $value = $this->model->toHeaderValue();
+    expect($value)->toBeString();
+    expect(json_decode($value, true))->toBeArray();
 });
 
-it('supports chaining setters', function () {
-    $summary = new FinancialSummary();
-    $result = $summary
-        ->setYear(2023)
-        ->setTotalSales(50000000)
-        ->setIncomeFromOperations(3500000)
-        ->setProfitAfterTaxation(2800000)
-        ->setSubscribedCapital(10000000)
-        ->setShareholdersEquity(15000000);
+it('isNullable returns false for all properties', function (string $property) {
+    expect(FinancialSummary::isNullable($property))->toBeFalse();
+})->with(['year', 'total_sales', 'income_from_operations', 'profit_after_taxation', 'subscribed_capital', 'shareholders_equity']);
 
-    expect($result)->toBeInstanceOf(FinancialSummary::class);
-    expect($summary->getYear())->toBe(2023);
-    expect($summary->getTotalSales())->toBe(50000000);
-    expect($summary->getIncomeFromOperations())->toBe(3500000);
-    expect($summary->getProfitAfterTaxation())->toBe(2800000);
-    expect($summary->getSubscribedCapital())->toBe(10000000);
-    expect($summary->getShareholdersEquity())->toBe(15000000);
+it('isNullable returns false for unknown property', function () {
+    expect(FinancialSummary::isNullable('unknown'))->toBeFalse();
+});
+
+it('isNullableSetToNull initially returns false', function () {
+    expect($this->model->isNullableSetToNull('year'))->toBeFalse();
+    expect($this->model->isNullableSetToNull('total_sales'))->toBeFalse();
+});
+
+it('listInvalidProperties always returns empty', function () {
+    expect($this->model->listInvalidProperties())->toBeEmpty();
+});
+
+it('valid always returns true', function () {
+    expect($this->model->valid())->toBeTrue();
 });

@@ -2,126 +2,130 @@
 
 use Omisai\CreditOnline\ApiException;
 
-// ---- Inheritance ----
+// ---------------------------------------------------------------------------
+// Extension
+// ---------------------------------------------------------------------------
 
 it('extends Exception', function () {
-    $exception = new ApiException();
-
-    expect($exception)->toBeInstanceOf(Exception::class);
+    $e = new ApiException();
+    expect($e)->toBeInstanceOf(Exception::class);
+    expect($e)->toBeInstanceOf(ApiException::class);
 });
 
-// ---- Constructor ----
+// ---------------------------------------------------------------------------
+// Constructor with all parameters
+// ---------------------------------------------------------------------------
 
-it('constructor accepts message, code, responseHeaders, and responseBody', function () {
-    $headers = ['Content-Type' => ['application/json']];
-    $body = json_decode('{"error": "not_found"}');
-
-    $exception = new ApiException('Not Found', 404, $headers, $body);
-
-    expect($exception->getMessage())->toBe('Not Found');
-    expect($exception->getCode())->toBe(404);
-    expect($exception->getResponseHeaders())->toBe($headers);
-    expect($exception->getResponseBody())->toBe($body);
-});
-
-it('constructor has default values for optional parameters', function () {
-    $exception = new ApiException();
-
-    expect($exception->getMessage())->toBe('');
-    expect($exception->getCode())->toBe(0);
-    expect($exception->getResponseHeaders())->toBe([]);
-    expect($exception->getResponseBody())->toBeNull();
-});
-
-it('constructor accepts string responseBody', function () {
-    $exception = new ApiException('Error', 500, [], '{"error": true}');
-
-    expect($exception->getResponseBody())->toBe('{"error": true}');
-});
-
-// ---- getResponseHeaders ----
-
-it('getResponseHeaders returns the headers array', function () {
+it('constructor accepts all parameters', function () {
     $headers = [
         'Content-Type' => ['application/json'],
         'X-Request-Id' => ['abc-123'],
     ];
-    $exception = new ApiException('Error', 500, $headers);
+    $body = (object) ['error' => 'Not Found', 'code' => 404];
 
-    expect($exception->getResponseHeaders())->toBe($headers);
+    $e = new ApiException('Something went wrong', 404, $headers, $body);
+
+    expect($e->getMessage())->toBe('Something went wrong');
+    expect($e->getCode())->toBe(404);
+    expect($e->getResponseHeaders())->toBe($headers);
+    expect($e->getResponseBody())->toBe($body);
 });
 
-it('getResponseHeaders returns null when none provided', function () {
-    $exception = new ApiException('Error', 500);
+// ---------------------------------------------------------------------------
+// Default parameter values
+// ---------------------------------------------------------------------------
 
-    // Default is [], not null. Let's test with explicit null
-    $exceptionNull = new ApiException('Error', 500, null);
-
-    expect($exceptionNull->getResponseHeaders())->toBeNull();
+it('defaults message to empty string', function () {
+    $e = new ApiException();
+    expect($e->getMessage())->toBe('');
 });
 
-// ---- getResponseBody ----
-
-it('getResponseBody returns the body', function () {
-    $body = json_decode('{"message": "Server Error"}');
-    $exception = new ApiException('Error', 500, [], $body);
-
-    expect($exception->getResponseBody())->toBe($body);
+it('defaults code to 0', function () {
+    $e = new ApiException();
+    expect($e->getCode())->toBe(0);
 });
 
-it('getResponseBody returns null when no body provided', function () {
-    $exception = new ApiException('Error', 500);
-
-    expect($exception->getResponseBody())->toBeNull();
+it('defaults responseHeaders to empty array', function () {
+    $e = new ApiException();
+    expect($e->getResponseHeaders())->toBe([]);
 });
 
-// ---- __toString ----
-
-it('__toString returns a string containing exception information', function () {
-    $headers = ['Content-Type' => ['application/json']];
-    $body = json_decode('{"error": "server_error"}');
-
-    $exception = new ApiException('Server Error', 500, $headers, $body);
-    $string = (string) $exception;
-
-    expect($string)->toBeString()
-        ->toContain('ApiException')
-        ->toContain('Server Error');
+it('defaults responseBody to null', function () {
+    $e = new ApiException();
+    expect($e->getResponseBody())->toBeNull();
 });
 
-// ---- setResponseObject / getResponseObject ----
+// ---------------------------------------------------------------------------
+// getResponseHeaders / getResponseBody with null
+// ---------------------------------------------------------------------------
 
-it('sets and gets the deserialized response object', function () {
-    $exception = new ApiException('Error', 500);
+it('getResponseHeaders returns null when constructed with null', function () {
+    $e = new ApiException('msg', 500, null, null);
+    expect($e->getResponseHeaders())->toBeNull();
+});
+
+it('getResponseBody returns null when constructed with null', function () {
+    $e = new ApiException('msg', 500, null, null);
+    expect($e->getResponseBody())->toBeNull();
+});
+
+it('getResponseBody returns string body', function () {
+    $e = new ApiException('msg', 500, [], 'Plain text error');
+    expect($e->getResponseBody())->toBe('Plain text error');
+});
+
+it('getResponseBody returns stdClass body', function () {
+    $body = (object) ['detail' => 'Forbidden'];
+    $e = new ApiException('msg', 403, [], $body);
+    expect($e->getResponseBody())->toBe($body);
+});
+
+// ---------------------------------------------------------------------------
+// setResponseObject / getResponseObject
+// ---------------------------------------------------------------------------
+
+it('setResponseObject stores and getResponseObject retrieves', function () {
     $obj = new stdClass();
-    $obj->id = 1;
-    $obj->name = 'Test';
+    $obj->key = 'value';
 
-    $exception->setResponseObject($obj);
+    $e = new ApiException();
+    $e->setResponseObject($obj);
 
-    expect($exception->getResponseObject())->toBe($obj);
+    expect($e->getResponseObject())->toBe($obj);
 });
 
-it('default response object is null', function () {
-    $exception = new ApiException();
-
-    expect($exception->getResponseObject())->toBeNull();
+it('getResponseObject returns null by default', function () {
+    $e = new ApiException();
+    expect($e->getResponseObject())->toBeNull();
 });
 
-// ---- Multiple API keys pattern testing ----
-
-it('works with different HTTP status codes', function (int $code, string $expectedMessage) {
-    $exception = new ApiException($expectedMessage, $code, [], null);
-
-    expect($exception->getCode())->toBe($code);
-    expect($exception->getMessage())->toBe($expectedMessage);
+it('setResponseObject accepts any type', function ($value) {
+    $e = new ApiException();
+    $e->setResponseObject($value);
+    expect($e->getResponseObject())->toBe($value);
 })->with([
-    '200 OK' => [200, 'OK'],
-    '400 Bad Request' => [400, 'Bad Request'],
-    '401 Unauthorized' => [401, 'Unauthorized'],
-    '403 Forbidden' => [403, 'Forbidden'],
-    '404 Not Found' => [404, 'Not Found'],
-    '500 Internal Server Error' => [500, 'Internal Server Error'],
-    '502 Bad Gateway' => [502, 'Bad Gateway'],
-    '503 Service Unavailable' => [503, 'Service Unavailable'],
+    'string' => 'some string',
+    'int' => 42,
+    'array' => [1, 2, 3],
+    'stdClass' => fn() => (object) ['prop' => 'val'],
 ]);
+
+// ---------------------------------------------------------------------------
+// __toString
+// ---------------------------------------------------------------------------
+
+it('__toString contains exception class name and message', function () {
+    $e = new ApiException('Test error message', 400);
+    $output = (string) $e;
+
+    expect($output)->toContain('ApiException');
+    expect($output)->toContain('Test error message');
+});
+
+it('__toString includes stack trace', function () {
+    $e = new ApiException('Failure', 500);
+    $output = (string) $e;
+
+    expect($output)->toContain('Stack trace');
+    expect($output)->toContain('ApiExceptionTest.php');
+});

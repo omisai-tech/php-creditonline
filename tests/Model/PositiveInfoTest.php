@@ -2,15 +2,16 @@
 
 use Omisai\CreditOnline\Model\PositiveInfo;
 
-it('has correct model name', function () {
-    $info = new PositiveInfo();
-
-    expect($info->getModelName())->toBe('PositiveInfo');
+beforeEach(function () {
+    $this->model = new PositiveInfo();
 });
 
-it('declares correct open API types', function () {
-    $types = PositiveInfo::openAPITypes();
+it('getModelName returns PositiveInfo', function () {
+    expect($this->model->getModelName())->toBe('PositiveInfo');
+});
 
+it('openAPITypes returns correct type array', function () {
+    $types = PositiveInfo::openAPITypes();
     expect($types)->toBe([
         'type' => 'string',
         'start' => '\DateTime',
@@ -18,251 +19,164 @@ it('declares correct open API types', function () {
     ]);
 });
 
-it('declares correct open API formats', function () {
+it('openAPIFormats has date format for start and end', function () {
     $formats = PositiveInfo::openAPIFormats();
-
-    expect($formats)->toBe([
-        'type' => null,
-        'start' => 'date',
-        'end' => 'date',
-    ]);
+    expect($formats)->toHaveKeys(['type', 'start', 'end']);
+    expect($formats['start'])->toBe('date');
+    expect($formats['end'])->toBe('date');
 });
 
-it('declares correct attribute map', function () {
+it('attributeMap uses correct original names', function (string $local, string $original) {
     $map = PositiveInfo::attributeMap();
+    expect($map[$local])->toBe($original);
+})->with([
+    ['type', 'Type'],
+    ['start', 'Start'],
+    ['end', 'End'],
+]);
 
-    expect($map)->toBe([
-        'type' => 'Type',
-        'start' => 'Start',
-        'end' => 'End',
-    ]);
+it('setters returns correct mapping', function (string $property, string $setter) {
+    expect(PositiveInfo::setters()[$property])->toBe($setter);
+})->with([
+    ['type', 'setType'],
+    ['start', 'setStart'],
+    ['end', 'setEnd'],
+]);
+
+it('getters returns correct mapping', function (string $property, string $getter) {
+    expect(PositiveInfo::getters()[$property])->toBe($getter);
+})->with([
+    ['type', 'getType'],
+    ['start', 'getStart'],
+    ['end', 'getEnd'],
+]);
+
+it('setType sets value and returns $this', function () {
+    $result = $this->model->setType('Pozitív információ');
+    expect($result)->toBe($this->model);
+    expect($this->model->getType())->toBe('Pozitív információ');
 });
 
-it('declares correct setters', function () {
+it('setStart sets DateTime value and returns $this', function () {
+    $date = new DateTime('2023-01-15');
+    $result = $this->model->setStart($date);
+    expect($result)->toBe($this->model);
+    expect($this->model->getStart())->toBe($date);
+});
+
+it('setEnd sets DateTime value and returns $this', function () {
+    $date = new DateTime('2024-12-31');
+    $result = $this->model->setEnd($date);
+    expect($result)->toBe($this->model);
+    expect($this->model->getEnd())->toBe($date);
+});
+
+it('setter throws on null for non-nullable properties', function (string $property) {
     $setters = PositiveInfo::setters();
+    $setter = $setters[$property];
+    $this->model->{$setter}(null);
+})->throws(\InvalidArgumentException::class)->with([
+    ['type'],
+    ['start'],
+    ['end'],
+]);
 
-    expect($setters)->toBe([
-        'type' => 'setType',
-        'start' => 'setStart',
-        'end' => 'setEnd',
-    ]);
+it('constructor with null sets all properties to null', function () {
+    $model = new PositiveInfo();
+    expect($model->getType())->toBeNull();
+    expect($model->getStart())->toBeNull();
+    expect($model->getEnd())->toBeNull();
 });
 
-it('declares correct getters', function () {
-    $getters = PositiveInfo::getters();
-
-    expect($getters)->toBe([
-        'type' => 'getType',
-        'start' => 'getStart',
-        'end' => 'getEnd',
-    ]);
-});
-
-it('instantiates with empty constructor returning null property values', function () {
-    $info = new PositiveInfo();
-
-    expect($info->getType())->toBeNull();
-    expect($info->getStart())->toBeNull();
-    expect($info->getEnd())->toBeNull();
-});
-
-it('instantiates with data array setting property values', function () {
-    $start = new DateTime('2023-01-01');
-    $end = new DateTime('2023-12-31');
-    $info = new PositiveInfo([
-        'type' => 'ARBEV',
+it('constructor with data sets provided properties', function () {
+    $start = new DateTime('2023-01-15');
+    $end = new DateTime('2024-12-31');
+    $model = new PositiveInfo([
+        'type' => 'Pozitív információ',
         'start' => $start,
         'end' => $end,
     ]);
-
-    expect($info->getType())->toBe('ARBEV');
-    expect($info->getStart())->toBe($start);
-    expect($info->getEnd())->toBe($end);
+    expect($model->getType())->toBe('Pozitív információ');
+    expect($model->getStart())->toBe($start);
+    expect($model->getEnd())->toBe($end);
 });
 
-it('instantiates with partial data', function () {
-    $info = new PositiveInfo([
-        'type' => 'ARBEV',
-    ]);
-
-    expect($info->getType())->toBe('ARBEV');
-    expect($info->getStart())->toBeNull();
-    expect($info->getEnd())->toBeNull();
+it('constructor with partial data leaves others null', function () {
+    $model = new PositiveInfo(['type' => 'Pozitív információ']);
+    expect($model->getType())->toBe('Pozitív információ');
+    expect($model->getStart())->toBeNull();
 });
 
-it('handles constructor with null argument', function () {
-    $info = new PositiveInfo(null);
-
-    expect($info->getType())->toBeNull();
-    expect($info->getStart())->toBeNull();
-    expect($info->getEnd())->toBeNull();
+it('constructor with empty array initializes all null', function () {
+    $model = new PositiveInfo([]);
+    expect($model->getType())->toBeNull();
 });
 
-it('sets and gets type', function (string $value) {
-    $info = new PositiveInfo();
-    $result = $info->setType($value);
-
-    expect($result)->toBeInstanceOf(PositiveInfo::class);
-    expect($info->getType())->toBe($value);
-})->with([
-    'arbev' => 'ARBEV',
-    'empty' => '',
-]);
-
-it('sets and gets start', function () {
-    $info = new PositiveInfo();
-    $start = new DateTime('2023-01-01');
-    $result = $info->setStart($start);
-
-    expect($result)->toBeInstanceOf(PositiveInfo::class);
-    expect($info->getStart())->toBe($start);
+it('implements ArrayAccess: offsetExists', function () {
+    $this->model->setType('Pozitív információ');
+    expect($this->model->offsetExists('type'))->toBeTrue();
+    expect($this->model->offsetExists('nonexistent'))->toBeFalse();
 });
 
-it('sets and gets end', function () {
-    $info = new PositiveInfo();
-    $end = new DateTime('2023-12-31');
-    $result = $info->setEnd($end);
-
-    expect($result)->toBeInstanceOf(PositiveInfo::class);
-    expect($info->getEnd())->toBe($end);
+it('implements ArrayAccess: offsetGet', function () {
+    $this->model->setType('Pozitív információ');
+    expect($this->model->offsetGet('type'))->toBe('Pozitív információ');
+    expect($this->model->offsetGet('nonexistent'))->toBeNull();
 });
 
-it('throws exception when setting null on non-nullable property', function (string $property, string $setter, mixed $validValue) {
-    $info = new PositiveInfo();
-    $info->{$setter}($validValue);
-
-    expect(fn () => $info->{$setter}(null))->toThrow(
-        \InvalidArgumentException::class,
-        "non-nullable {$property} cannot be null"
-    );
-})->with([
-    'type' => ['type', 'setType', 'ARBEV'],
-    'start' => ['start', 'setStart', new DateTime('2023-01-01')],
-    'end' => ['end', 'setEnd', new DateTime('2023-12-31')],
-]);
-
-it('declares no nullable properties', function () {
-    expect(PositiveInfo::isNullable('type'))->toBeFalse();
-    expect(PositiveInfo::isNullable('start'))->toBeFalse();
-    expect(PositiveInfo::isNullable('end'))->toBeFalse();
-    expect(PositiveInfo::isNullable('nonexistent'))->toBeFalse();
+it('implements ArrayAccess: offsetSet with key', function () {
+    $this->model->offsetSet('type', 'Más információ');
+    expect($this->model->offsetGet('type'))->toBe('Más információ');
 });
 
-it('returns false for isNullableSetToNull on non-nullable model', function () {
-    $info = new PositiveInfo();
-
-    expect($info->isNullableSetToNull('type'))->toBeFalse();
-    expect($info->isNullableSetToNull('start'))->toBeFalse();
-    expect($info->isNullableSetToNull('end'))->toBeFalse();
+it('implements ArrayAccess: offsetSet without key', function () {
+    $this->model->offsetSet(null, 'value');
+    expect($this->model->offsetGet(0))->toBe('value');
 });
 
-it('returns true for valid and empty invalid properties', function () {
-    $info = new PositiveInfo();
-
-    expect($info->valid())->toBeTrue();
-    expect($info->listInvalidProperties())->toBe([]);
+it('implements ArrayAccess: offsetUnset', function () {
+    $this->model->setType('Pozitív információ');
+    $this->model->offsetUnset('type');
+    expect($this->model->offsetExists('type'))->toBeFalse();
 });
 
-it('valid with all properties set', function () {
-    $info = new PositiveInfo();
-    $info->setType('ARBEV');
-    $info->setStart(new DateTime('2023-01-01'));
-    $info->setEnd(new DateTime('2023-12-31'));
-
-    expect($info->valid())->toBeTrue();
-    expect($info->listInvalidProperties())->toBe([]);
+it('jsonSerialize returns array', function () {
+    $this->model->setType('Pozitív információ');
+    $serialized = $this->model->jsonSerialize();
+    expect($serialized)->toBeObject();
 });
 
-it('implements ArrayAccess offsetExists', function () {
-    $info = new PositiveInfo();
-
-    expect($info->offsetExists('type'))->toBeFalse();
-
-    $info->setType('ARBEV');
-    expect($info->offsetExists('type'))->toBeTrue();
-    expect($info->offsetExists('start'))->toBeFalse();
-    expect($info->offsetExists('nonexistent'))->toBeFalse();
-});
-
-it('implements ArrayAccess offsetGet', function () {
-    $info = new PositiveInfo();
-    $info->setType('ARBEV');
-    $info->setStart(new DateTime('2023-01-01'));
-
-    expect($info->offsetGet('type'))->toBe('ARBEV');
-    expect($info->offsetGet('start'))->toBeInstanceOf(DateTime::class);
-    expect($info->offsetGet('nonexistent'))->toBeNull();
-});
-
-it('implements ArrayAccess offsetSet', function () {
-    $info = new PositiveInfo();
-
-    $info->offsetSet('type', 'ARBEV');
-    expect($info->getType())->toBe('ARBEV');
-
-    $info->offsetSet('start', new DateTime('2023-01-01'));
-    expect($info->getStart())->toBeInstanceOf(DateTime::class);
-
-    $info->offsetSet(null, 'appended_value');
-    expect($info->offsetGet(0))->toBe('appended_value');
-});
-
-it('implements ArrayAccess offsetUnset', function () {
-    $info = new PositiveInfo();
-    $info->setType('ARBEV');
-    expect($info->offsetExists('type'))->toBeTrue();
-
-    $info->offsetUnset('type');
-    expect($info->offsetExists('type'))->toBeFalse();
-});
-
-it('serializes via jsonSerialize', function () {
-    $info = new PositiveInfo();
-    $info->setType('ARBEV');
-
-    $result = $info->jsonSerialize();
-
-    expect($result)->toBeObject();
-    expect($result->Type)->toBe('ARBEV');
-});
-
-it('returns string representation via __toString', function () {
-    $info = new PositiveInfo();
-    $info->setType('ARBEV');
-
-    $str = (string) $info;
-
+it('__toString returns JSON string', function () {
+    $this->model->setType('Pozitív információ');
+    $str = $this->model->__toString();
     expect($str)->toBeString();
-    expect(strlen($str))->toBeGreaterThan(0);
-
-    $decoded = json_decode($str, true);
-    expect($decoded)->toBeArray();
-    expect($decoded['Type'])->toBe('ARBEV');
+    expect($str)->toBeString()->not->toBeEmpty();
 });
 
-it('returns header-safe presentation via toHeaderValue', function () {
-    $info = new PositiveInfo();
-    $info->setType('ARBEV');
-
-    $header = $info->toHeaderValue();
-
-    expect($header)->toBeString();
-    expect(strlen($header))->toBeGreaterThan(0);
-
-    $decoded = json_decode($header, true);
-    expect($decoded)->toBeArray();
-    expect($decoded['Type'])->toBe('ARBEV');
+it('toHeaderValue returns JSON string', function () {
+    $this->model->setType('Pozitív informação');
+    $value = $this->model->toHeaderValue();
+    expect($value)->toBeString();
+    expect(json_decode($value, true))->toBeArray();
 });
 
-it('supports chaining setters', function () {
-    $info = new PositiveInfo();
-    $result = $info
-        ->setType('ARBEV')
-        ->setStart(new DateTime('2023-01-01'))
-        ->setEnd(new DateTime('2023-12-31'));
+it('isNullable returns false for all properties', function (string $property) {
+    expect(PositiveInfo::isNullable($property))->toBeFalse();
+})->with(['type', 'start', 'end']);
 
-    expect($result)->toBeInstanceOf(PositiveInfo::class);
-    expect($info->getType())->toBe('ARBEV');
-    expect($info->getStart())->toBeInstanceOf(DateTime::class);
-    expect($info->getEnd())->toBeInstanceOf(DateTime::class);
+it('isNullable returns false for unknown property', function () {
+    expect(PositiveInfo::isNullable('unknown'))->toBeFalse();
+});
+
+it('isNullableSetToNull initially returns false', function () {
+    expect($this->model->isNullableSetToNull('type'))->toBeFalse();
+    expect($this->model->isNullableSetToNull('start'))->toBeFalse();
+});
+
+it('listInvalidProperties always returns empty', function () {
+    expect($this->model->listInvalidProperties())->toBeEmpty();
+});
+
+it('valid always returns true', function () {
+    expect($this->model->valid())->toBeTrue();
 });

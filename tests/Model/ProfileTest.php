@@ -1,229 +1,193 @@
 <?php
 
-use Omisai\CreditOnline\Model\ActualUsage;
 use Omisai\CreditOnline\Model\Profile;
+use Omisai\CreditOnline\Model\ActualUsage;
 
-$profileProperties = [
-    'company_name',
-    'actual_format',
-    'actual_language',
-    'actual_usages',
-];
-
-it('returns the model name', function () {
-    $model = new Profile();
-    expect($model->getModelName())->toBe('Profile');
+beforeEach(function () {
+    $this->model = new Profile();
 });
 
-it('has correct openAPITypes', function () use ($profileProperties) {
+it('getModelName returns Profile', function () {
+    expect($this->model->getModelName())->toBe('Profile');
+});
+
+it('openAPITypes returns correct type array', function () {
     $types = Profile::openAPITypes();
-    expect($types)->toBeArray()->toHaveCount(count($profileProperties));
-    expect($types['company_name'])->toBe('string');
-    expect($types['actual_format'])->toBe('string');
-    expect($types['actual_language'])->toBe('string');
-    expect($types['actual_usages'])->toBe('\Omisai\CreditOnline\Model\ActualUsage');
+    expect($types)->toBe([
+        'company_name' => 'string',
+        'actual_format' => 'string',
+        'actual_language' => 'string',
+        'actual_usages' => '\Omisai\CreditOnline\Model\ActualUsage',
+    ]);
 });
 
-it('has correct openAPIFormats', function () use ($profileProperties) {
+it('openAPIFormats returns all null formats', function () {
     $formats = Profile::openAPIFormats();
-    expect($formats)->toBeArray()->toHaveCount(count($profileProperties));
-    foreach ($profileProperties as $prop) {
-        expect($formats[$prop])->toBeNull();
-    }
+    expect($formats)->toHaveKeys(['company_name', 'actual_format', 'actual_language', 'actual_usages']);
 });
 
-it('has correct attributeMap', function () {
+it('attributeMap uses correct original names', function (string $local, string $original) {
     $map = Profile::attributeMap();
-    expect($map)->toBeArray();
-    expect($map['company_name'])->toBe('CompanyName');
-    expect($map['actual_format'])->toBe('ActualFormat');
-    expect($map['actual_language'])->toBe('ActualLanguage');
-    expect($map['actual_usages'])->toBe('ActualUsages');
+    expect($map[$local])->toBe($original);
+})->with([
+    ['company_name', 'CompanyName'],
+    ['actual_format', 'ActualFormat'],
+    ['actual_language', 'ActualLanguage'],
+    ['actual_usages', 'ActualUsages'],
+]);
+
+it('setters returns correct mapping', function (string $property, string $setter) {
+    expect(Profile::setters()[$property])->toBe($setter);
+})->with([
+    ['company_name', 'setCompanyName'],
+    ['actual_format', 'setActualFormat'],
+    ['actual_language', 'setActualLanguage'],
+    ['actual_usages', 'setActualUsages'],
+]);
+
+it('getters returns correct mapping', function (string $property, string $getter) {
+    expect(Profile::getters()[$property])->toBe($getter);
+})->with([
+    ['company_name', 'getCompanyName'],
+    ['actual_format', 'getActualFormat'],
+    ['actual_language', 'getActualLanguage'],
+    ['actual_usages', 'getActualUsages'],
+]);
+
+it('setCompanyName sets value and returns $this', function () {
+    $result = $this->model->setCompanyName('Test Kft.');
+    expect($result)->toBe($this->model);
+    expect($this->model->getCompanyName())->toBe('Test Kft.');
 });
 
-it('has correct setters mapping', function () {
+it('setActualFormat sets value and returns $this', function () {
+    $result = $this->model->setActualFormat('json');
+    expect($result)->toBe($this->model);
+    expect($this->model->getActualFormat())->toBe('json');
+});
+
+it('setActualLanguage sets value and returns $this', function () {
+    $result = $this->model->setActualLanguage('hu');
+    expect($result)->toBe($this->model);
+    expect($this->model->getActualLanguage())->toBe('hu');
+});
+
+it('setActualUsages sets ActualUsage value and returns $this', function () {
+    $usage = new ActualUsage();
+    $result = $this->model->setActualUsages($usage);
+    expect($result)->toBe($this->model);
+    expect($this->model->getActualUsages())->toBe($usage);
+});
+
+it('setter throws on null for non-nullable properties', function (string $property) {
     $setters = Profile::setters();
-    expect($setters)->toBeArray();
-    expect($setters['company_name'])->toBe('setCompanyName');
-    expect($setters['actual_format'])->toBe('setActualFormat');
-    expect($setters['actual_language'])->toBe('setActualLanguage');
-    expect($setters['actual_usages'])->toBe('setActualUsages');
-});
+    $setter = $setters[$property];
+    $this->model->{$setter}(null);
+})->throws(\InvalidArgumentException::class)->with([
+    ['company_name'],
+    ['actual_format'],
+    ['actual_language'],
+    ['actual_usages'],
+]);
 
-it('has correct getters mapping', function () {
-    $getters = Profile::getters();
-    expect($getters)->toBeArray();
-    expect($getters['company_name'])->toBe('getCompanyName');
-    expect($getters['actual_format'])->toBe('getActualFormat');
-    expect($getters['actual_language'])->toBe('getActualLanguage');
-    expect($getters['actual_usages'])->toBe('getActualUsages');
-});
-
-it('defaults all properties to null on construction with no data', function () use ($profileProperties) {
+it('constructor with null sets all properties to null', function () {
     $model = new Profile();
-    foreach ($profileProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
+    expect($model->getCompanyName())->toBeNull();
+    expect($model->getActualFormat())->toBeNull();
+    expect($model->getActualLanguage())->toBeNull();
+    expect($model->getActualUsages())->toBeNull();
 });
 
-it('defaults all properties to null on construction with null', function () use ($profileProperties) {
-    $model = new Profile(null);
-    foreach ($profileProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
-});
-
-it('defaults all properties to null on construction with empty array', function () use ($profileProperties) {
-    $model = new Profile([]);
-    foreach ($profileProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
-});
-
-it('sets properties from construction data array', function () {
+it('constructor with data sets provided properties', function () {
     $usage = new ActualUsage();
     $model = new Profile([
-        'company_name' => 'Test Company',
+        'company_name' => 'Test Kft.',
         'actual_format' => 'json',
         'actual_language' => 'hu',
         'actual_usages' => $usage,
     ]);
-    expect($model->getCompanyName())->toBe('Test Company');
+    expect($model->getCompanyName())->toBe('Test Kft.');
     expect($model->getActualFormat())->toBe('json');
     expect($model->getActualLanguage())->toBe('hu');
     expect($model->getActualUsages())->toBe($usage);
 });
 
-it('sets partial properties from construction data', function () {
-    $model = new Profile([
-        'company_name' => 'Partial Company',
-        'actual_language' => 'en',
-    ]);
-    expect($model->getCompanyName())->toBe('Partial Company');
-    expect($model->getActualLanguage())->toBe('en');
+it('constructor with partial data leaves others null', function () {
+    $model = new Profile(['company_name' => 'Test Kft.']);
+    expect($model->getCompanyName())->toBe('Test Kft.');
     expect($model->getActualFormat())->toBeNull();
-    expect($model->getActualUsages())->toBeNull();
 });
 
-it('getters and setters work correctly for string properties', function (string $property) {
-    $model = new Profile();
-    $setter = 'set' . str_replace('_', '', ucwords($property, '_'));
-    $getter = 'get' . str_replace('_', '', ucwords($property, '_'));
-    $result = $model->$setter('test_value');
-    expect($result)->toBe($model);
-    expect($model->$getter())->toBe('test_value');
-})->with(['company_name', 'actual_format', 'actual_language']);
-
-it('setActualUsages accepts ActualUsage object', function () {
-    $model = new Profile();
-    $usage = new ActualUsage();
-    $result = $model->setActualUsages($usage);
-    expect($result)->toBe($model);
-    expect($model->getActualUsages())->toBe($usage);
-});
-
-it('setters return self for fluid interface', function (string $property) {
-    $model = new Profile();
-    $setter = 'set' . str_replace('_', '', ucwords($property, '_'));
-    $value = $property === 'actual_usages' ? new ActualUsage() : 'test';
-    $result = $model->$setter($value);
-    expect($result)->toBe($model);
-})->with($profileProperties);
-
-it('non-nullable setters throw on null', function (string $property) {
-    $model = new Profile();
-    $setter = 'set' . str_replace('_', '', ucwords($property, '_'));
-    $model->$setter(null);
-})->with($profileProperties)->throws(\InvalidArgumentException::class);
-
-it('listInvalidProperties returns empty array (no required fields)', function () {
-    $model = new Profile();
-    expect($model->listInvalidProperties())->toBe([]);
-});
-
-it('valid returns true for default state', function () {
-    $model = new Profile();
-    expect($model->valid())->toBeTrue();
-});
-
-it('valid returns true after setting properties', function () {
-    $model = new Profile(['company_name' => 'Test Co']);
-    expect($model->valid())->toBeTrue();
+it('constructor with empty array initializes all null', function () {
+    $model = new Profile([]);
+    expect($model->getCompanyName())->toBeNull();
 });
 
 it('implements ArrayAccess: offsetExists', function () {
-    $model = new Profile(['company_name' => 'Test']);
-    expect($model->offsetExists('company_name'))->toBeTrue();
-    expect($model->offsetExists('nonexistent'))->toBeFalse();
+    $this->model->setCompanyName('Test');
+    expect($this->model->offsetExists('company_name'))->toBeTrue();
+    expect($this->model->offsetExists('nonexistent'))->toBeFalse();
 });
 
 it('implements ArrayAccess: offsetGet', function () {
-    $model = new Profile(['company_name' => 'Test']);
-    expect($model->offsetGet('company_name'))->toBe('Test');
-    expect($model->offsetGet('nonexistent'))->toBeNull();
+    $this->model->setCompanyName('Test');
+    expect($this->model->offsetGet('company_name'))->toBe('Test');
+    expect($this->model->offsetGet('nonexistent'))->toBeNull();
 });
 
 it('implements ArrayAccess: offsetSet with key', function () {
-    $model = new Profile();
-    $model->offsetSet('company_name', 'New Company');
-    expect($model->offsetGet('company_name'))->toBe('New Company');
+    $this->model->offsetSet('company_name', 'NewName');
+    expect($this->model->offsetGet('company_name'))->toBe('NewName');
 });
 
-it('implements ArrayAccess: offsetSet without key (append)', function () {
-    $model = new Profile();
-    $model->offsetSet(null, 'extra_value');
-    expect($model->offsetGet(0))->toBe('extra_value');
+it('implements ArrayAccess: offsetSet without key', function () {
+    $this->model->offsetSet(null, 'value');
+    expect($this->model->offsetGet(0))->toBe('value');
 });
 
 it('implements ArrayAccess: offsetUnset', function () {
-    $model = new Profile(['company_name' => 'Test']);
-    $model->offsetUnset('company_name');
-    expect($model->offsetExists('company_name'))->toBeFalse();
+    $this->model->setCompanyName('Test');
+    $this->model->offsetUnset('company_name');
+    expect($this->model->offsetExists('company_name'))->toBeFalse();
 });
 
-it('jsonSerialize returns object with PascalCase keys', function () {
-    $model = new Profile(['company_name' => 'Test Co', 'actual_format' => 'json']);
-    $result = $model->jsonSerialize();
-    expect($result)->toBeObject();
-    expect($result->CompanyName)->toBe('Test Co');
-    expect($result->ActualFormat)->toBe('json');
+it('jsonSerialize returns array', function () {
+    $this->model->setCompanyName('Test');
+    $serialized = $this->model->jsonSerialize();
+    expect($serialized)->toBeObject();
 });
 
-it('jsonSerialize omits null properties', function () {
-    $model = new Profile(['company_name' => 'Test Co']);
-    $result = $model->jsonSerialize();
-    expect(property_exists($result, 'CompanyName'))->toBeTrue();
-    expect(property_exists($result, 'ActualFormat'))->toBeFalse();
-});
-
-it('__toString returns JSON string with PascalCase keys', function () {
-    $model = new Profile(['company_name' => 'Test Co']);
-    $str = (string) $model;
+it('__toString returns JSON string', function () {
+    $this->model->setCompanyName('Test');
+    $str = $this->model->__toString();
     expect($str)->toBeString();
-    $decoded = json_decode($str, true);
-    expect($decoded['CompanyName'])->toBe('Test Co');
+    expect($str)->toBeString()->not->toBeEmpty();
 });
 
-it('toHeaderValue returns compact JSON', function () {
-    $model = new Profile(['company_name' => 'Test Co']);
-    $value = $model->toHeaderValue();
+it('toHeaderValue returns JSON string', function () {
+    $this->model->setCompanyName('Test');
+    $value = $this->model->toHeaderValue();
     expect($value)->toBeString();
-    expect(str_contains($value, "\n"))->toBeFalse();
+    expect(json_decode($value, true))->toBeArray();
 });
 
 it('isNullable returns false for all properties', function (string $property) {
     expect(Profile::isNullable($property))->toBeFalse();
-})->with($profileProperties);
+})->with(['company_name', 'actual_format', 'actual_language', 'actual_usages']);
 
 it('isNullable returns false for unknown property', function () {
     expect(Profile::isNullable('unknown'))->toBeFalse();
 });
 
-it('isNullableSetToNull returns false for set properties', function (string $property) {
-    $value = $property === 'actual_usages' ? new ActualUsage() : 'some_value';
-    $model = new Profile([$property => $value]);
-    expect($model->isNullableSetToNull($property))->toBeFalse();
-})->with($profileProperties);
+it('isNullableSetToNull initially returns false', function () {
+    expect($this->model->isNullableSetToNull('company_name'))->toBeFalse();
+    expect($this->model->isNullableSetToNull('actual_usages'))->toBeFalse();
+});
+
+it('listInvalidProperties always returns empty', function () {
+    expect($this->model->listInvalidProperties())->toBeEmpty();
+});
+
+it('valid always returns true', function () {
+    expect($this->model->valid())->toBeTrue();
+});

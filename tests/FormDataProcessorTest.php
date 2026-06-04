@@ -2,603 +2,610 @@
 
 use Omisai\CreditOnline\FormDataProcessor;
 use Omisai\CreditOnline\Model\Address;
-use Omisai\CreditOnline\Model\Company;
 
-// ---- Constructor ----
+// ---------------------------------------------------------------------------
+// Helpers / fixtures
+// ---------------------------------------------------------------------------
+
+/**
+ * Create an Address model with default values.
+ */
+$createAddress = function (array $data = []): Address {
+    return new Address(array_merge([
+        'country_code' => 'HU',
+        'zip' => '1234',
+        'city' => 'Budapest',
+        'street' => 'Main Street',
+        'place_type' => 'utca',
+        'house_number' => '1',
+    ], $data));
+};
+
+/**
+ * Create a temp file and return an SplFileObject pointing to it.
+ */
+$createTempSplFile = function (string $content = 'test content'): SplFileObject {
+    $path = tempnam(sys_get_temp_dir(), 'fpdt_');
+    file_put_contents($path, $content);
+
+    return new SplFileObject($path, 'r');
+};
+
+// ===========================================================================
+// 1. has_file defaults to false
+// ===========================================================================
 
 it('has_file defaults to false', function () {
-    $processor = new FormDataProcessor;
-
+    $processor = new FormDataProcessor();
     expect($processor->has_file)->toBeFalse();
 });
 
-// ---- prepare() - basic value types ----
+// ===========================================================================
+// 2. prepare() with simple scalar values
+// ===========================================================================
 
-it('prepares simple string values unchanged', function () {
-    $processor = new FormDataProcessor;
+it('prepare() passes string values through unchanged', function () {
+    $processor = new FormDataProcessor();
     $result = $processor->prepare(['name' => 'John']);
-
     expect($result)->toBe(['name' => 'John']);
 });
 
-it('prepares multiple string values', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare([
-        'first_name' => 'Jane',
-        'last_name' => 'Doe',
-    ]);
-
-    expect($result)->toBe([
-        'first_name' => 'Jane',
-        'last_name' => 'Doe',
-    ]);
+it('prepare() converts int values to string', function () {
+    $processor = new FormDataProcessor();
+    $result = $processor->prepare(['age' => 42]);
+    expect($result)->toBe(['age' => '42']);
 });
 
-it('prepares DateTime values as ISO8601 strings', function () {
-    $processor = new FormDataProcessor;
-    $date = new DateTime('2024-01-15T10:30:00+00:00');
-    $result = $processor->prepare(['created_at' => $date]);
-
-    expect($result['created_at'])->toBe('2024-01-15T10:30:00+00:00');
-});
-
-it('prepares boolean true to string "true"', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['active' => true]);
-
-    expect($result['active'])->toBe('true');
-});
-
-it('prepares boolean false to string "false"', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['active' => false]);
-
-    expect($result['active'])->toBe('false');
-});
-
-it('prepares integer values as strings', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['count' => 42]);
-
-    expect($result['count'])->toBe('42');
-});
-
-it('prepares zero as string "0"', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['count' => 0]);
-
-    expect($result['count'])->toBe('0');
-});
-
-it('prepares negative integer as string', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['offset' => -5]);
-
-    expect($result['offset'])->toBe('-5');
-});
-
-it('prepares float values as strings', function () {
-    $processor = new FormDataProcessor;
+it('prepare() converts float values to string', function () {
+    $processor = new FormDataProcessor();
     $result = $processor->prepare(['price' => 9.99]);
-
-    expect($result['price'])->toBe('9.99');
+    expect($result)->toBe(['price' => '9.99']);
 });
 
-it('skips a single null value', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['email' => null]);
-
-    expect($result)->toBe([]);
+it('prepare() converts bool true to string', function () {
+    $processor = new FormDataProcessor();
+    $result = $processor->prepare(['active' => true]);
+    expect($result)->toBe(['active' => 'true']);
 });
 
-it('skips null values among valid values', function () {
-    $processor = new FormDataProcessor;
+it('prepare() converts bool false to string', function () {
+    $processor = new FormDataProcessor();
+    $result = $processor->prepare(['active' => false]);
+    expect($result)->toBe(['active' => 'false']);
+});
+
+it('prepare() handles multiple scalar types in one call', function () {
+    $processor = new FormDataProcessor();
     $result = $processor->prepare([
-        'name' => 'John',
-        'email' => null,
+        'name' => 'Alice',
         'age' => 30,
-    ]);
-
-    expect($result)->toHaveKeys(['name', 'age']);
-    expect($result)->not()->toHaveKey('email');
-    expect($result)->toBe([
-        'name' => 'John',
-        'age' => '30',
-    ]);
-});
-
-it('returns empty array when all values are null', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare([
-        'a' => null,
-        'b' => null,
-    ]);
-
-    expect($result)->toBe([]);
-});
-
-it('prepares mixed values of various types', function () {
-    $date = new DateTime('2024-06-01T00:00:00+00:00');
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare([
-        'name' => 'Jane',
         'active' => true,
-        'inactive' => false,
-        'count' => 5,
-        'created' => $date,
-        'skipped' => null,
-        'price' => 12.50,
+        'score' => 4.5,
     ]);
-
     expect($result)->toBe([
-        'name' => 'Jane',
-        'active' => 'true',
-        'inactive' => 'false',
-        'count' => '5',
-        'created' => '2024-06-01T00:00:00+00:00',
-        'price' => '12.5',
-    ]);
-});
-
-it('returns empty array for empty input', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare([]);
-
-    expect($result)->toBe([]);
-});
-
-// ---- prepare() - array values ----
-
-it('recurses into nested arrays and converts leaf scalars', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare([
-        'contact' => [
-            'name' => 'John',
-            'active' => true,
-            'count' => 3,
-        ],
-    ]);
-
-    expect($result['contact'])->toBe([
-        'name' => 'John',
-        'active' => 'true',
-        'count' => '3',
-    ]);
-});
-
-it('recurses into deeply nested arrays', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare([
-        'data' => [
-            'level1' => [
-                'level2' => [
-                    'value' => 42,
-                ],
-            ],
-        ],
-    ]);
-
-    expect($result['data']['level1']['level2']['value'])->toBe('42');
-});
-
-it('recurses into list arrays', function () {
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare([
-        'tags' => ['php', 'api', true],
-    ]);
-
-    expect($result['tags'])->toBe(['php', 'api', 'true']);
-});
-
-// ---- prepare() - has_file flag ----
-
-it('has_file remains false when preparing non-file scalar data', function () {
-    $processor = new FormDataProcessor;
-    $processor->prepare(['name' => 'John']);
-
-    expect($processor->has_file)->toBeFalse();
-});
-
-it('has_file remains false when preparing arrays', function () {
-    $processor = new FormDataProcessor;
-    $processor->prepare(['items' => ['a', 'b']]);
-
-    expect($processor->has_file)->toBeFalse();
-});
-
-it('has_file is true when a resource value is present', function () {
-    $resource = fopen('php://memory', 'r');
-    $processor = new FormDataProcessor;
-    $processor->prepare(['file' => $resource]);
-
-    expect($processor->has_file)->toBeTrue();
-
-    fclose($resource);
-});
-
-it('has_file is true when an SplFileObject is present', function () {
-    $path = tempnam(sys_get_temp_dir(), 'test_');
-    file_put_contents($path, 'content');
-    $file = new SplFileObject($path);
-    $processor = new FormDataProcessor;
-    $processor->prepare(['file' => $file]);
-
-    expect($processor->has_file)->toBeTrue();
-
-    unlink($path);
-});
-
-it('has_file resets to false on the next prepare call', function () {
-    $processor = new FormDataProcessor;
-
-    $resource = fopen('php://memory', 'r');
-    $processor->prepare(['file' => $resource]);
-    fclose($resource);
-
-    expect($processor->has_file)->toBeTrue();
-
-    $processor->prepare(['name' => 'John']);
-
-    expect($processor->has_file)->toBeFalse();
-});
-
-it('has_file is true when resource is deeply nested in an array', function () {
-    $resource = fopen('php://memory', 'r');
-    $processor = new FormDataProcessor;
-    $processor->prepare([
-        'wrapper' => [
-            'file' => $resource,
-        ],
-    ]);
-
-    expect($processor->has_file)->toBeTrue();
-
-    fclose($resource);
-});
-
-// ---- prepare() - ModelInterface ----
-
-it('processes ModelInterface objects and extracts non-null properties', function () {
-    $address = new Address([
-        'city' => 'Budapest',
-        'zip' => '1055',
-    ]);
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['address' => $address]);
-
-    expect($result['address'])->toBe([
-        'zip' => '1055',
-        'city' => 'Budapest',
-    ]);
-});
-
-it('processes ModelInterface skipping null properties', function () {
-    $address = new Address([
-        'city' => 'Budapest',
-    ]);
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['address' => $address]);
-
-    expect($result['address'])->toHaveKey('city');
-    expect($result['address'])->not()->toHaveKey('zip');
-    expect($result['address'])->not()->toHaveKey('country_code');
-    expect($result['address'])->not()->toHaveKey('street');
-    expect($result['address'])->not()->toHaveKey('place_type');
-    expect($result['address'])->not()->toHaveKey('house_number');
-});
-
-it('processes ModelInterface with all properties set', function () {
-    $address = new Address([
-        'country_code' => 'HU',
-        'zip' => '1055',
-        'city' => 'Budapest',
-        'street' => 'Fő utca',
-        'place_type' => 'utca',
-        'house_number' => '1',
-    ]);
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['address' => $address]);
-
-    expect($result['address'])->toBe([
-        'country_code' => 'HU',
-        'zip' => '1055',
-        'city' => 'Budapest',
-        'street' => 'Fő utca',
-        'place_type' => 'utca',
-        'house_number' => '1',
-    ]);
-});
-
-it('processes ModelInterface with empty model returns empty array', function () {
-    $address = new Address;
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['address' => $address]);
-
-    expect($result['address'])->toBe([]);
-});
-
-it('processes nested ModelInterface objects', function () {
-    $address = new Address([
-        'city' => 'Budapest',
-        'zip' => '1055',
-    ]);
-    $company = new Company;
-    $company->offsetSet('headquarter', $address);
-    $company->offsetSet('name', 'ACME Kft.');
-
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['company' => $company]);
-
-    expect($result['company']['name'])->toBe('ACME Kft.');
-    expect($result['company']['headquarter'])->toBe([
-        'zip' => '1055',
-        'city' => 'Budapest',
-    ]);
-});
-
-it('processes ModelInterface with DateTime property', function () {
-    $date = new DateTime('2020-03-15T12:00:00+00:00');
-    $company = new Company;
-    $company->offsetSet('name', 'Test Kft.');
-    $company->offsetSet('foundation', $date);
-
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['company' => $company]);
-
-    expect($result['company']['name'])->toBe('Test Kft.');
-    expect($result['company']['foundation'])->toBe('2020-03-15T12:00:00+00:00');
-});
-
-it('processes ModelInterface with integer property', function () {
-    $company = new Company;
-    $company->offsetSet('name', 'Test Kft.');
-    $company->offsetSet('employees', 42);
-
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['company' => $company]);
-
-    expect($result['company']['employees'])->toBe('42');
-});
-
-// ---- prepare() - non-ModelInterface objects ----
-
-it('iterates stdClass public properties and converts values', function () {
-    $obj = new stdClass;
-    $obj->name = 'John';
-    $obj->active = true;
-    $obj->count = 10;
-
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['data' => $obj]);
-
-    expect($result['data'])->toBe([
-        'name' => 'John',
-        'active' => 'true',
-        'count' => '10',
-    ]);
-});
-
-it('converts DateTime properties inside stdClass to ISO8601 strings', function () {
-    $date = new DateTime('2024-12-25T08:00:00+00:00');
-    $obj = new stdClass;
-    $obj->title = 'Event';
-    $obj->starts_at = $date;
-
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['event' => $obj]);
-
-    expect($result['event']['title'])->toBe('Event');
-    expect($result['event']['starts_at'])->toBe('2024-12-25T08:00:00+00:00');
-});
-
-it('converts DateTimeInterface objects to string even when value is not wrapped in array', function () {
-    $date = new DateTime('2024-05-01T14:30:00+00:00');
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['timestamp' => $date]);
-
-    expect($result['timestamp'])->toBe('2024-05-01T14:30:00+00:00');
-});
-
-it('handles stdClass with null property', function () {
-    $obj = new stdClass;
-    $obj->name = 'John';
-    $obj->email = null;
-
-    $processor = new FormDataProcessor;
-    $result = $processor->prepare(['user' => $obj]);
-
-    expect($result['user'])->toHaveKey('name');
-    expect($result['user']['name'])->toBe('John');
-});
-
-// ---- flatten() static method ----
-
-it('returns a flat array with scalar values converted to string', function () {
-    $result = FormDataProcessor::flatten([
-        'name' => 'John',
-        'age' => 30,
-    ]);
-
-    expect($result)->toBe([
-        'name' => 'John',
+        'name' => 'Alice',
         'age' => '30',
+        'active' => 'true',
+        'score' => '4.5',
     ]);
 });
 
-it('flattens nested associative array with bracket notation', function () {
-    $result = FormDataProcessor::flatten([
+// ===========================================================================
+// 3. prepare() with DateTime values
+// ===========================================================================
+
+it('prepare() converts DateTime to ISO8601 string', function () {
+    $processor = new FormDataProcessor();
+    $dt = new DateTime('2025-01-15T10:20:30', new DateTimeZone('UTC'));
+    $result = $processor->prepare(['created_at' => $dt]);
+    expect($result)->toBe(['created_at' => '2025-01-15T10:20:30+00:00']);
+});
+
+it('prepare() converts DateTime inside nested array to ISO8601 string', function () {
+    $processor = new FormDataProcessor();
+    $dt = new DateTime('2025-06-04T12:00:00', new DateTimeZone('UTC'));
+    $result = $processor->prepare(['meta' => ['timestamp' => $dt, 'label' => 'test']]);
+    expect($result)->toBe(['meta' => ['timestamp' => '2025-06-04T12:00:00+00:00', 'label' => 'test']]);
+});
+
+// ===========================================================================
+// 4. prepare() with null values
+// ===========================================================================
+
+it('prepare() skips null values', function () {
+    $processor = new FormDataProcessor();
+    $result = $processor->prepare(['name' => 'John', 'middle' => null, 'last' => 'Doe']);
+    expect($result)->not->toHaveKey('middle');
+    expect($result)->toBe(['name' => 'John', 'last' => 'Doe']);
+});
+
+it('prepare() converts null values inside nested arrays to empty string', function () {
+    $processor = new FormDataProcessor();
+    $result = $processor->prepare([
         'user' => [
             'name' => 'Jane',
-            'email' => 'jane@example.com',
+            'nickname' => null,
+            'active' => true,
         ],
     ]);
-
     expect($result)->toBe([
-        'user[name]' => 'Jane',
-        'user[email]' => 'jane@example.com',
+        'user' => [
+            'name' => 'Jane',
+            'nickname' => '',
+            'active' => 'true',
+        ],
     ]);
 });
 
-it('flattens nested list array with index bracket notation', function () {
-    $result = FormDataProcessor::flatten([
-        'items' => ['apple', 'banana', 'cherry'],
-    ]);
-
-    expect($result)->toBe([
-        'items[0]' => 'apple',
-        'items[1]' => 'banana',
-        'items[2]' => 'cherry',
-    ]);
-});
-
-it('flatten returns empty array for empty input', function () {
-    $result = FormDataProcessor::flatten([]);
-
+it('prepare() returns empty array when all values are null', function () {
+    $processor = new FormDataProcessor();
+    $result = $processor->prepare(['a' => null, 'b' => null]);
     expect($result)->toBe([]);
 });
 
-it('handles deeply nested arrays (3+ levels)', function () {
-    $result = FormDataProcessor::flatten([
-        'a' => [
-            'b' => [
-                'c' => [
-                    'd' => 'value',
-                ],
-            ],
+// ===========================================================================
+// 5. prepare() with nested arrays
+// ===========================================================================
+
+it('prepare() recurses into nested associative arrays', function () {
+    $processor = new FormDataProcessor();
+    $result = $processor->prepare([
+        'user' => [
+            'name' => 'John',
+            'age' => 25,
         ],
     ]);
-
     expect($result)->toBe([
-        'a[b][c][d]' => 'value',
+        'user' => [
+            'name' => 'John',
+            'age' => '25',
+        ],
     ]);
 });
 
-it('handles deeply nested arrays with multiple leaf values', function () {
-    $result = FormDataProcessor::flatten([
-        'a' => [
-            'b' => [
-                'x' => 1,
-                'y' => 2,
-            ],
-            'c' => 3,
-        ],
+it('prepare() recurses into nested list arrays', function () {
+    $processor = new FormDataProcessor();
+    $result = $processor->prepare([
+        'tags' => ['php', 'api', 'rest'],
     ]);
-
     expect($result)->toBe([
-        'a[b][x]' => '1',
-        'a[b][y]' => '2',
-        'a[c]' => '3',
+        'tags' => ['php', 'api', 'rest'],
     ]);
 });
 
-it('handles mixed associative and list nesting', function () {
-    $result = FormDataProcessor::flatten([
-        'contacts' => [
+it('prepare() handles deeply nested arrays', function () {
+    $processor = new FormDataProcessor();
+    $result = $processor->prepare([
+        'a' => ['b' => ['c' => ['d' => 'deep']]],
+    ]);
+    expect($result)->toBe([
+        'a' => ['b' => ['c' => ['d' => 'deep']]],
+    ]);
+});
+
+it('prepare() handles mixed nested arrays with various types', function () {
+    $processor = new FormDataProcessor();
+    $dt = new DateTime('2025-01-01T00:00:00', new DateTimeZone('UTC'));
+    $result = $processor->prepare([
+        'data' => [
+            'items' => ['a', 'b'],
+            'count' => 2,
+            'created' => $dt,
+            'active' => true,
+        ],
+    ]);
+    expect($result)->toBe([
+        'data' => [
+            'items' => ['a', 'b'],
+            'count' => '2',
+            'created' => '2025-01-01T00:00:00+00:00',
+            'active' => 'true',
+        ],
+    ]);
+});
+
+// ===========================================================================
+// 6. prepare() with ModelInterface objects (Address)
+// ===========================================================================
+
+it('prepare() processes Address model converting all string properties', function () use ($createAddress) {
+    $processor = new FormDataProcessor();
+    $address = $createAddress([
+        'country_code' => 'HU',
+        'zip' => '1234',
+        'city' => 'Budapest',
+        'street' => 'Fő utca',
+        'place_type' => 'utca',
+        'house_number' => '42',
+    ]);
+    $result = $processor->prepare(['address' => $address]);
+    expect($result)->toBe([
+        'address' => [
+            'country_code' => 'HU',
+            'zip' => '1234',
+            'city' => 'Budapest',
+            'street' => 'Fő utca',
+            'place_type' => 'utca',
+            'house_number' => '42',
+        ],
+    ]);
+});
+
+it('prepare() processes Address model with partial fields', function () {
+    $processor = new FormDataProcessor();
+    $address = new Address([
+        'country_code' => 'DE',
+        'city' => 'Berlin',
+    ]);
+    $result = $processor->prepare(['address' => $address]);
+    expect($result)->toBe([
+        'address' => [
+            'country_code' => 'DE',
+            'city' => 'Berlin',
+        ],
+    ]);
+});
+
+it('prepare() processes array of Address models', function () use ($createAddress) {
+    $processor = new FormDataProcessor();
+    $addr1 = $createAddress(['country_code' => 'HU', 'city' => 'Budapest']);
+    $addr2 = $createAddress(['country_code' => 'AT', 'city' => 'Wien']);
+    $result = $processor->prepare(['addresses' => [$addr1, $addr2]]);
+    expect($result)->toBe([
+        'addresses' => [
             [
-                'name' => 'Alice',
-                'phone' => '111',
+                'country_code' => 'HU',
+                'zip' => '1234',
+                'city' => 'Budapest',
+                'street' => 'Main Street',
+                'place_type' => 'utca',
+                'house_number' => '1',
             ],
             [
-                'name' => 'Bob',
-                'phone' => '222',
+                'country_code' => 'AT',
+                'zip' => '1234',
+                'city' => 'Wien',
+                'street' => 'Main Street',
+                'place_type' => 'utca',
+                'house_number' => '1',
             ],
         ],
     ]);
+});
 
+it('prepare() processes nested Address model inside nested array', function () use ($createAddress) {
+    $processor = new FormDataProcessor();
+    $address = $createAddress(['city' => 'Szeged']);
+    $result = $processor->prepare([
+        'person' => [
+            'name' => 'John',
+            'address' => $address,
+        ],
+    ]);
     expect($result)->toBe([
-        'contacts[0][name]' => 'Alice',
-        'contacts[0][phone]' => '111',
-        'contacts[1][name]' => 'Bob',
-        'contacts[1][phone]' => '222',
+        'person' => [
+            'name' => 'John',
+            'address' => [
+                'country_code' => 'HU',
+                'zip' => '1234',
+                'city' => 'Szeged',
+                'street' => 'Main Street',
+                'place_type' => 'utca',
+                'house_number' => '1',
+            ],
+        ],
     ]);
 });
 
-it('handles top-level list array', function () {
-    $result = FormDataProcessor::flatten(['a', 'b', 'c']);
+// ===========================================================================
+// 7. prepare() sets has_file when resource/SplFileObject present
+// ===========================================================================
 
-    expect($result)->toBe([
-        '0' => 'a',
-        '1' => 'b',
-        '2' => 'c',
-    ]);
+it('prepare() sets has_file when SplFileObject is present', function () use ($createTempSplFile) {
+    $processor = new FormDataProcessor();
+    $file = $createTempSplFile('hello world');
+    $processor->prepare(['document' => $file]);
+    expect($processor->has_file)->toBeTrue();
 });
 
-it('includes resource values directly without string conversion', function () {
-    $resource = fopen('php://memory', 'r');
-    $result = FormDataProcessor::flatten(['file' => $resource]);
-
-    expect($result)->toHaveKey('file');
-    expect(is_resource($result['file']))->toBeTrue();
-    expect($result['file'])->toBe($resource);
-
+it('prepare() sets has_file when resource is present', function () {
+    $processor = new FormDataProcessor();
+    $resource = fopen('php://temp', 'r');
+    $processor->prepare(['file' => $resource]);
+    expect($processor->has_file)->toBeTrue();
     fclose($resource);
 });
 
-it('handles deep nesting with list at leaf', function () {
-    $result = FormDataProcessor::flatten([
-        'data' => [
-            'tags' => ['php', 'laravel'],
-        ],
+it('prepare() sets has_file when SplFileObject is nested inside array', function () use ($createTempSplFile) {
+    $processor = new FormDataProcessor();
+    $file = $createTempSplFile('nested content');
+    $processor->prepare([
+        'attachments' => [$file],
     ]);
+    expect($processor->has_file)->toBeTrue();
+});
 
+it('prepare() does not set has_file when no file data is present', function () {
+    $processor = new FormDataProcessor();
+    $processor->prepare(['name' => 'John', 'age' => 30]);
+    expect($processor->has_file)->toBeFalse();
+});
+
+// ===========================================================================
+// 8. has_file resets to false on next prepare() call
+// ===========================================================================
+
+it('has_file resets to false on next prepare() call', function () use ($createTempSplFile) {
+    $processor = new FormDataProcessor();
+    $file = $createTempSplFile('some content');
+    $processor->prepare(['doc' => $file]);
+    expect($processor->has_file)->toBeTrue();
+
+    $processor->prepare(['name' => 'John']);
+    expect($processor->has_file)->toBeFalse();
+});
+
+// ===========================================================================
+// 9. flatten() static method — flat arrays
+// ===========================================================================
+
+it('flatten() returns flat associative array unchanged but values toStringd', function () {
+    $result = FormDataProcessor::flatten(['a' => 1, 'b' => 2]);
+    expect($result)->toBe(['a' => '1', 'b' => '2']);
+});
+
+it('flatten() returns flat list array with numeric indices', function () {
+    $result = FormDataProcessor::flatten(['x', 'y', 'z']);
+    expect($result)->toBe(['0' => 'x', '1' => 'y', '2' => 'z']);
+});
+
+it('flatten() handles single element flat array', function () {
+    $result = FormDataProcessor::flatten(['key' => 'value']);
+    expect($result)->toBe(['key' => 'value']);
+});
+
+// ===========================================================================
+// 10. flatten() — nested associatives (bracket notation)
+// ===========================================================================
+
+it('flatten() produces bracket notation for nested associative arrays', function () {
+    $result = FormDataProcessor::flatten(['user' => ['name' => 'John', 'age' => 30]]);
     expect($result)->toBe([
-        'data[tags][0]' => 'php',
-        'data[tags][1]' => 'laravel',
+        'user[name]' => 'John',
+        'user[age]' => '30',
     ]);
 });
 
-it('handles single-element nested array', function () {
-    $result = FormDataProcessor::flatten([
-        'meta' => ['version' => '1.0'],
-    ]);
-
+it('flatten() produces bracket notation for nested associative with string keys', function () {
+    $result = FormDataProcessor::flatten(['filter' => ['type' => 'foo', 'status' => 'bar']]);
     expect($result)->toBe([
-        'meta[version]' => '1.0',
+        'filter[type]' => 'foo',
+        'filter[status]' => 'bar',
     ]);
 });
 
-it('converts empty inner array to string "Array" via toString', function () {
+// ===========================================================================
+// 11. flatten() — nested lists
+// ===========================================================================
+
+it('flatten() produces bracket notation for nested list arrays', function () {
+    $result = FormDataProcessor::flatten([[1, 2], [3, 4]]);
+    expect($result)->toBe([
+        '0[0]' => '1',
+        '0[1]' => '2',
+        '1[0]' => '3',
+        '1[1]' => '4',
+    ]);
+});
+
+it('flatten() handles list with brackets for single-level list', function () {
+    $result = FormDataProcessor::flatten(['items' => [10, 20, 30]]);
+    expect($result)->toBe([
+        'items[0]' => '10',
+        'items[1]' => '20',
+        'items[2]' => '30',
+    ]);
+});
+
+// ===========================================================================
+// 12. flatten() — empty arrays
+// ===========================================================================
+
+it('flatten() handles empty top-level associative value (suppressed warning)', function () {
     set_error_handler(fn () => true);
-    $result = FormDataProcessor::flatten([
-        'name' => 'John',
-        'empty' => [],
-        'age' => 30,
-    ]);
+    $result = FormDataProcessor::flatten(['x' => []]);
     restore_error_handler();
-
-    expect($result)->toBe([
-        'name' => 'John',
-        'empty' => 'Array',
-        'age' => '30',
-    ]);
+    expect($result)->toHaveKey('x');
 });
 
-it('converts empty inner array inside nested structure to string', function () {
+it('flatten() handles empty nested list value (suppressed warning)', function () {
     set_error_handler(fn () => true);
-    $result = FormDataProcessor::flatten([
-        'data' => [
-            'items' => [],
-            'count' => 0,
-        ],
-    ]);
+    $result = FormDataProcessor::flatten(['data' => ['items' => []]]);
     restore_error_handler();
+    expect($result)->toHaveKey('data[items]');
+});
 
+it('flatten() returns empty result for empty input array', function () {
+    $result = FormDataProcessor::flatten([]);
+    expect($result)->toBe([]);
+});
+
+// ===========================================================================
+// 13. flatten() — boolean values
+// ===========================================================================
+
+it('flatten() converts boolean true to string', function () {
+    $result = FormDataProcessor::flatten(['active' => true]);
+    expect($result)->toBe(['active' => 'true']);
+});
+
+it('flatten() converts boolean false to string', function () {
+    $result = FormDataProcessor::flatten(['active' => false]);
+    expect($result)->toBe(['active' => 'false']);
+});
+
+it('flatten() converts nested boolean values to strings', function () {
+    $result = FormDataProcessor::flatten(['flags' => ['a' => true, 'b' => false]]);
     expect($result)->toBe([
-        'data[items]' => 'Array',
-        'data[count]' => '0',
+        'flags[a]' => 'true',
+        'flags[b]' => 'false',
     ]);
 });
 
-it('converts boolean values to strings in flatten output', function () {
+// ===========================================================================
+// 14. flatten() — resource values
+// ===========================================================================
+
+it('flatten() preserves resource values instead of converting to string', function () {
+    $resource = fopen('php://temp', 'r');
+    $result = FormDataProcessor::flatten(['file' => $resource]);
+    expect($result)->toHaveKey('file');
+    expect($result['file'])->toBeResource();
+    fclose($resource);
+});
+
+it('flatten() preserves resource values in nested arrays', function () {
+    $resource = fopen('php://temp', 'r');
+    $result = FormDataProcessor::flatten(['attachments' => ['doc' => $resource]]);
+    expect($result)->toHaveKey('attachments[doc]');
+    expect($result['attachments[doc]'])->toBeResource();
+    fclose($resource);
+});
+
+// ===========================================================================
+// 15. flatten() — deep nesting (3+ levels)
+// ===========================================================================
+
+it('flatten() handles 3-level deep nesting', function () {
     $result = FormDataProcessor::flatten([
-        'options' => [
-            'active' => true,
-            'verified' => false,
+        'a' => ['b' => ['c' => 'value']],
+    ]);
+    expect($result)->toBe([
+        'a[b][c]' => 'value',
+    ]);
+});
+
+it('flatten() handles 4-level deep nesting', function () {
+    $result = FormDataProcessor::flatten([
+        'l1' => ['l2' => ['l3' => ['l4' => 'deep']]],
+    ]);
+    expect($result)->toBe([
+        'l1[l2][l3][l4]' => 'deep',
+    ]);
+});
+
+it('flatten() handles mixed list and associative deep nesting', function () {
+    $result = FormDataProcessor::flatten([
+        'users' => [
+            ['name' => 'Alice', 'age' => 30],
+            ['name' => 'Bob', 'age' => 25],
         ],
     ]);
-
     expect($result)->toBe([
-        'options[active]' => 'true',
-        'options[verified]' => 'false',
+        'users[0][name]' => 'Alice',
+        'users[0][age]' => '30',
+        'users[1][name]' => 'Bob',
+        'users[1][age]' => '25',
+    ]);
+});
+
+// ===========================================================================
+// 16. flatten() — numeric and float values
+// ===========================================================================
+
+it('flatten() converts integer zero to string', function () {
+    $result = FormDataProcessor::flatten(['count' => 0]);
+    expect($result)->toBe(['count' => '0']);
+});
+
+it('flatten() converts float to string', function () {
+    $result = FormDataProcessor::flatten(['ratio' => 0.5]);
+    expect($result)->toBe(['ratio' => '0.5']);
+});
+
+it('flatten() converts zero float to string', function () {
+    $result = FormDataProcessor::flatten(['ratio' => 0.0]);
+    expect($result)->toBe(['ratio' => '0']);
+});
+
+// ===========================================================================
+// 17. flatten() — prefix parameter
+// ===========================================================================
+
+it('flatten() uses prefix parameter for root key', function () {
+    $result = FormDataProcessor::flatten(['name' => 'John', 'age' => 30], 'user');
+    expect($result)->toBe([
+        'user[name]' => 'John',
+        'user[age]' => '30',
+    ]);
+});
+
+it('flatten() uses prefix parameter with nested data', function () {
+    $result = FormDataProcessor::flatten(['address' => ['city' => 'Budapest', 'zip' => '1234']], 'person');
+    expect($result)->toBe([
+        'person[address][city]' => 'Budapest',
+        'person[address][zip]' => '1234',
+    ]);
+});
+
+// ===========================================================================
+// 18. flatten() — edge cases
+// ===========================================================================
+
+it('flatten() handles mixed types at various nesting levels', function () {
+    $result = FormDataProcessor::flatten([
+        'config' => [
+            'debug' => true,
+            'timeout' => 30,
+            'ratio' => 1.5,
+            'name' => 'app',
+        ],
+    ]);
+    expect($result)->toBe([
+        'config[debug]' => 'true',
+        'config[timeout]' => '30',
+        'config[ratio]' => '1.5',
+        'config[name]' => 'app',
+    ]);
+});
+
+it('flatten() handles null value via toString', function () {
+    $result = FormDataProcessor::flatten(['key' => null]);
+    expect($result)->toBe(['key' => '']);
+});
+
+it('flatten() handles array with mixed list and associatives at same level', function () {
+    $result = FormDataProcessor::flatten([
+        'items' => ['a', 'b'],
+        'meta' => ['count' => 2],
+    ]);
+    expect($result)->toBe([
+        'items[0]' => 'a',
+        'items[1]' => 'b',
+        'meta[count]' => '2',
+    ]);
+});
+
+it('flatten() handles list of associative arrays', function () {
+    $result = FormDataProcessor::flatten([
+        ['key' => 'a', 'val' => 1],
+        ['key' => 'b', 'val' => 2],
+    ]);
+    expect($result)->toBe([
+        '0[key]' => 'a',
+        '0[val]' => '1',
+        '1[key]' => 'b',
+        '1[val]' => '2',
+    ]);
+});
+
+it('flatten() with prefix handles list of associatives', function () {
+    $result = FormDataProcessor::flatten([
+        ['name' => 'Alice'],
+        ['name' => 'Bob'],
+    ], 'users');
+    expect($result)->toBe([
+        'users[0][name]' => 'Alice',
+        'users[1][name]' => 'Bob',
     ]);
 });

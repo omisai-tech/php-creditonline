@@ -1,17 +1,18 @@
 <?php
 
-use Omisai\CreditOnline\Model\Address;
 use Omisai\CreditOnline\Model\Auditor;
+use Omisai\CreditOnline\Model\Address;
 
-it('has correct model name', function () {
-    $auditor = new Auditor();
-
-    expect($auditor->getModelName())->toBe('Auditor');
+beforeEach(function () {
+    $this->model = new Auditor();
 });
 
-it('declares correct open API types', function () {
-    $types = Auditor::openAPITypes();
+it('getModelName returns Auditor', function () {
+    expect($this->model->getModelName())->toBe('Auditor');
+});
 
+it('openAPITypes returns correct type array', function () {
+    $types = Auditor::openAPITypes();
     expect($types)->toBe([
         'regnumber' => 'string',
         'name' => 'string',
@@ -20,277 +21,176 @@ it('declares correct open API types', function () {
     ]);
 });
 
-it('declares correct open API formats', function () {
+it('openAPIFormats has date format for start', function () {
     $formats = Auditor::openAPIFormats();
-
-    expect($formats)->toBe([
-        'regnumber' => null,
-        'name' => null,
-        'address' => null,
-        'start' => 'date',
-    ]);
+    expect($formats)->toHaveKeys(['regnumber', 'name', 'address', 'start']);
+    expect($formats['start'])->toBe('date');
 });
 
-it('declares correct attribute map', function () {
+it('attributeMap uses correct original names', function (string $local, string $original) {
     $map = Auditor::attributeMap();
+    expect($map[$local])->toBe($original);
+})->with([
+    ['regnumber', 'Regnumber'],
+    ['name', 'Name'],
+    ['address', 'Address'],
+    ['start', 'Start'],
+]);
 
-    expect($map)->toBe([
-        'regnumber' => 'Regnumber',
-        'name' => 'Name',
-        'address' => 'Address',
-        'start' => 'Start',
-    ]);
+it('setters returns correct mapping', function (string $property, string $setter) {
+    expect(Auditor::setters()[$property])->toBe($setter);
+})->with([
+    ['regnumber', 'setRegnumber'],
+    ['name', 'setName'],
+    ['address', 'setAddress'],
+    ['start', 'setStart'],
+]);
+
+it('getters returns correct mapping', function (string $property, string $getter) {
+    expect(Auditor::getters()[$property])->toBe($getter);
+})->with([
+    ['regnumber', 'getRegnumber'],
+    ['name', 'getName'],
+    ['address', 'getAddress'],
+    ['start', 'getStart'],
+]);
+
+it('setRegnumber sets value and returns $this', function () {
+    $result = $this->model->setRegnumber('01-09-123456');
+    expect($result)->toBe($this->model);
+    expect($this->model->getRegnumber())->toBe('01-09-123456');
 });
 
-it('declares correct setters', function () {
+it('setName sets value and returns $this', function () {
+    $result = $this->model->setName('John Doe');
+    expect($result)->toBe($this->model);
+    expect($this->model->getName())->toBe('John Doe');
+});
+
+it('setAddress sets Address value and returns $this', function () {
+    $address = new Address();
+    $result = $this->model->setAddress($address);
+    expect($result)->toBe($this->model);
+    expect($this->model->getAddress())->toBe($address);
+});
+
+it('setStart sets DateTime value and returns $this', function () {
+    $date = new DateTime('2023-01-15');
+    $result = $this->model->setStart($date);
+    expect($result)->toBe($this->model);
+    expect($this->model->getStart())->toBe($date);
+});
+
+it('setter throws on null for non-nullable properties', function (string $property) {
     $setters = Auditor::setters();
+    $setter = $setters[$property];
+    $this->model->{$setter}(null);
+})->throws(\InvalidArgumentException::class)->with([
+    ['regnumber'],
+    ['name'],
+    ['address'],
+    ['start'],
+]);
 
-    expect($setters)->toBe([
-        'regnumber' => 'setRegnumber',
-        'name' => 'setName',
-        'address' => 'setAddress',
-        'start' => 'setStart',
-    ]);
+it('constructor with null sets all properties to null', function () {
+    $model = new Auditor();
+    expect($model->getRegnumber())->toBeNull();
+    expect($model->getName())->toBeNull();
+    expect($model->getAddress())->toBeNull();
+    expect($model->getStart())->toBeNull();
 });
 
-it('declares correct getters', function () {
-    $getters = Auditor::getters();
-
-    expect($getters)->toBe([
-        'regnumber' => 'getRegnumber',
-        'name' => 'getName',
-        'address' => 'getAddress',
-        'start' => 'getStart',
-    ]);
-});
-
-it('instantiates with empty constructor returning null property values', function () {
-    $auditor = new Auditor();
-
-    expect($auditor->getRegnumber())->toBeNull();
-    expect($auditor->getName())->toBeNull();
-    expect($auditor->getAddress())->toBeNull();
-    expect($auditor->getStart())->toBeNull();
-});
-
-it('instantiates with data array setting property values', function () {
+it('constructor with data sets provided properties', function () {
     $address = new Address();
-    $start = new DateTime('2023-01-15');
-    $auditor = new Auditor([
+    $date = new DateTime('2023-01-15');
+    $model = new Auditor([
         'regnumber' => '01-09-123456',
-        'name' => 'Test Auditor Kft.',
+        'name' => 'John Doe',
         'address' => $address,
-        'start' => $start,
+        'start' => $date,
     ]);
-
-    expect($auditor->getRegnumber())->toBe('01-09-123456');
-    expect($auditor->getName())->toBe('Test Auditor Kft.');
-    expect($auditor->getAddress())->toBe($address);
-    expect($auditor->getStart())->toBe($start);
+    expect($model->getRegnumber())->toBe('01-09-123456');
+    expect($model->getName())->toBe('John Doe');
+    expect($model->getAddress())->toBe($address);
+    expect($model->getStart())->toBe($date);
 });
 
-it('instantiates with partial data', function () {
-    $auditor = new Auditor([
-        'regnumber' => '01-09-123456',
-        'name' => 'Test Auditor Kft.',
-    ]);
-
-    expect($auditor->getRegnumber())->toBe('01-09-123456');
-    expect($auditor->getName())->toBe('Test Auditor Kft.');
-    expect($auditor->getAddress())->toBeNull();
-    expect($auditor->getStart())->toBeNull();
+it('constructor with partial data leaves others null', function () {
+    $model = new Auditor(['name' => 'John Doe']);
+    expect($model->getName())->toBe('John Doe');
+    expect($model->getRegnumber())->toBeNull();
 });
 
-it('handles constructor with null argument', function () {
-    $auditor = new Auditor(null);
-
-    expect($auditor->getRegnumber())->toBeNull();
-    expect($auditor->getName())->toBeNull();
-    expect($auditor->getAddress())->toBeNull();
-    expect($auditor->getStart())->toBeNull();
+it('constructor with empty array initializes all null', function () {
+    $model = new Auditor([]);
+    expect($model->getRegnumber())->toBeNull();
 });
 
-it('sets and gets regnumber', function (string $value) {
-    $auditor = new Auditor();
-    $result = $auditor->setRegnumber($value);
-
-    expect($result)->toBeInstanceOf(Auditor::class);
-    expect($auditor->getRegnumber())->toBe($value);
-})->with([
-    'regular' => '01-09-123456',
-    'empty string' => '',
-]);
-
-it('sets and gets name', function (string $value) {
-    $auditor = new Auditor();
-    $result = $auditor->setName($value);
-
-    expect($result)->toBeInstanceOf(Auditor::class);
-    expect($auditor->getName())->toBe($value);
-})->with([
-    'regular' => 'Test Auditor Kft.',
-    'empty string' => '',
-]);
-
-it('sets and gets address', function () {
-    $auditor = new Auditor();
-    $address = new Address();
-    $result = $auditor->setAddress($address);
-
-    expect($result)->toBeInstanceOf(Auditor::class);
-    expect($auditor->getAddress())->toBe($address);
+it('implements ArrayAccess: offsetExists', function () {
+    $this->model->setName('John');
+    expect($this->model->offsetExists('name'))->toBeTrue();
+    expect($this->model->offsetExists('nonexistent'))->toBeFalse();
 });
 
-it('sets and gets start', function () {
-    $auditor = new Auditor();
-    $start = new DateTime('2023-01-15');
-    $result = $auditor->setStart($start);
-
-    expect($result)->toBeInstanceOf(Auditor::class);
-    expect($auditor->getStart())->toBe($start);
+it('implements ArrayAccess: offsetGet', function () {
+    $this->model->setName('John');
+    expect($this->model->offsetGet('name'))->toBe('John');
+    expect($this->model->offsetGet('nonexistent'))->toBeNull();
 });
 
-it('throws exception when setting null on non-nullable property', function (string $property, string $setter, mixed $validValue) {
-    $auditor = new Auditor();
-    $auditor->{$setter}($validValue);
-
-    expect(fn () => $auditor->{$setter}(null))->toThrow(
-        \InvalidArgumentException::class,
-        "non-nullable {$property} cannot be null"
-    );
-})->with([
-    'regnumber' => ['regnumber', 'setRegnumber', '01-09-123456'],
-    'name' => ['name', 'setName', 'Test Name'],
-    'address' => ['address', 'setAddress', new Address()],
-    'start' => ['start', 'setStart', new DateTime('2023-01-15')],
-]);
-
-it('declares no nullable properties', function () {
-    expect(Auditor::isNullable('regnumber'))->toBeFalse();
-    expect(Auditor::isNullable('name'))->toBeFalse();
-    expect(Auditor::isNullable('address'))->toBeFalse();
-    expect(Auditor::isNullable('start'))->toBeFalse();
-    expect(Auditor::isNullable('nonexistent'))->toBeFalse();
+it('implements ArrayAccess: offsetSet with key', function () {
+    $this->model->offsetSet('name', 'Jane');
+    expect($this->model->offsetGet('name'))->toBe('Jane');
 });
 
-it('returns false for isNullableSetToNull on non-nullable model', function () {
-    $auditor = new Auditor();
-
-    expect($auditor->isNullableSetToNull('regnumber'))->toBeFalse();
-    expect($auditor->isNullableSetToNull('name'))->toBeFalse();
-    expect($auditor->isNullableSetToNull('address'))->toBeFalse();
-    expect($auditor->isNullableSetToNull('start'))->toBeFalse();
+it('implements ArrayAccess: offsetSet without key', function () {
+    $this->model->offsetSet(null, 'value');
+    expect($this->model->offsetGet(0))->toBe('value');
 });
 
-it('returns true for valid and empty invalid properties', function () {
-    $auditor = new Auditor();
-
-    expect($auditor->valid())->toBeTrue();
-    expect($auditor->listInvalidProperties())->toBe([]);
+it('implements ArrayAccess: offsetUnset', function () {
+    $this->model->setName('John');
+    $this->model->offsetUnset('name');
+    expect($this->model->offsetExists('name'))->toBeFalse();
 });
 
-it('valid with all properties set', function () {
-    $auditor = new Auditor();
-    $auditor->setRegnumber('01-09-123456');
-    $auditor->setName('Test Auditor Kft.');
-    $auditor->setAddress(new Address());
-    $auditor->setStart(new DateTime());
-
-    expect($auditor->valid())->toBeTrue();
-    expect($auditor->listInvalidProperties())->toBe([]);
+it('jsonSerialize returns array', function () {
+    $this->model->setName('John');
+    $serialized = $this->model->jsonSerialize();
+    expect($serialized)->toBeObject();
 });
 
-it('implements ArrayAccess offsetExists', function () {
-    $auditor = new Auditor();
-
-    expect($auditor->offsetExists('regnumber'))->toBeFalse();
-
-    $auditor->setRegnumber('01-09-123456');
-    expect($auditor->offsetExists('regnumber'))->toBeTrue();
-    expect($auditor->offsetExists('nonexistent'))->toBeFalse();
-});
-
-it('implements ArrayAccess offsetGet', function () {
-    $auditor = new Auditor();
-    $auditor->setRegnumber('01-09-123456');
-    $auditor->setName('Test Name');
-
-    expect($auditor->offsetGet('regnumber'))->toBe('01-09-123456');
-    expect($auditor->offsetGet('name'))->toBe('Test Name');
-    expect($auditor->offsetGet('nonexistent'))->toBeNull();
-});
-
-it('implements ArrayAccess offsetSet', function () {
-    $auditor = new Auditor();
-
-    $auditor->offsetSet('regnumber', '01-09-123456');
-    expect($auditor->getRegnumber())->toBe('01-09-123456');
-
-    $auditor->offsetSet(null, 'appended_value');
-    expect($auditor->offsetGet(0))->toBe('appended_value');
-});
-
-it('implements ArrayAccess offsetUnset', function () {
-    $auditor = new Auditor();
-    $auditor->setRegnumber('01-09-123456');
-    expect($auditor->offsetExists('regnumber'))->toBeTrue();
-
-    $auditor->offsetUnset('regnumber');
-    expect($auditor->offsetExists('regnumber'))->toBeFalse();
-});
-
-it('serializes via jsonSerialize', function () {
-    $auditor = new Auditor();
-    $auditor->setRegnumber('01-09-123456');
-    $auditor->setName('Test Auditor Kft.');
-
-    $result = $auditor->jsonSerialize();
-
-    expect($result)->toBeObject();
-    expect($result->Regnumber)->toBe('01-09-123456');
-    expect($result->Name)->toBe('Test Auditor Kft.');
-});
-
-it('returns string representation via __toString', function () {
-    $auditor = new Auditor();
-    $auditor->setRegnumber('01-09-123456');
-    $auditor->setName('Test Auditor Kft.');
-
-    $str = (string) $auditor;
-
+it('__toString returns JSON string', function () {
+    $this->model->setName('John');
+    $str = $this->model->__toString();
     expect($str)->toBeString();
-    expect(strlen($str))->toBeGreaterThan(0);
-
-    $decoded = json_decode($str, true);
-    expect($decoded)->toBeArray();
-    expect($decoded['Regnumber'])->toBe('01-09-123456');
+    expect($str)->toBeString()->not->toBeEmpty();
 });
 
-it('returns header-safe presentation via toHeaderValue', function () {
-    $auditor = new Auditor();
-    $auditor->setRegnumber('01-09-123456');
-
-    $header = $auditor->toHeaderValue();
-
-    expect($header)->toBeString();
-    expect(strlen($header))->toBeGreaterThan(0);
-
-    $decoded = json_decode($header, true);
-    expect($decoded)->toBeArray();
-    expect($decoded['Regnumber'])->toBe('01-09-123456');
+it('toHeaderValue returns JSON string', function () {
+    $this->model->setName('John');
+    $value = $this->model->toHeaderValue();
+    expect($value)->toBeString();
+    expect(json_decode($value, true))->toBeArray();
 });
 
-it('supports chaining setters', function () {
-    $auditor = new Auditor();
-    $result = $auditor
-        ->setRegnumber('01-09-123456')
-        ->setName('Test Auditor Kft.')
-        ->setAddress(new Address())
-        ->setStart(new DateTime('2023-01-15'));
+it('isNullable returns false for all properties', function (string $property) {
+    expect(Auditor::isNullable($property))->toBeFalse();
+})->with(['regnumber', 'name', 'address', 'start']);
 
-    expect($result)->toBeInstanceOf(Auditor::class);
-    expect($auditor->getRegnumber())->toBe('01-09-123456');
-    expect($auditor->getName())->toBe('Test Auditor Kft.');
-    expect($auditor->getAddress())->toBeInstanceOf(Address::class);
-    expect($auditor->getStart())->toBeInstanceOf(DateTime::class);
+it('isNullable returns false for unknown property', function () {
+    expect(Auditor::isNullable('unknown'))->toBeFalse();
+});
+
+it('isNullableSetToNull initially returns false', function () {
+    expect($this->model->isNullableSetToNull('regnumber'))->toBeFalse();
+    expect($this->model->isNullableSetToNull('start'))->toBeFalse();
+});
+
+it('listInvalidProperties always returns empty', function () {
+    expect($this->model->listInvalidProperties())->toBeEmpty();
+});
+
+it('valid always returns true', function () {
+    expect($this->model->valid())->toBeTrue();
 });

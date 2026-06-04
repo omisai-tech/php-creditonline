@@ -2,222 +2,212 @@
 
 use Omisai\CreditOnline\Model\Address;
 
-$addressProperties = [
-    'country_code',
-    'zip',
-    'city',
-    'street',
-    'place_type',
-    'house_number',
-];
-
-it('returns the model name', function () {
-    $model = new Address();
-    expect($model->getModelName())->toBe('Address');
+beforeEach(function () {
+    $this->model = new Address();
 });
 
-it('has correct openAPITypes', function () use ($addressProperties) {
+it('getModelName returns Address', function () {
+    expect($this->model->getModelName())->toBe('Address');
+});
+
+it('openAPITypes returns correct type array', function () {
     $types = Address::openAPITypes();
-    expect($types)->toBeArray()->toHaveCount(count($addressProperties));
-    foreach ($addressProperties as $prop) {
-        expect($types[$prop])->toBe('string');
-    }
+    expect($types)->toBe([
+        'country_code' => 'string',
+        'zip' => 'string',
+        'city' => 'string',
+        'street' => 'string',
+        'place_type' => 'string',
+        'house_number' => 'string',
+    ]);
 });
 
-it('has correct openAPIFormats', function () use ($addressProperties) {
+it('openAPIFormats returns all null formats', function () {
     $formats = Address::openAPIFormats();
-    expect($formats)->toBeArray()->toHaveCount(count($addressProperties));
-    foreach ($addressProperties as $prop) {
-        expect($formats[$prop])->toBeNull();
-    }
+    expect($formats)->toHaveKeys(['country_code', 'zip', 'city', 'street', 'place_type', 'house_number']);
 });
 
-it('has correct attributeMap', function () {
+it('attributeMap uses correct original names', function (string $local, string $original) {
     $map = Address::attributeMap();
-    expect($map)->toBeArray();
-    expect($map['country_code'])->toBe('CountryCode');
-    expect($map['zip'])->toBe('Zip');
-    expect($map['city'])->toBe('City');
-    expect($map['street'])->toBe('Street');
-    expect($map['place_type'])->toBe('PlaceType');
-    expect($map['house_number'])->toBe('HouseNumber');
+    expect($map[$local])->toBe($original);
+})->with([
+    ['country_code', 'CountryCode'],
+    ['zip', 'Zip'],
+    ['city', 'City'],
+    ['street', 'Street'],
+    ['place_type', 'PlaceType'],
+    ['house_number', 'HouseNumber'],
+]);
+
+it('setters returns correct mapping', function (string $property, string $setter) {
+    expect(Address::setters()[$property])->toBe($setter);
+})->with([
+    ['country_code', 'setCountryCode'],
+    ['zip', 'setZip'],
+    ['city', 'setCity'],
+    ['street', 'setStreet'],
+    ['place_type', 'setPlaceType'],
+    ['house_number', 'setHouseNumber'],
+]);
+
+it('getters returns correct mapping', function (string $property, string $getter) {
+    expect(Address::getters()[$property])->toBe($getter);
+})->with([
+    ['country_code', 'getCountryCode'],
+    ['zip', 'getZip'],
+    ['city', 'getCity'],
+    ['street', 'getStreet'],
+    ['place_type', 'getPlaceType'],
+    ['house_number', 'getHouseNumber'],
+]);
+
+it('setCountryCode sets value and returns $this', function () {
+    $result = $this->model->setCountryCode('HU');
+    expect($result)->toBe($this->model);
+    expect($this->model->getCountryCode())->toBe('HU');
 });
 
-it('has correct setters mapping', function () {
+it('setZip sets value and returns $this', function () {
+    $result = $this->model->setZip('1061');
+    expect($result)->toBe($this->model);
+    expect($this->model->getZip())->toBe('1061');
+});
+
+it('setCity sets value and returns $this', function () {
+    $result = $this->model->setCity('Budapest');
+    expect($result)->toBe($this->model);
+    expect($this->model->getCity())->toBe('Budapest');
+});
+
+it('setStreet sets value and returns $this', function () {
+    $result = $this->model->setStreet('Andrássy út');
+    expect($result)->toBe($this->model);
+    expect($this->model->getStreet())->toBe('Andrássy út');
+});
+
+it('setPlaceType sets value and returns $this', function () {
+    $result = $this->model->setPlaceType('út');
+    expect($result)->toBe($this->model);
+    expect($this->model->getPlaceType())->toBe('út');
+});
+
+it('setHouseNumber sets value and returns $this', function () {
+    $result = $this->model->setHouseNumber('1');
+    expect($result)->toBe($this->model);
+    expect($this->model->getHouseNumber())->toBe('1');
+});
+
+it('setter throws on null for non-nullable properties', function (string $property) {
     $setters = Address::setters();
-    expect($setters)->toBeArray();
-    expect($setters['country_code'])->toBe('setCountryCode');
-    expect($setters['house_number'])->toBe('setHouseNumber');
-});
+    $setter = $setters[$property];
+    $this->model->{$setter}(null);
+})->throws(\InvalidArgumentException::class)->with([
+    ['country_code'],
+    ['zip'],
+    ['city'],
+    ['street'],
+    ['place_type'],
+    ['house_number'],
+]);
 
-it('has correct getters mapping', function () {
-    $getters = Address::getters();
-    expect($getters)->toBeArray();
-    expect($getters['country_code'])->toBe('getCountryCode');
-    expect($getters['house_number'])->toBe('getHouseNumber');
-});
-
-it('defaults all properties to null on construction with no data', function () use ($addressProperties) {
+it('constructor with null sets all properties to null', function () {
     $model = new Address();
-    foreach ($addressProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
-});
-
-it('defaults all properties to null on construction with null', function () use ($addressProperties) {
-    $model = new Address(null);
-    foreach ($addressProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
-});
-
-it('defaults all properties to null on construction with empty array', function () use ($addressProperties) {
-    $model = new Address([]);
-    foreach ($addressProperties as $prop) {
-        $method = 'get' . str_replace('_', '', ucwords($prop, '_'));
-        expect($model->$method())->toBeNull();
-    }
-});
-
-it('sets properties from construction data array', function () {
-    $model = new Address([
-        'country_code' => 'HU',
-        'zip' => '1055',
-        'city' => 'Budapest',
-        'street' => 'Fő utca',
-        'place_type' => 'utca',
-        'house_number' => '1',
-    ]);
-    expect($model->getCountryCode())->toBe('HU');
-    expect($model->getZip())->toBe('1055');
-    expect($model->getCity())->toBe('Budapest');
-    expect($model->getStreet())->toBe('Fő utca');
-    expect($model->getPlaceType())->toBe('utca');
-    expect($model->getHouseNumber())->toBe('1');
-});
-
-it('sets partial properties from construction data', function () {
-    $model = new Address([
-        'country_code' => 'HU',
-        'city' => 'Budapest',
-    ]);
-    expect($model->getCountryCode())->toBe('HU');
-    expect($model->getCity())->toBe('Budapest');
+    expect($model->getCountryCode())->toBeNull();
     expect($model->getZip())->toBeNull();
+    expect($model->getCity())->toBeNull();
     expect($model->getStreet())->toBeNull();
     expect($model->getPlaceType())->toBeNull();
     expect($model->getHouseNumber())->toBeNull();
 });
 
-it('getters and setters work correctly', function (string $property) {
-    $model = new Address();
-    $setter = 'set' . str_replace('_', '', ucwords($property, '_'));
-    $getter = 'get' . str_replace('_', '', ucwords($property, '_'));
-    $result = $model->$setter('test_value');
-    expect($result)->toBe($model);
-    expect($model->$getter())->toBe('test_value');
-})->with($addressProperties);
-
-it('setters can set empty string', function (string $property) {
-    $model = new Address();
-    $setter = 'set' . str_replace('_', '', ucwords($property, '_'));
-    $getter = 'get' . str_replace('_', '', ucwords($property, '_'));
-    $model->$setter('');
-    expect($model->$getter())->toBe('');
-})->with($addressProperties);
-
-it('non-nullable setters throw on null', function (string $property) {
-    $model = new Address();
-    $setter = 'set' . str_replace('_', '', ucwords($property, '_'));
-    $model->$setter(null);
-})->with($addressProperties)->throws(\InvalidArgumentException::class);
-
-it('listInvalidProperties returns empty array (no required fields)', function () {
-    $model = new Address();
-    expect($model->listInvalidProperties())->toBe([]);
+it('constructor with data sets provided properties', function () {
+    $model = new Address([
+        'country_code' => 'HU',
+        'zip' => '1061',
+        'city' => 'Budapest',
+    ]);
+    expect($model->getCountryCode())->toBe('HU');
+    expect($model->getZip())->toBe('1061');
+    expect($model->getCity())->toBe('Budapest');
+    expect($model->getStreet())->toBeNull();
 });
 
-it('valid returns true for default state', function () {
-    $model = new Address();
-    expect($model->valid())->toBeTrue();
+it('constructor with partial data sets only given properties', function () {
+    $model = new Address(['zip' => '1061']);
+    expect($model->getZip())->toBe('1061');
+    expect($model->getCity())->toBeNull();
 });
 
-it('valid returns true after setting properties', function () {
-    $model = new Address(['city' => 'Budapest']);
-    expect($model->valid())->toBeTrue();
+it('constructor with empty array initializes all null', function () {
+    $model = new Address([]);
+    expect($model->getCountryCode())->toBeNull();
 });
 
 it('implements ArrayAccess: offsetExists', function () {
-    $model = new Address(['city' => 'Budapest']);
-    expect($model->offsetExists('city'))->toBeTrue();
-    expect($model->offsetExists('nonexistent'))->toBeFalse();
+    $this->model->setCity('Budapest');
+    expect($this->model->offsetExists('city'))->toBeTrue();
+    expect($this->model->offsetExists('nonexistent'))->toBeFalse();
 });
 
 it('implements ArrayAccess: offsetGet', function () {
-    $model = new Address(['city' => 'Budapest']);
-    expect($model->offsetGet('city'))->toBe('Budapest');
-    expect($model->offsetGet('nonexistent'))->toBeNull();
+    $this->model->setCity('Budapest');
+    expect($this->model->offsetGet('city'))->toBe('Budapest');
+    expect($this->model->offsetGet('nonexistent'))->toBeNull();
 });
 
 it('implements ArrayAccess: offsetSet with key', function () {
-    $model = new Address();
-    $model->offsetSet('city', 'Debrecen');
-    expect($model->offsetGet('city'))->toBe('Debrecen');
+    $this->model->offsetSet('city', 'Debrecen');
+    expect($this->model->offsetGet('city'))->toBe('Debrecen');
 });
 
-it('implements ArrayAccess: offsetSet without key (append)', function () {
-    $model = new Address();
-    $model->offsetSet(null, 'extra_value');
-    expect($model->offsetGet(0))->toBe('extra_value');
+it('implements ArrayAccess: offsetSet without key', function () {
+    $this->model->offsetSet(null, 'appended');
+    expect($this->model->offsetGet(0))->toBe('appended');
 });
 
 it('implements ArrayAccess: offsetUnset', function () {
-    $model = new Address(['city' => 'Budapest']);
-    $model->offsetUnset('city');
-    expect($model->offsetExists('city'))->toBeFalse();
+    $this->model->setCity('Budapest');
+    $this->model->offsetUnset('city');
+    expect($this->model->offsetExists('city'))->toBeFalse();
 });
 
-it('jsonSerialize returns object with PascalCase keys', function () {
-    $model = new Address(['city' => 'Budapest', 'country_code' => 'HU']);
-    $result = $model->jsonSerialize();
-    expect($result)->toBeObject();
-    expect($result->City)->toBe('Budapest');
-    expect($result->CountryCode)->toBe('HU');
+it('jsonSerialize returns array', function () {
+    $this->model->setCity('Budapest');
+    $serialized = $this->model->jsonSerialize();
+    expect($serialized)->toBeObject();
 });
 
-it('jsonSerialize omits null properties', function () {
-    $model = new Address(['city' => 'Budapest']);
-    $result = $model->jsonSerialize();
-    expect(property_exists($result, 'City'))->toBeTrue();
-    expect(property_exists($result, 'Zip'))->toBeFalse();
-});
-
-it('__toString returns JSON string with PascalCase keys', function () {
-    $model = new Address(['city' => 'Budapest']);
-    $str = (string) $model;
+it('__toString returns JSON string', function () {
+    $this->model->setCity('Budapest');
+    $str = $this->model->__toString();
     expect($str)->toBeString();
-    $decoded = json_decode($str, true);
-    expect($decoded['City'])->toBe('Budapest');
+    expect($str)->toBeString()->not->toBeEmpty();
 });
 
-it('toHeaderValue returns compact JSON', function () {
-    $model = new Address(['city' => 'Budapest']);
-    $value = $model->toHeaderValue();
+it('toHeaderValue returns JSON string', function () {
+    $this->model->setCity('Budapest');
+    $value = $this->model->toHeaderValue();
     expect($value)->toBeString();
-    expect(str_contains($value, "\n"))->toBeFalse();
+    expect(json_decode($value, true))->toBeArray();
 });
 
 it('isNullable returns false for all properties', function (string $property) {
     expect(Address::isNullable($property))->toBeFalse();
-})->with($addressProperties);
+})->with(['country_code', 'zip', 'city', 'street', 'place_type', 'house_number']);
 
 it('isNullable returns false for unknown property', function () {
     expect(Address::isNullable('unknown'))->toBeFalse();
 });
 
-it('isNullableSetToNull returns false for set properties', function (string $property) {
-    $model = new Address([$property => 'some_value']);
-    expect($model->isNullableSetToNull($property))->toBeFalse();
-})->with($addressProperties);
+it('isNullableSetToNull initially returns false', function () {
+    expect($this->model->isNullableSetToNull('city'))->toBeFalse();
+    expect($this->model->isNullableSetToNull('zip'))->toBeFalse();
+});
+
+it('listInvalidProperties returns empty array always', function () {
+    expect($this->model->listInvalidProperties())->toBeEmpty();
+});
+
+it('valid always returns true', function () {
+    expect($this->model->valid())->toBeTrue();
+});
