@@ -8,7 +8,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Omisai\CreditOnline\Api\NapiMonitoringLekrdezseApi;
+use Omisai\CreditOnline\Api\GetDailyMonitoringService;
 use Omisai\CreditOnline\ApiException;
 use Omisai\CreditOnline\Configuration;
 use Omisai\CreditOnline\HeaderSelector;
@@ -19,7 +19,7 @@ beforeEach(function () {
     $this->handlerStack = HandlerStack::create($this->mock);
     $this->client = new Client(['handler' => $this->handlerStack]);
     $this->config = new Configuration();
-    $this->api = new NapiMonitoringLekrdezseApi($this->client, $this->config);
+    $this->api = new GetDailyMonitoringService($this->client, $this->config);
     $this->date = new \DateTime('2024-01-15');
 });
 
@@ -28,7 +28,7 @@ it('can inject custom Guzzle ClientInterface', function () {
         new Response(200, [], json_encode([])),
     ]);
     $client = new Client(['handler' => HandlerStack::create($mock)]);
-    $api = new NapiMonitoringLekrdezseApi($client, $this->config);
+    $api = new GetDailyMonitoringService($client, $this->config);
 
     $result = $api->dailyMonitoringGet('test-token', $this->date);
 
@@ -39,14 +39,14 @@ it('can inject custom Configuration', function () {
     $config = new Configuration();
     $config->setHost('https://custom.example.com/v2');
 
-    $api = new NapiMonitoringLekrdezseApi(null, $config);
+    $api = new GetDailyMonitoringService(null, $config);
 
     expect($api->getConfig()->getHost())->toBe('https://custom.example.com/v2');
 });
 
 it('can inject custom HeaderSelector', function () {
     $selector = new HeaderSelector();
-    $api = new NapiMonitoringLekrdezseApi(null, null, $selector);
+    $api = new GetDailyMonitoringService(null, null, $selector);
 
     $request = $api->dailyMonitoringGetRequest('token', $this->date);
 
@@ -68,13 +68,13 @@ it('getConfig returns the Configuration instance', function () {
 });
 
 it('has contentTypes static property', function () {
-    expect(defined(NapiMonitoringLekrdezseApi::class . '::contentTypes'))->toBeTrue();
+    expect(defined(GetDailyMonitoringService::class . '::contentTypes'))->toBeTrue();
 });
 
 it('contentTypes has dailyMonitoringGet with application/json', function () {
-    expect(NapiMonitoringLekrdezseApi::contentTypes)->toBeArray()
+    expect(GetDailyMonitoringService::contentTypes)->toBeArray()
         ->toHaveKey('dailyMonitoringGet');
-    expect(NapiMonitoringLekrdezseApi::contentTypes['dailyMonitoringGet'])->toBe(['application/json']);
+    expect(GetDailyMonitoringService::contentTypes['dailyMonitoringGet'])->toBe(['application/json']);
 });
 
 it('dailyMonitoringGet returns Event array', function () {
@@ -244,13 +244,13 @@ it('throws ApiException on connection failure', function () {
 })->throws(ApiException::class);
 
 it('constructor with hostIndex defaults to 0', function () {
-    $api = new NapiMonitoringLekrdezseApi(null, null, null, 0);
+    $api = new GetDailyMonitoringService(null, null, null, 0);
 
     expect($api->getHostIndex())->toBe(0);
 });
 
 it('constructor accepts custom hostIndex', function () {
-    $api = new NapiMonitoringLekrdezseApi(null, null, null, 1);
+    $api = new GetDailyMonitoringService(null, null, null, 1);
 
     expect($api->getHostIndex())->toBe(1);
 });

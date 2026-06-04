@@ -8,7 +8,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Omisai\CreditOnline\Api\TokenGenerlsApi;
+use Omisai\CreditOnline\Api\AuthenticationService;
 use Omisai\CreditOnline\ApiException;
 use Omisai\CreditOnline\Configuration;
 use Omisai\CreditOnline\HeaderSelector;
@@ -18,11 +18,11 @@ beforeEach(function () {
     $this->handlerStack = HandlerStack::create($this->mock);
     $this->client = new Client(['handler' => $this->handlerStack]);
     $this->config = new Configuration();
-    $this->api = new TokenGenerlsApi($this->client, $this->config);
+    $this->api = new AuthenticationService($this->client, $this->config);
 });
 
 it('creates with default client, config, and header selector', function () {
-    $api = new TokenGenerlsApi();
+    $api = new AuthenticationService();
 
     expect($api->getConfig())->toBeInstanceOf(Configuration::class);
     expect($api->getConfig()->getHost())->toBe('https://api.creditonline.hu/v3');
@@ -33,7 +33,7 @@ it('can inject custom Guzzle ClientInterface', function () {
         new Response(200, [], json_encode([])),
     ]);
     $client = new Client(['handler' => HandlerStack::create($mock)]);
-    $api = new TokenGenerlsApi($client, $this->config);
+    $api = new AuthenticationService($client, $this->config);
 
     $result = $api->tokenGetWithHttpInfo('test-api-key');
 
@@ -44,14 +44,14 @@ it('can inject custom Configuration', function () {
     $config = new Configuration();
     $config->setHost('https://custom.example.com/v2');
 
-    $api = new TokenGenerlsApi(null, $config);
+    $api = new AuthenticationService(null, $config);
 
     expect($api->getConfig()->getHost())->toBe('https://custom.example.com/v2');
 });
 
 it('can inject custom HeaderSelector', function () {
     $selector = new HeaderSelector();
-    $api = new TokenGenerlsApi(null, null, $selector);
+    $api = new AuthenticationService(null, null, $selector);
 
     $request = $api->tokenGetRequest('api-key');
 
@@ -73,13 +73,13 @@ it('getConfig returns the Configuration instance', function () {
 });
 
 it('has contentTypes static property', function () {
-    expect(defined(TokenGenerlsApi::class . '::contentTypes'))->toBeTrue();
+    expect(defined(AuthenticationService::class . '::contentTypes'))->toBeTrue();
 });
 
 it('contentTypes has tokenGet with application/json', function () {
-    expect(TokenGenerlsApi::contentTypes)->toBeArray()
+    expect(AuthenticationService::contentTypes)->toBeArray()
         ->toHaveKey('tokenGet');
-    expect(TokenGenerlsApi::contentTypes['tokenGet'])->toBe(['application/json']);
+    expect(AuthenticationService::contentTypes['tokenGet'])->toBe(['application/json']);
 });
 
 it('tokenGetWithHttpInfo returns [null, statusCode, headers]', function () {
@@ -151,7 +151,7 @@ it('tokenGetRequest uses custom content type from self::contentTypes', function 
 it('tokenGetRequest uses custom host from configuration', function () {
     $config = new Configuration();
     $config->setHost('https://custom.example.com/v1');
-    $api = new TokenGenerlsApi($this->client, $config);
+    $api = new AuthenticationService($this->client, $config);
 
     $request = $api->tokenGetRequest('key');
 
@@ -224,13 +224,13 @@ it('throws ApiException on connection failure', function () {
 })->throws(ApiException::class);
 
 it('constructor with hostIndex defaults to 0', function () {
-    $api = new TokenGenerlsApi(null, null, null, 0);
+    $api = new AuthenticationService(null, null, null, 0);
 
     expect($api->getHostIndex())->toBe(0);
 });
 
 it('constructor accepts custom hostIndex', function () {
-    $api = new TokenGenerlsApi(null, null, null, 1);
+    $api = new AuthenticationService(null, null, null, 1);
 
     expect($api->getHostIndex())->toBe(1);
 });

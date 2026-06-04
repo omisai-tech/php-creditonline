@@ -8,7 +8,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Omisai\CreditOnline\Api\AdatokLekrseAzonostAlapjnApi;
+use Omisai\CreditOnline\Api\GetDataByIdService;
 use Omisai\CreditOnline\ApiException;
 use Omisai\CreditOnline\Configuration;
 use Omisai\CreditOnline\HeaderSelector;
@@ -19,7 +19,7 @@ beforeEach(function () {
     $this->handlerStack = HandlerStack::create($this->mock);
     $this->client = new Client(['handler' => $this->handlerStack]);
     $this->config = new Configuration();
-    $this->api = new AdatokLekrseAzonostAlapjnApi($this->client, $this->config);
+    $this->api = new GetDataByIdService($this->client, $this->config);
 });
 
 it('can inject custom Guzzle ClientInterface', function () {
@@ -27,7 +27,7 @@ it('can inject custom Guzzle ClientInterface', function () {
         new Response(200, [], json_encode(['LimitReached' => false, 'Companies' => []])),
     ]);
     $client = new Client(['handler' => HandlerStack::create($mock)]);
-    $api = new AdatokLekrseAzonostAlapjnApi($client, $this->config);
+    $api = new GetDataByIdService($client, $this->config);
 
     $result = $api->dataGet('test-token', '01-09-123456');
 
@@ -38,14 +38,14 @@ it('can inject custom Configuration', function () {
     $config = new Configuration();
     $config->setHost('https://custom.example.com/v2');
 
-    $api = new AdatokLekrseAzonostAlapjnApi(null, $config);
+    $api = new GetDataByIdService(null, $config);
 
     expect($api->getConfig()->getHost())->toBe('https://custom.example.com/v2');
 });
 
 it('can inject custom HeaderSelector', function () {
     $selector = new HeaderSelector();
-    $api = new AdatokLekrseAzonostAlapjnApi(null, null, $selector);
+    $api = new GetDataByIdService(null, null, $selector);
 
     $request = $api->dataGetRequest('token');
 
@@ -67,13 +67,13 @@ it('getConfig returns the Configuration instance', function () {
 });
 
 it('has contentTypes static property', function () {
-    expect(defined(AdatokLekrseAzonostAlapjnApi::class . '::contentTypes'))->toBeTrue();
+    expect(defined(GetDataByIdService::class . '::contentTypes'))->toBeTrue();
 });
 
 it('contentTypes has dataGet with application/json', function () {
-    expect(AdatokLekrseAzonostAlapjnApi::contentTypes)->toBeArray()
+    expect(GetDataByIdService::contentTypes)->toBeArray()
         ->toHaveKey('dataGet');
-    expect(AdatokLekrseAzonostAlapjnApi::contentTypes['dataGet'])->toBe(['application/json']);
+    expect(GetDataByIdService::contentTypes['dataGet'])->toBe(['application/json']);
 });
 
 it('dataGet with regnumber returns ApiResult model', function () {
@@ -271,13 +271,13 @@ it('throws ApiException on connection failure', function () {
 })->throws(ApiException::class);
 
 it('constructor with hostIndex defaults to 0', function () {
-    $api = new AdatokLekrseAzonostAlapjnApi(null, null, null, 0);
+    $api = new GetDataByIdService(null, null, null, 0);
 
     expect($api->getHostIndex())->toBe(0);
 });
 
 it('constructor accepts custom hostIndex', function () {
-    $api = new AdatokLekrseAzonostAlapjnApi(null, null, null, 1);
+    $api = new GetDataByIdService(null, null, null, 1);
 
     expect($api->getHostIndex())->toBe(1);
 });

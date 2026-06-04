@@ -8,7 +8,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Omisai\CreditOnline\Api\ProfilSForgalmiAdatokLekrdezseApi;
+use Omisai\CreditOnline\Api\GetProfileAndTrafficDataService;
 use Omisai\CreditOnline\ApiException;
 use Omisai\CreditOnline\Configuration;
 use Omisai\CreditOnline\HeaderSelector;
@@ -19,7 +19,7 @@ beforeEach(function () {
     $this->handlerStack = HandlerStack::create($this->mock);
     $this->client = new Client(['handler' => $this->handlerStack]);
     $this->config = new Configuration();
-    $this->api = new ProfilSForgalmiAdatokLekrdezseApi($this->client, $this->config);
+    $this->api = new GetProfileAndTrafficDataService($this->client, $this->config);
 });
 
 it('can inject custom Guzzle ClientInterface', function () {
@@ -31,7 +31,7 @@ it('can inject custom Guzzle ClientInterface', function () {
         ])),
     ]);
     $client = new Client(['handler' => HandlerStack::create($mock)]);
-    $api = new ProfilSForgalmiAdatokLekrdezseApi($client, $this->config);
+    $api = new GetProfileAndTrafficDataService($client, $this->config);
 
     $result = $api->profileGet('test-token');
 
@@ -42,14 +42,14 @@ it('can inject custom Configuration', function () {
     $config = new Configuration();
     $config->setHost('https://custom.example.com/v2');
 
-    $api = new ProfilSForgalmiAdatokLekrdezseApi(null, $config);
+    $api = new GetProfileAndTrafficDataService(null, $config);
 
     expect($api->getConfig()->getHost())->toBe('https://custom.example.com/v2');
 });
 
 it('can inject custom HeaderSelector', function () {
     $selector = new HeaderSelector();
-    $api = new ProfilSForgalmiAdatokLekrdezseApi(null, null, $selector);
+    $api = new GetProfileAndTrafficDataService(null, null, $selector);
 
     $request = $api->profileGetRequest('token');
 
@@ -71,13 +71,13 @@ it('getConfig returns the Configuration instance', function () {
 });
 
 it('has contentTypes static property', function () {
-    expect(defined(ProfilSForgalmiAdatokLekrdezseApi::class . '::contentTypes'))->toBeTrue();
+    expect(defined(GetProfileAndTrafficDataService::class . '::contentTypes'))->toBeTrue();
 });
 
 it('contentTypes has profileGet with application/json', function () {
-    expect(ProfilSForgalmiAdatokLekrdezseApi::contentTypes)->toBeArray()
+    expect(GetProfileAndTrafficDataService::contentTypes)->toBeArray()
         ->toHaveKey('profileGet');
-    expect(ProfilSForgalmiAdatokLekrdezseApi::contentTypes['profileGet'])->toBe(['application/json']);
+    expect(GetProfileAndTrafficDataService::contentTypes['profileGet'])->toBe(['application/json']);
 });
 
 it('profileGet returns Profile model', function () {
@@ -245,13 +245,13 @@ it('throws ApiException on connection failure', function () {
 })->throws(ApiException::class);
 
 it('constructor with hostIndex defaults to 0', function () {
-    $api = new ProfilSForgalmiAdatokLekrdezseApi(null, null, null, 0);
+    $api = new GetProfileAndTrafficDataService(null, null, null, 0);
 
     expect($api->getHostIndex())->toBe(0);
 });
 
 it('constructor accepts custom hostIndex', function () {
-    $api = new ProfilSForgalmiAdatokLekrdezseApi(null, null, null, 1);
+    $api = new GetProfileAndTrafficDataService(null, null, null, 1);
 
     expect($api->getHostIndex())->toBe(1);
 });
