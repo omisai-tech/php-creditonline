@@ -19,6 +19,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -30,20 +31,27 @@ jobs:
         run: |
           git fetch --tags
           latest_tag=$(git tag -l --sort=-v:refname | head -n1)
+
           if [ -z "$latest_tag" ]; then
             latest_tag="v0.0.0"
           fi
+
           case "$latest_tag" in
             v*) ;;
             *) latest_tag="v$latest_tag" ;;
           esac
+
           echo "Latest tag: $latest_tag"
+
           version=${latest_tag#v}
           IFS='.' read -r major minor patch <<< "$version"
+
           bump="${{ github.event.inputs.bump }}"
+
           if [ -z "$major" ]; then major=0; fi
           if [ -z "$minor" ]; then minor=0; fi
           if [ -z "$patch" ]; then patch=0; fi
+
           if [ "$bump" = "major" ]; then
             major=$((major + 1))
             minor=0
@@ -54,9 +62,11 @@ jobs:
           else
             patch=$((patch + 1))
           fi
+
           new_tag="v${major}.${minor}.${patch}"
-          echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
-          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
+
+          echo "new_tag=$new_tag" >> "$GITHUB_OUTPUT"
+          echo "latest_tag=$latest_tag" >> "$GITHUB_OUTPUT"
 
       - name: Generate changelog
         id: changelog
@@ -72,11 +82,11 @@ jobs:
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Create GitHub release (auto notes)
+      - name: Create GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create ${{ steps.versioning.outputs.new_tag }} \
-          --generate-notes \
-          --title "${{ steps.versioning.outputs.new_tag }}" \
-          --target master \
+          gh release create "${{ steps.versioning.outputs.new_tag }}" \
+            --generate-notes \
+            --title "${{ steps.versioning.outputs.new_tag }}" \
+            --target master
