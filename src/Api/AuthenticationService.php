@@ -132,7 +132,7 @@ class AuthenticationService
      * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
      * @return void
-     * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
     public function tokenGet($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
@@ -149,7 +149,7 @@ class AuthenticationService
      * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
      *
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
-     * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
     public function tokenGetWithHttpInfo($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])

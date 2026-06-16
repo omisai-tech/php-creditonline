@@ -519,7 +519,7 @@ class Configuration
      */
     public static function toDebugReport()
     {
-        $report = 'PHP SDK (OmisaiCreditOnline) Debug Report:'.PHP_EOL;
+        $report = 'PHP SDK (Omisai\CreditOnline) Debug Report:'.PHP_EOL;
         $report .= '    OS: '.php_uname().PHP_EOL;
         $report .= '    PHP Version: '.PHP_VERSION.PHP_EOL;
         $report .= '    The version of the OpenAPI document: 3'.PHP_EOL;

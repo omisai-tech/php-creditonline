@@ -31,7 +31,7 @@ namespace Omisai\CreditOnline\Model;
 
 use ArrayAccess;
 use Omisai\CreditOnline\ObjectSerializer;
-use OmisaiCreditOnline\Model\Address;
+use Omisai\CreditOnline\Model\Address;
 
 /**
  * Member Class Doc Comment

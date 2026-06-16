@@ -31,13 +31,13 @@ namespace Omisai\CreditOnline\Model;
 
 use ArrayAccess;
 use Omisai\CreditOnline\ObjectSerializer;
-use OmisaiCreditOnline\Model\Address;
-use OmisaiCreditOnline\Model\Auditor;
-use OmisaiCreditOnline\Model\FinancialSummary;
-use OmisaiCreditOnline\Model\Member;
-use OmisaiCreditOnline\Model\NegativeInfo;
-use OmisaiCreditOnline\Model\PositiveInfo;
-use OmisaiCreditOnline\Model\Signer;
+use Omisai\CreditOnline\Model\Address;
+use Omisai\CreditOnline\Model\Auditor;
+use Omisai\CreditOnline\Model\FinancialSummary;
+use Omisai\CreditOnline\Model\Member;
+use Omisai\CreditOnline\Model\NegativeInfo;
+use Omisai\CreditOnline\Model\PositiveInfo;
+use Omisai\CreditOnline\Model\Signer;
 
 /**
  * Company Class Doc Comment

@@ -41,7 +41,7 @@ use Omisai\CreditOnline\ApiException;
 use Omisai\CreditOnline\Configuration;
 use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\ObjectSerializer;
-use OmisaiCreditOnline\Model\ApiResult;
+use Omisai\CreditOnline\Model\ApiResult;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -133,7 +133,7 @@ class GetDataByIdService
      * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
      *
      * @return ApiResult
-     * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \Omisai\CreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
     public function dataGet($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
@@ -151,8 +151,8 @@ class GetDataByIdService
      * @param  string|null  $taxnumber  Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
      * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
      *
-     * @return array of \OmisaiCreditOnline\Model\ApiResult, HTTP status code, HTTP response headers (array of strings)
-     * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
+     * @return array of \Omisai\CreditOnline\Model\ApiResult, HTTP status code, HTTP response headers (array of strings)
+     * @throws \Omisai\CreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
     public function dataGetWithHttpInfo($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])

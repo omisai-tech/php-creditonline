@@ -31,7 +31,7 @@ namespace Omisai\CreditOnline\Model;
 
 use ArrayAccess;
 use Omisai\CreditOnline\ObjectSerializer;
-use OmisaiCreditOnline\Model\Company;
+use Omisai\CreditOnline\Model\Company;
 
 /**
  * ApiResult Class Doc Comment

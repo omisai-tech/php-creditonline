@@ -273,7 +273,7 @@ it('toDebugReport returns a string', function () {
 
 it('toDebugReport contains expected sections', function () {
     $report = Configuration::toDebugReport();
-    expect($report)->toContain('PHP SDK (OmisaiCreditOnline) Debug Report:');
+    expect($report)->toContain('PHP SDK (Omisai\CreditOnline) Debug Report:');
     expect($report)->toContain('OS:');
     expect($report)->toContain('PHP Version:');
     expect($report)->toContain('Temp Folder Path:');

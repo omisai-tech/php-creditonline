@@ -41,7 +41,7 @@ use Omisai\CreditOnline\ApiException;
 use Omisai\CreditOnline\Configuration;
 use Omisai\CreditOnline\HeaderSelector;
 use Omisai\CreditOnline\ObjectSerializer;
-use OmisaiCreditOnline\Model\Profile;
+use Omisai\CreditOnline\Model\Profile;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -131,7 +131,7 @@ class GetProfileAndTrafficDataService
      * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
      * @return Profile
-     * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \Omisai\CreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
     public function profileGet($token, string $contentType = self::contentTypes['profileGet'][0])
@@ -147,8 +147,8 @@ class GetProfileAndTrafficDataService
      * @param  string  $token  Egyedi token (required)
      * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
      *
-     * @return array of \OmisaiCreditOnline\Model\Profile, HTTP status code, HTTP response headers (array of strings)
-     * @throws \OmisaiCreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
+     * @return array of \Omisai\CreditOnline\Model\Profile, HTTP status code, HTTP response headers (array of strings)
+     * @throws \Omisai\CreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
     public function profileGetWithHttpInfo($token, string $contentType = self::contentTypes['profileGet'][0])

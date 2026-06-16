@@ -31,7 +31,7 @@ namespace Omisai\CreditOnline\Model;
 
 use ArrayAccess;
 use Omisai\CreditOnline\ObjectSerializer;
-use OmisaiCreditOnline\Model\ActualUsage;
+use Omisai\CreditOnline\Model\ActualUsage;
 
 /**
  * Profile Class Doc Comment
