@@ -30,7 +30,7 @@ it('can inject custom Guzzle ClientInterface', function () {
     $client = new Client(['handler' => HandlerStack::create($mock)]);
     $api = new GetDailyMonitoringService($client, $this->config);
 
-    $result = $api->dailyMonitoringGet('test-token', $this->date);
+    $result = $api->getDailyMonitoring('test-token', $this->date);
 
     expect($result)->toBeArray();
 });
@@ -48,7 +48,7 @@ it('can inject custom HeaderSelector', function () {
     $selector = new HeaderSelector;
     $api = new GetDailyMonitoringService(null, null, $selector);
 
-    $request = $api->dailyMonitoringGetRequest('token', $this->date);
+    $request = $api->getDailyMonitoringRequest('token', $this->date);
 
     expect($request)->toBeInstanceOf(Request::class);
 });
@@ -71,13 +71,13 @@ it('has contentTypes static property', function () {
     expect(defined(GetDailyMonitoringService::class.'::contentTypes'))->toBeTrue();
 });
 
-it('contentTypes has dailyMonitoringGet with application/json', function () {
+it('contentTypes has getDailyMonitoring with application/json', function () {
     expect(GetDailyMonitoringService::contentTypes)->toBeArray()
-        ->toHaveKey('dailyMonitoringGet');
-    expect(GetDailyMonitoringService::contentTypes['dailyMonitoringGet'])->toBe(['application/json']);
+        ->toHaveKey('getDailyMonitoring');
+    expect(GetDailyMonitoringService::contentTypes['getDailyMonitoring'])->toBe(['application/json']);
 });
 
-it('dailyMonitoringGet returns Event array', function () {
+it('getDailyMonitoring returns Event array', function () {
     $this->mock->append(new Response(200, [], json_encode([
         [
             'Taxnumber' => '12345678-2-41',
@@ -87,7 +87,7 @@ it('dailyMonitoringGet returns Event array', function () {
         ],
     ])));
 
-    $result = $this->api->dailyMonitoringGet('test-token', $this->date);
+    $result = $this->api->getDailyMonitoring('test-token', $this->date);
 
     expect($result)->toBeArray()->toHaveCount(1);
     expect($result[0])->toBeInstanceOf(Event::class);
@@ -97,7 +97,7 @@ it('dailyMonitoringGet returns Event array', function () {
     expect($result[0]->getLink())->toBe('https://example.com/event');
 });
 
-it('dailyMonitoringGet returns multiple Event objects', function () {
+it('getDailyMonitoring returns multiple Event objects', function () {
     $this->mock->append(new Response(200, [], json_encode([
         [
             'Taxnumber' => '11111111-2-41',
@@ -113,7 +113,7 @@ it('dailyMonitoringGet returns multiple Event objects', function () {
         ],
     ])));
 
-    $result = $this->api->dailyMonitoringGet('test-token', $this->date);
+    $result = $this->api->getDailyMonitoring('test-token', $this->date);
 
     expect($result)->toBeArray()->toHaveCount(2);
     expect($result[0])->toBeInstanceOf(Event::class);
@@ -122,15 +122,15 @@ it('dailyMonitoringGet returns multiple Event objects', function () {
     expect($result[1]->getName())->toBe('Beta Zrt.');
 });
 
-it('dailyMonitoringGet returns empty array when no events', function () {
+it('getDailyMonitoring returns empty array when no events', function () {
     $this->mock->append(new Response(200, [], json_encode([])));
 
-    $result = $this->api->dailyMonitoringGet('test-token', $this->date);
+    $result = $this->api->getDailyMonitoring('test-token', $this->date);
 
     expect($result)->toBeArray()->toHaveCount(0);
 });
 
-it('dailyMonitoringGetWithHttpInfo returns array with status code', function () {
+it('getDailyMonitoringWithHttpInfo returns array with status code', function () {
     $this->mock->append(new Response(200, ['X-Events-Count' => '3'], json_encode([
         [
             'Taxnumber' => '33333333-2-41',
@@ -140,7 +140,7 @@ it('dailyMonitoringGetWithHttpInfo returns array with status code', function () 
         ],
     ])));
 
-    $result = $this->api->dailyMonitoringGetWithHttpInfo('test-token', $this->date);
+    $result = $this->api->getDailyMonitoringWithHttpInfo('test-token', $this->date);
 
     expect($result)->toBeArray()->toHaveCount(3);
     expect($result[0])->toBeArray()->toHaveCount(1);
@@ -150,15 +150,15 @@ it('dailyMonitoringGetWithHttpInfo returns array with status code', function () 
     expect($result[2]['X-Events-Count'])->toBe(['3']);
 });
 
-it('dailyMonitoringGetAsync returns a Promise', function () {
+it('getDailyMonitoringAsync returns a Promise', function () {
     $this->mock->append(new Response(200, [], json_encode([])));
 
-    $promise = $this->api->dailyMonitoringGetAsync('test-token', $this->date);
+    $promise = $this->api->getDailyMonitoringAsync('test-token', $this->date);
 
     expect($promise)->toBeInstanceOf(PromiseInterface::class);
 });
 
-it('dailyMonitoringGetAsync resolves to Event array', function () {
+it('getDailyMonitoringAsync resolves to Event array', function () {
     $this->mock->append(new Response(200, [], json_encode([
         [
             'Taxnumber' => '44444444-2-41',
@@ -168,21 +168,21 @@ it('dailyMonitoringGetAsync resolves to Event array', function () {
         ],
     ])));
 
-    $result = $this->api->dailyMonitoringGetAsync('test-token', $this->date)->wait();
+    $result = $this->api->getDailyMonitoringAsync('test-token', $this->date)->wait();
 
     expect($result)->toBeArray()->toHaveCount(1);
     expect($result[0])->toBeInstanceOf(Event::class);
 });
 
-it('dailyMonitoringGetAsyncWithHttpInfo returns a Promise', function () {
+it('getDailyMonitoringAsyncWithHttpInfo returns a Promise', function () {
     $this->mock->append(new Response(200, [], json_encode([])));
 
-    $promise = $this->api->dailyMonitoringGetAsyncWithHttpInfo('test-token', $this->date);
+    $promise = $this->api->getDailyMonitoringAsyncWithHttpInfo('test-token', $this->date);
 
     expect($promise)->toBeInstanceOf(PromiseInterface::class);
 });
 
-it('dailyMonitoringGetAsyncWithHttpInfo resolves with array', function () {
+it('getDailyMonitoringAsyncWithHttpInfo resolves with array', function () {
     $this->mock->append(new Response(200, ['X-Header' => 'val'], json_encode([
         [
             'Taxnumber' => '55555555-2-41',
@@ -192,7 +192,7 @@ it('dailyMonitoringGetAsyncWithHttpInfo resolves with array', function () {
         ],
     ])));
 
-    $result = $this->api->dailyMonitoringGetAsyncWithHttpInfo('test-token', $this->date)->wait();
+    $result = $this->api->getDailyMonitoringAsyncWithHttpInfo('test-token', $this->date)->wait();
 
     expect($result)->toBeArray()->toHaveCount(3);
     expect($result[0])->toBeArray()->toHaveCount(1);
@@ -201,46 +201,46 @@ it('dailyMonitoringGetAsyncWithHttpInfo resolves with array', function () {
     expect($result[2])->toBeArray();
 });
 
-it('dailyMonitoringGetRequest creates GET request to /DailyMonitoring', function () {
-    $request = $this->api->dailyMonitoringGetRequest('my-token', $this->date);
+it('getDailyMonitoringRequest creates GET request to /DailyMonitoring', function () {
+    $request = $this->api->getDailyMonitoringRequest('my-token', $this->date);
 
     expect($request->getMethod())->toBe('GET');
     expect($request->getUri()->getPath())->toBe('/v3/DailyMonitoring');
     expect($request->getUri()->getHost())->toBe('api.creditonline.hu');
 });
 
-it('dailyMonitoringGetRequest includes token and date query parameters', function () {
-    $request = $this->api->dailyMonitoringGetRequest('my-token', $this->date);
+it('getDailyMonitoringRequest includes token and date query parameters', function () {
+    $request = $this->api->getDailyMonitoringRequest('my-token', $this->date);
 
     $query = $request->getUri()->getQuery();
     expect($query)->toContain('token=my-token');
     expect($query)->toContain('date=');
 });
 
-it('dailyMonitoringGetRequest throws InvalidArgumentException when token is null', function () {
-    $this->api->dailyMonitoringGetRequest(null, $this->date);
-})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling dailyMonitoringGet');
+it('getDailyMonitoringRequest throws InvalidArgumentException when token is null', function () {
+    $this->api->getDailyMonitoringRequest(null, $this->date);
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling getDailyMonitoring');
 
-it('dailyMonitoringGetRequest throws InvalidArgumentException when date is null', function () {
-    $this->api->dailyMonitoringGetRequest('token', null);
-})->throws(InvalidArgumentException::class, 'Missing the required parameter $date when calling dailyMonitoringGet');
+it('getDailyMonitoringRequest throws InvalidArgumentException when date is null', function () {
+    $this->api->getDailyMonitoringRequest('token', null);
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $date when calling getDailyMonitoring');
 
 it('throws ApiException on 400 bad request', function () {
     $this->mock->append(new Response(400, [], json_encode(['error' => 'Bad Request'])));
 
-    $this->api->dailyMonitoringGetWithHttpInfo('bad-token', $this->date);
+    $this->api->getDailyMonitoringWithHttpInfo('bad-token', $this->date);
 })->throws(ApiException::class);
 
 it('throws ApiException on 401 unauthorized', function () {
     $this->mock->append(new Response(401, [], json_encode(['error' => 'Unauthorized'])));
 
-    $this->api->dailyMonitoringGetWithHttpInfo('invalid-token', $this->date);
+    $this->api->getDailyMonitoringWithHttpInfo('invalid-token', $this->date);
 })->throws(ApiException::class);
 
 it('throws ApiException on connection failure', function () {
     $this->mock->append(new ConnectException('Connection refused', new Request('GET', 'test')));
 
-    $this->api->dailyMonitoringGetWithHttpInfo('test-token', $this->date);
+    $this->api->getDailyMonitoringWithHttpInfo('test-token', $this->date);
 })->throws(ApiException::class);
 
 it('constructor with hostIndex defaults to 0', function () {
@@ -255,24 +255,24 @@ it('constructor accepts custom hostIndex', function () {
     expect($api->getHostIndex())->toBe(1);
 });
 
-it('dailyMonitoringGetRequest with custom contentType uses it in headers', function () {
-    $request = $this->api->dailyMonitoringGetRequest('token', $this->date, 'application/xml');
+it('getDailyMonitoringRequest with custom contentType uses it in headers', function () {
+    $request = $this->api->getDailyMonitoringRequest('token', $this->date, 'application/xml');
 
     expect($request->getHeaderLine('Content-Type'))->toBe('application/xml');
 });
 
-it('dailyMonitoringGetRequest allows empty string token', function () {
-    $request = $this->api->dailyMonitoringGetRequest('', $this->date);
+it('getDailyMonitoringRequest allows empty string token', function () {
+    $request = $this->api->getDailyMonitoringRequest('', $this->date);
 
     expect($request)->toBeInstanceOf(Request::class);
     expect($request->getUri()->getQuery())->toContain('token=');
 });
 
-it('dailyMonitoringGetRequest throws InvalidArgumentException when date is empty array', function () {
-    $this->api->dailyMonitoringGetRequest('token', []);
-})->throws(InvalidArgumentException::class, 'Missing the required parameter $date when calling dailyMonitoringGet');
+it('getDailyMonitoringRequest throws InvalidArgumentException when date is empty array', function () {
+    $this->api->getDailyMonitoringRequest('token', []);
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $date when calling getDailyMonitoring');
 
-it('dailyMonitoringGetWithHttpInfo handles 201 non-200 2xx response', function () {
+it('getDailyMonitoringWithHttpInfo handles 201 non-200 2xx response', function () {
     $this->mock->append(new Response(201, ['X-Created' => 'yes'], json_encode([
         [
             'Taxnumber' => '77777777-2-41',
@@ -282,7 +282,7 @@ it('dailyMonitoringGetWithHttpInfo handles 201 non-200 2xx response', function (
         ],
     ])));
 
-    $result = $this->api->dailyMonitoringGetWithHttpInfo('token', $this->date);
+    $result = $this->api->getDailyMonitoringWithHttpInfo('token', $this->date);
 
     expect($result[0])->toBeArray()->toHaveCount(1);
     expect($result[0][0])->toBeInstanceOf(Event::class);
@@ -298,7 +298,7 @@ it('throws ApiException on RequestException', function () {
         )
     );
 
-    $this->api->dailyMonitoringGetWithHttpInfo('token', $this->date);
+    $this->api->getDailyMonitoringWithHttpInfo('token', $this->date);
 })->throws(ApiException::class);
 
 it('ApiException from RequestException captures status code and body', function () {
@@ -311,7 +311,7 @@ it('ApiException from RequestException captures status code and body', function 
     );
 
     try {
-        $this->api->dailyMonitoringGetWithHttpInfo('token', $this->date);
+        $this->api->getDailyMonitoringWithHttpInfo('token', $this->date);
     } catch (ApiException $e) {
         expect($e->getCode())->toBe(422);
         expect($e->getResponseBody())->toContain('date');
@@ -323,7 +323,7 @@ it('ApiException from ConnectException has null body and headers', function () {
     $this->mock->append(new ConnectException('Timeout', new Request('GET', 'test')));
 
     try {
-        $this->api->dailyMonitoringGetWithHttpInfo('token', $this->date);
+        $this->api->getDailyMonitoringWithHttpInfo('token', $this->date);
     } catch (ApiException $e) {
         expect($e->getCode())->toBe(0);
         expect($e->getResponseBody())->toBeNull();
@@ -331,7 +331,7 @@ it('ApiException from ConnectException has null body and headers', function () {
     }
 });
 
-it('dailyMonitoringGetAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
+it('getDailyMonitoringAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
     $this->mock->append(
         new RequestException(
             'Async failure',
@@ -340,7 +340,7 @@ it('dailyMonitoringGetAsyncWithHttpInfo rejects with ApiException on RequestExce
         )
     );
 
-    $promise = $this->api->dailyMonitoringGetAsyncWithHttpInfo('token', $this->date);
+    $promise = $this->api->getDailyMonitoringAsyncWithHttpInfo('token', $this->date);
     expect(fn () => $promise->wait())->toThrow(ApiException::class);
 });
 
@@ -351,7 +351,7 @@ it('createHttpClientOption enables debug logging', function () {
 
     $this->mock->append(new Response(200, [], json_encode([])));
 
-    $this->api->dailyMonitoringGetWithHttpInfo('token', $this->date);
+    $this->api->getDailyMonitoringWithHttpInfo('token', $this->date);
 
     expect(file_exists($tempFile))->toBeTrue();
     unlink($tempFile);
@@ -362,7 +362,7 @@ it('createHttpClientOption with debug throws RuntimeException for bad path', fun
     $this->config->setDebugFile('/root/forbidden/debug.log');
 
     $this->mock->append(new Response(200, [], json_encode([])));
-    $this->api->dailyMonitoringGetWithHttpInfo('token', $this->date);
+    $this->api->getDailyMonitoringWithHttpInfo('token', $this->date);
 })->throws(RuntimeException::class);
 
 it('createHttpClientOption sets cert and ssl_key', function () {
@@ -371,12 +371,12 @@ it('createHttpClientOption sets cert and ssl_key', function () {
 
     $this->mock->append(new Response(200, [], json_encode([])));
 
-    $result = $this->api->dailyMonitoringGetWithHttpInfo('token', $this->date);
+    $result = $this->api->getDailyMonitoringWithHttpInfo('token', $this->date);
 
     expect($result[1])->toBe(200);
 });
 
 it('handleResponseWithDataType throws ApiException on invalid JSON for non-200 2xx', function () {
     $this->mock->append(new Response(204, ['Content-Type' => 'application/json'], 'not-valid-json{{{'));
-    $this->api->dailyMonitoringGetWithHttpInfo('token', $this->date);
+    $this->api->getDailyMonitoringWithHttpInfo('token', $this->date);
 })->throws(ApiException::class, 'Error JSON decoding server response');

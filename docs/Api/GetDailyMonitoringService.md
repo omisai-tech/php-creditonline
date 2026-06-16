@@ -6,13 +6,13 @@ All URIs are relative to https://api.creditonline.hu/v3, except if the operation
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**dailyMonitoringGet()**](GetDailyMonitoringService.md#dailyMonitoringGet) | **GET** /DailyMonitoring |  |
+| [**getDailyMonitoring()**](GetDailyMonitoringService.md#getDailyMonitoring) | **GET** /DailyMonitoring |  |
 
 
-## `dailyMonitoringGet()`
+## `getDailyMonitoring()`
 
 ```php
-dailyMonitoringGet($token, $date): \Omisai\CreditOnline\Model\Event[]
+getDailyMonitoring($token, $date): \Omisai\CreditOnline\Model\Event[]
 ```
 
 
@@ -36,10 +36,10 @@ $token = 'token_example'; // string | Egyedi token
 $date = new \DateTime('2013-10-20T19:20:30+01:00'); // \DateTime | Lekért értesítők dátuma
 
 try {
-    $result = $apiInstance->dailyMonitoringGet($token, $date);
+    $result = $apiInstance->getDailyMonitoring($token, $date);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling GetDailyMonitoringService->dailyMonitoringGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling GetDailyMonitoringService->getDailyMonitoring: ', $e->getMessage(), PHP_EOL;
 }
 ```
 

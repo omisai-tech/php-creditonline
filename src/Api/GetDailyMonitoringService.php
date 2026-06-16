@@ -76,7 +76,7 @@ class GetDailyMonitoringService
 
     /** @var string[] * */
     public const contentTypes = [
-        'dailyMonitoringGet' => [
+        'getDailyMonitoring' => [
             'application/json',
         ],
     ];
@@ -125,37 +125,37 @@ class GetDailyMonitoringService
     }
 
     /**
-     * Operation dailyMonitoringGet
+     * Operation getDailyMonitoring
      *
      * @param  string  $token  Egyedi token (required)
      * @param  \DateTime  $date  Lekért értesítők dátuma (required)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getDailyMonitoring'] to see the possible values for this operation
      *
      * @return Event[]
      * @throws \Omisai\CreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
-    public function dailyMonitoringGet($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
+    public function getDailyMonitoring($token, $date, string $contentType = self::contentTypes['getDailyMonitoring'][0])
     {
-        [$response] = $this->dailyMonitoringGetWithHttpInfo($token, $date, $contentType);
+        [$response] = $this->getDailyMonitoringWithHttpInfo($token, $date, $contentType);
 
         return $response;
     }
 
     /**
-     * Operation dailyMonitoringGetWithHttpInfo
+     * Operation getDailyMonitoringWithHttpInfo
      *
      * @param  string  $token  Egyedi token (required)
      * @param  \DateTime  $date  Lekért értesítők dátuma (required)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getDailyMonitoring'] to see the possible values for this operation
      *
      * @return array of \Omisai\CreditOnline\Model\Event[], HTTP status code, HTTP response headers (array of strings)
      * @throws \Omisai\CreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
-    public function dailyMonitoringGetWithHttpInfo($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
+    public function getDailyMonitoringWithHttpInfo($token, $date, string $contentType = self::contentTypes['getDailyMonitoring'][0])
     {
-        $request = $this->dailyMonitoringGetRequest($token, $date, $contentType);
+        $request = $this->getDailyMonitoringRequest($token, $date, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -223,18 +223,18 @@ class GetDailyMonitoringService
     }
 
     /**
-     * Operation dailyMonitoringGetAsync
+     * Operation getDailyMonitoringAsync
      *
      * @param  string  $token  Egyedi token (required)
      * @param  \DateTime  $date  Lekért értesítők dátuma (required)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getDailyMonitoring'] to see the possible values for this operation
      *
      * @return PromiseInterface
      * @throws \InvalidArgumentException
      */
-    public function dailyMonitoringGetAsync($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
+    public function getDailyMonitoringAsync($token, $date, string $contentType = self::contentTypes['getDailyMonitoring'][0])
     {
-        return $this->dailyMonitoringGetAsyncWithHttpInfo($token, $date, $contentType)
+        return $this->getDailyMonitoringAsyncWithHttpInfo($token, $date, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -243,19 +243,19 @@ class GetDailyMonitoringService
     }
 
     /**
-     * Operation dailyMonitoringGetAsyncWithHttpInfo
+     * Operation getDailyMonitoringAsyncWithHttpInfo
      *
      * @param  string  $token  Egyedi token (required)
      * @param  \DateTime  $date  Lekért értesítők dátuma (required)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getDailyMonitoring'] to see the possible values for this operation
      *
      * @return PromiseInterface
      * @throws \InvalidArgumentException
      */
-    public function dailyMonitoringGetAsyncWithHttpInfo($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
+    public function getDailyMonitoringAsyncWithHttpInfo($token, $date, string $contentType = self::contentTypes['getDailyMonitoring'][0])
     {
         $returnType = '\Omisai\CreditOnline\Model\Event[]';
-        $request = $this->dailyMonitoringGetRequest($token, $date, $contentType);
+        $request = $this->getDailyMonitoringRequest($token, $date, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -294,29 +294,29 @@ class GetDailyMonitoringService
     }
 
     /**
-     * Create request for operation 'dailyMonitoringGet'
+     * Create request for operation 'getDailyMonitoring'
      *
      * @param  string  $token  Egyedi token (required)
      * @param  \DateTime  $date  Lekért értesítők dátuma (required)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dailyMonitoringGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getDailyMonitoring'] to see the possible values for this operation
      *
      * @return Request
      * @throws \InvalidArgumentException
      */
-    public function dailyMonitoringGetRequest($token, $date, string $contentType = self::contentTypes['dailyMonitoringGet'][0])
+    public function getDailyMonitoringRequest($token, $date, string $contentType = self::contentTypes['getDailyMonitoring'][0])
     {
 
         // verify the required parameter 'token' is set
         if ($token === null || (is_array($token) && count($token) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $token when calling dailyMonitoringGet'
+                'Missing the required parameter $token when calling getDailyMonitoring'
             );
         }
 
         // verify the required parameter 'date' is set
         if ($date === null || (is_array($date) && count($date) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $date when calling dailyMonitoringGet'
+                'Missing the required parameter $date when calling getDailyMonitoring'
             );
         }
 

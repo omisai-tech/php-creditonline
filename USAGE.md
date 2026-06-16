@@ -132,7 +132,7 @@ use Omisai\CreditOnline\Api\GetDailyMonitoringService;
 
 $api = new GetDailyMonitoringService();
 
-$events = $api->dailyMonitoringGet($token, new \DateTime('2025-01-15'));
+$events = $api->getDailyMonitoring($token, new \DateTime('2025-01-15'));
 
 foreach ($events as $event) {
     echo $event->getName();       // Company name
@@ -283,7 +283,7 @@ foreach ($result->getCompanies() as $company) {
 
 // 3. Fetch daily monitoring events
 $monitoringApi = new GetDailyMonitoringService($config);
-$events = $monitoringApi->dailyMonitoringGet($token, new \DateTime('yesterday'));
+$events = $monitoringApi->getDailyMonitoring($token, new \DateTime('yesterday'));
 
 foreach ($events as $event) {
     echo $event->getName() . ' — ' . $event->getCategory() . "\n";
