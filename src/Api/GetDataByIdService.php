@@ -76,7 +76,7 @@ class GetDataByIdService
 
     /** @var string[] * */
     public const contentTypes = [
-        'dataGet' => [
+        'getData' => [
             'application/json',
         ],
     ];
@@ -125,39 +125,39 @@ class GetDataByIdService
     }
 
     /**
-     * Operation dataGet
+     * Operation getData
      *
      * @param  string  $token  Egyedi token (required)
      * @param  string|null  $regnumber  Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
      * @param  string|null  $taxnumber  Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getData'] to see the possible values for this operation
      *
      * @return ApiResult
      * @throws \Omisai\CreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
-    public function dataGet($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
+    public function getData($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['getData'][0])
     {
-        [$response] = $this->dataGetWithHttpInfo($token, $regnumber, $taxnumber, $contentType);
+        [$response] = $this->getDataWithHttpInfo($token, $regnumber, $taxnumber, $contentType);
 
         return $response;
     }
 
     /**
-     * Operation dataGetWithHttpInfo
+     * Operation getDataWithHttpInfo
      *
      * @param  string  $token  Egyedi token (required)
      * @param  string|null  $regnumber  Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
      * @param  string|null  $taxnumber  Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getData'] to see the possible values for this operation
      *
      * @return array of \Omisai\CreditOnline\Model\ApiResult, HTTP status code, HTTP response headers (array of strings)
      * @throws \Omisai\CreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
-    public function dataGetWithHttpInfo($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
+    public function getDataWithHttpInfo($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['getData'][0])
     {
-        $request = $this->dataGetRequest($token, $regnumber, $taxnumber, $contentType);
+        $request = $this->getDataRequest($token, $regnumber, $taxnumber, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -225,19 +225,19 @@ class GetDataByIdService
     }
 
     /**
-     * Operation dataGetAsync
+     * Operation getDataAsync
      *
      * @param  string  $token  Egyedi token (required)
      * @param  string|null  $regnumber  Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
      * @param  string|null  $taxnumber  Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getData'] to see the possible values for this operation
      *
      * @return PromiseInterface
      * @throws \InvalidArgumentException
      */
-    public function dataGetAsync($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
+    public function getDataAsync($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['getData'][0])
     {
-        return $this->dataGetAsyncWithHttpInfo($token, $regnumber, $taxnumber, $contentType)
+        return $this->getDataAsyncWithHttpInfo($token, $regnumber, $taxnumber, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -246,20 +246,20 @@ class GetDataByIdService
     }
 
     /**
-     * Operation dataGetAsyncWithHttpInfo
+     * Operation getDataAsyncWithHttpInfo
      *
      * @param  string  $token  Egyedi token (required)
      * @param  string|null  $regnumber  Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
      * @param  string|null  $taxnumber  Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getData'] to see the possible values for this operation
      *
      * @return PromiseInterface
      * @throws \InvalidArgumentException
      */
-    public function dataGetAsyncWithHttpInfo($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
+    public function getDataAsyncWithHttpInfo($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['getData'][0])
     {
         $returnType = '\Omisai\CreditOnline\Model\ApiResult';
-        $request = $this->dataGetRequest($token, $regnumber, $taxnumber, $contentType);
+        $request = $this->getDataRequest($token, $regnumber, $taxnumber, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -298,23 +298,23 @@ class GetDataByIdService
     }
 
     /**
-     * Create request for operation 'dataGet'
+     * Create request for operation 'getData'
      *
      * @param  string  $token  Egyedi token (required)
      * @param  string|null  $regnumber  Cégjegyzékszám cég esetén. Egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal nyilvántartási szám. (optional)
      * @param  string|null  $taxnumber  Adószám, egyéni vállalkozók esetén \&quot;EV_\&quot; előtaggal. (optional)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['dataGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getData'] to see the possible values for this operation
      *
      * @return Request
      * @throws \InvalidArgumentException
      */
-    public function dataGetRequest($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['dataGet'][0])
+    public function getDataRequest($token, $regnumber = null, $taxnumber = null, string $contentType = self::contentTypes['getData'][0])
     {
 
         // verify the required parameter 'token' is set
         if ($token === null || (is_array($token) && count($token) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $token when calling dataGet'
+                'Missing the required parameter $token when calling getData'
             );
         }
 

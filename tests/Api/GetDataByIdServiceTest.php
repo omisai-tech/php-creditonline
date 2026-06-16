@@ -29,7 +29,7 @@ it('can inject custom Guzzle ClientInterface', function () {
     $client = new Client(['handler' => HandlerStack::create($mock)]);
     $api = new GetDataByIdService($client, $this->config);
 
-    $result = $api->dataGet('test-token', '01-09-123456');
+    $result = $api->getData('test-token', '01-09-123456');
 
     expect($result)->toBeInstanceOf(ApiResult::class);
 });
@@ -47,7 +47,7 @@ it('can inject custom HeaderSelector', function () {
     $selector = new HeaderSelector;
     $api = new GetDataByIdService(null, null, $selector);
 
-    $request = $api->dataGetRequest('token');
+    $request = $api->getDataRequest('token');
 
     expect($request)->toBeInstanceOf(Request::class);
 });
@@ -70,26 +70,26 @@ it('has contentTypes static property', function () {
     expect(defined(GetDataByIdService::class.'::contentTypes'))->toBeTrue();
 });
 
-it('contentTypes has dataGet with application/json', function () {
+it('contentTypes has getData with application/json', function () {
     expect(GetDataByIdService::contentTypes)->toBeArray()
-        ->toHaveKey('dataGet');
-    expect(GetDataByIdService::contentTypes['dataGet'])->toBe(['application/json']);
+        ->toHaveKey('getData');
+    expect(GetDataByIdService::contentTypes['getData'])->toBe(['application/json']);
 });
 
-it('dataGet with regnumber returns ApiResult model', function () {
+it('getData with regnumber returns ApiResult model', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'LimitReached' => false,
         'Companies' => [],
     ])));
 
-    $result = $this->api->dataGet('valid-token', '01-09-123456');
+    $result = $this->api->getData('valid-token', '01-09-123456');
 
     expect($result)->toBeInstanceOf(ApiResult::class);
     expect($result->getLimitReached())->toBeFalse();
     expect($result->getCompanies())->toBe([]);
 });
 
-it('dataGet with taxnumber returns ApiResult model', function () {
+it('getData with taxnumber returns ApiResult model', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'LimitReached' => false,
         'Companies' => [
@@ -100,76 +100,76 @@ it('dataGet with taxnumber returns ApiResult model', function () {
         ],
     ])));
 
-    $result = $this->api->dataGet('valid-token', null, '12345678-2-41');
+    $result = $this->api->getData('valid-token', null, '12345678-2-41');
 
     expect($result)->toBeInstanceOf(ApiResult::class);
     expect($result->getLimitReached())->toBeFalse();
     expect($result->getCompanies())->toBeArray()->toHaveCount(1);
 });
 
-it('dataGet with both regnumber and taxnumber returns ApiResult', function () {
+it('getData with both regnumber and taxnumber returns ApiResult', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'LimitReached' => false,
         'Companies' => [],
     ])));
 
-    $result = $this->api->dataGet('token', '01-09-123456', '12345678-2-41');
+    $result = $this->api->getData('token', '01-09-123456', '12345678-2-41');
 
     expect($result)->toBeInstanceOf(ApiResult::class);
 });
 
-it('dataGet with limitReached true', function () {
+it('getData with limitReached true', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'LimitReached' => true,
         'Companies' => [],
     ])));
 
-    $result = $this->api->dataGet('token', '01-09-999999');
+    $result = $this->api->getData('token', '01-09-999999');
 
     expect($result->getLimitReached())->toBeTrue();
 });
 
 it('throws InvalidArgumentException when token is null', function () {
-    $this->api->dataGet(null, '01-09-123456');
-})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling dataGet');
+    $this->api->getData(null, '01-09-123456');
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling getData');
 
 it('throws InvalidArgumentException when token is empty array', function () {
-    $this->api->dataGet([], '01-09-123456');
-})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling dataGet');
+    $this->api->getData([], '01-09-123456');
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling getData');
 
-it('dataGetRequest creates GET request to /Data', function () {
-    $request = $this->api->dataGetRequest('my-token');
+it('getDataRequest creates GET request to /Data', function () {
+    $request = $this->api->getDataRequest('my-token');
 
     expect($request->getMethod())->toBe('GET');
     expect($request->getUri()->getPath())->toBe('/v3/Data');
     expect($request->getUri()->getHost())->toBe('api.creditonline.hu');
 });
 
-it('dataGetRequest includes token query parameter', function () {
-    $request = $this->api->dataGetRequest('my-token');
+it('getDataRequest includes token query parameter', function () {
+    $request = $this->api->getDataRequest('my-token');
 
     $query = $request->getUri()->getQuery();
     expect($query)->toContain('token=my-token');
 });
 
-it('dataGetRequest includes regnumber query parameter', function () {
-    $request = $this->api->dataGetRequest('token', '01-09-123456');
+it('getDataRequest includes regnumber query parameter', function () {
+    $request = $this->api->getDataRequest('token', '01-09-123456');
 
     $query = $request->getUri()->getQuery();
     expect($query)->toContain('token=token');
     expect($query)->toContain('regnumber=01-09-123456');
 });
 
-it('dataGetRequest includes taxnumber query parameter', function () {
-    $request = $this->api->dataGetRequest('token', null, '12345678-2-41');
+it('getDataRequest includes taxnumber query parameter', function () {
+    $request = $this->api->getDataRequest('token', null, '12345678-2-41');
 
     $query = $request->getUri()->getQuery();
     expect($query)->toContain('token=token');
     expect($query)->toContain('taxnumber=12345678-2-41');
 });
 
-it('dataGetRequest includes all three query parameters', function () {
-    $request = $this->api->dataGetRequest('tok', '01-09-000001', '12345678-2-41');
+it('getDataRequest includes all three query parameters', function () {
+    $request = $this->api->getDataRequest('tok', '01-09-000001', '12345678-2-41');
 
     $query = $request->getUri()->getQuery();
     expect($query)->toContain('token=tok');
@@ -177,20 +177,20 @@ it('dataGetRequest includes all three query parameters', function () {
     expect($query)->toContain('taxnumber=12345678-2-41');
 });
 
-it('dataGetRequest omits optional null parameters', function () {
-    $request = $this->api->dataGetRequest('token', null, null);
+it('getDataRequest omits optional null parameters', function () {
+    $request = $this->api->getDataRequest('token', null, null);
 
     $query = $request->getUri()->getQuery();
     expect($query)->toBe('token=token');
 });
 
-it('dataGetWithHttpInfo returns [ApiResult, statusCode, headers]', function () {
+it('getDataWithHttpInfo returns [ApiResult, statusCode, headers]', function () {
     $this->mock->append(new Response(200, ['X-Response-Id' => 'abc123'], json_encode([
         'LimitReached' => false,
         'Companies' => [],
     ])));
 
-    $result = $this->api->dataGetWithHttpInfo('test-token', '01-09-123456');
+    $result = $this->api->getDataWithHttpInfo('test-token', '01-09-123456');
 
     expect($result)->toBeArray()->toHaveCount(3);
     expect($result[0])->toBeInstanceOf(ApiResult::class);
@@ -199,46 +199,46 @@ it('dataGetWithHttpInfo returns [ApiResult, statusCode, headers]', function () {
     expect($result[2]['X-Response-Id'])->toBe(['abc123']);
 });
 
-it('dataGetAsync returns a Promise', function () {
+it('getDataAsync returns a Promise', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'LimitReached' => false,
         'Companies' => [],
     ])));
 
-    $promise = $this->api->dataGetAsync('test-token', '01-09-123456');
+    $promise = $this->api->getDataAsync('test-token', '01-09-123456');
 
     expect($promise)->toBeInstanceOf(PromiseInterface::class);
 });
 
-it('dataGetAsync resolves to ApiResult', function () {
+it('getDataAsync resolves to ApiResult', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'LimitReached' => false,
         'Companies' => [],
     ])));
 
-    $result = $this->api->dataGetAsync('test-token', '01-09-123456')->wait();
+    $result = $this->api->getDataAsync('test-token', '01-09-123456')->wait();
 
     expect($result)->toBeInstanceOf(ApiResult::class);
 });
 
-it('dataGetAsyncWithHttpInfo returns a Promise', function () {
+it('getDataAsyncWithHttpInfo returns a Promise', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'LimitReached' => false,
         'Companies' => [],
     ])));
 
-    $promise = $this->api->dataGetAsyncWithHttpInfo('test-token', '01-09-123456');
+    $promise = $this->api->getDataAsyncWithHttpInfo('test-token', '01-09-123456');
 
     expect($promise)->toBeInstanceOf(PromiseInterface::class);
 });
 
-it('dataGetAsyncWithHttpInfo resolves with array', function () {
+it('getDataAsyncWithHttpInfo resolves with array', function () {
     $this->mock->append(new Response(200, ['X-Header' => 'val'], json_encode([
         'LimitReached' => false,
         'Companies' => [],
     ])));
 
-    $result = $this->api->dataGetAsyncWithHttpInfo('test-token', '01-09-123456')->wait();
+    $result = $this->api->getDataAsyncWithHttpInfo('test-token', '01-09-123456')->wait();
 
     expect($result)->toBeArray()->toHaveCount(3);
     expect($result[0])->toBeInstanceOf(ApiResult::class);
@@ -249,25 +249,25 @@ it('dataGetAsyncWithHttpInfo resolves with array', function () {
 it('throws ApiException on 400 bad request', function () {
     $this->mock->append(new Response(400, [], json_encode(['error' => 'Bad Request'])));
 
-    $this->api->dataGetWithHttpInfo('bad-token', 'invalid');
+    $this->api->getDataWithHttpInfo('bad-token', 'invalid');
 })->throws(ApiException::class);
 
 it('throws ApiException on 403 forbidden', function () {
     $this->mock->append(new Response(403, [], json_encode(['error' => 'Forbidden'])));
 
-    $this->api->dataGetWithHttpInfo('forbidden-token', '01-09-123456');
+    $this->api->getDataWithHttpInfo('forbidden-token', '01-09-123456');
 })->throws(ApiException::class);
 
 it('throws ApiException on 500 server error', function () {
     $this->mock->append(new Response(500, [], json_encode(['error' => 'Server Error'])));
 
-    $this->api->dataGetWithHttpInfo('server-error-token', '01-09-123456');
+    $this->api->getDataWithHttpInfo('server-error-token', '01-09-123456');
 })->throws(ApiException::class);
 
 it('throws ApiException on connection failure', function () {
     $this->mock->append(new ConnectException('Connection timed out', new Request('GET', 'test')));
 
-    $this->api->dataGetWithHttpInfo('token', '01-09-123456');
+    $this->api->getDataWithHttpInfo('token', '01-09-123456');
 })->throws(ApiException::class);
 
 it('constructor with hostIndex defaults to 0', function () {
@@ -282,33 +282,33 @@ it('constructor accepts custom hostIndex', function () {
     expect($api->getHostIndex())->toBe(1);
 });
 
-it('dataGetRequest with custom contentType uses it in headers', function () {
-    $request = $this->api->dataGetRequest('token', '01-09-123456', null, 'application/xml');
+it('getDataRequest with custom contentType uses it in headers', function () {
+    $request = $this->api->getDataRequest('token', '01-09-123456', null, 'application/xml');
 
     expect($request->getHeaderLine('Content-Type'))->toBe('application/xml');
 });
 
-it('dataGetRequest allows empty string token', function () {
-    $request = $this->api->dataGetRequest('');
+it('getDataRequest allows empty string token', function () {
+    $request = $this->api->getDataRequest('');
 
     expect($request)->toBeInstanceOf(Request::class);
     expect($request->getUri()->getQuery())->toContain('token=');
 });
 
-it('dataGetRequest with null regnumber and null taxnumber only has token', function () {
-    $request = $this->api->dataGetRequest('tok', null, null);
+it('getDataRequest with null regnumber and null taxnumber only has token', function () {
+    $request = $this->api->getDataRequest('tok', null, null);
 
     $query = $request->getUri()->getQuery();
     expect($query)->toBe('token=tok');
 });
 
-it('dataGetWithHttpInfo fallback handles non-explicit status codes', function () {
+it('getDataWithHttpInfo fallback handles non-explicit status codes', function () {
     $this->mock->append(new Response(204, [], json_encode([
         'LimitReached' => false,
         'Companies' => [],
     ])));
 
-    $result = $this->api->dataGetWithHttpInfo('token', '01-09-123456');
+    $result = $this->api->getDataWithHttpInfo('token', '01-09-123456');
 
     expect($result)->toBeArray()->toHaveCount(3);
     expect($result[1])->toBe(204);
@@ -323,7 +323,7 @@ it('throws ApiException on RequestException', function () {
         )
     );
 
-    $this->api->dataGetWithHttpInfo('token', '01-09-123456');
+    $this->api->getDataWithHttpInfo('token', '01-09-123456');
 })->throws(ApiException::class);
 
 it('ApiException from RequestException captures status code and body', function () {
@@ -336,7 +336,7 @@ it('ApiException from RequestException captures status code and body', function 
     );
 
     try {
-        $this->api->dataGetWithHttpInfo('token', '01-09-123456');
+        $this->api->getDataWithHttpInfo('token', '01-09-123456');
     } catch (ApiException $e) {
         expect($e->getCode())->toBe(422);
         expect($e->getResponseBody())->toContain('regnumber');
@@ -348,7 +348,7 @@ it('ApiException from ConnectException has null body and headers', function () {
     $this->mock->append(new ConnectException('Timeout', new Request('GET', 'test')));
 
     try {
-        $this->api->dataGetWithHttpInfo('token', '01-09-123456');
+        $this->api->getDataWithHttpInfo('token', '01-09-123456');
     } catch (ApiException $e) {
         expect($e->getCode())->toBe(0);
         expect($e->getResponseBody())->toBeNull();
@@ -356,7 +356,7 @@ it('ApiException from ConnectException has null body and headers', function () {
     }
 });
 
-it('dataGetAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
+it('getDataAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
     $this->mock->append(
         new RequestException(
             'Async failure',
@@ -365,7 +365,7 @@ it('dataGetAsyncWithHttpInfo rejects with ApiException on RequestException', fun
         )
     );
 
-    $promise = $this->api->dataGetAsyncWithHttpInfo('token', '01-09-123456');
+    $promise = $this->api->getDataAsyncWithHttpInfo('token', '01-09-123456');
     expect(fn () => $promise->wait())->toThrow(ApiException::class);
 });
 
@@ -379,7 +379,7 @@ it('createHttpClientOption enables debug logging', function () {
         'Companies' => [],
     ])));
 
-    $this->api->dataGetWithHttpInfo('token', '01-09-123456');
+    $this->api->getDataWithHttpInfo('token', '01-09-123456');
 
     expect(file_exists($tempFile))->toBeTrue();
     unlink($tempFile);
@@ -390,7 +390,7 @@ it('createHttpClientOption with debug throws RuntimeException for bad path', fun
     $this->config->setDebugFile('/root/forbidden/debug.log');
 
     $this->mock->append(new Response(200, [], json_encode([])));
-    $this->api->dataGetWithHttpInfo('token', '01-09-123456');
+    $this->api->getDataWithHttpInfo('token', '01-09-123456');
 })->throws(RuntimeException::class);
 
 it('createHttpClientOption sets cert and ssl_key', function () {
@@ -402,12 +402,12 @@ it('createHttpClientOption sets cert and ssl_key', function () {
         'Companies' => [],
     ])));
 
-    $result = $this->api->dataGetWithHttpInfo('token', '01-09-123456');
+    $result = $this->api->getDataWithHttpInfo('token', '01-09-123456');
 
     expect($result[1])->toBe(200);
 });
 
 it('handleResponseWithDataType throws ApiException on invalid JSON for non-200 2xx', function () {
     $this->mock->append(new Response(204, ['Content-Type' => 'application/json'], 'not-valid-json{{{'));
-    $this->api->dataGetWithHttpInfo('token', '01-09-123456');
+    $this->api->getDataWithHttpInfo('token', '01-09-123456');
 })->throws(ApiException::class, 'Error JSON decoding server response');

@@ -97,10 +97,10 @@ use Omisai\CreditOnline\Model\ApiResult;
 $api = new GetDataByIdService();
 
 // By registration number
-$result = $api->dataGet($token, regnumber: '01-09-562111');
+$result = $api->getData($token, regnumber: '01-09-562111');
 
 // By tax number (use "EV_" prefix for sole proprietors)
-$result = $api->dataGet($token, taxnumber: '12345678-2-41');
+$result = $api->getData($token, taxnumber: '12345678-2-41');
 
 // $result is an ApiResult object
 var_dump($result->getLimitReached()); // bool
@@ -206,7 +206,7 @@ All API methods throw `Omisai\CreditOnline\ApiException` on non-2xx responses or
 use Omisai\CreditOnline\ApiException;
 
 try {
-    $result = $api->dataGet($token, regnumber: '01-09-562111');
+    $result = $api->getData($token, regnumber: '01-09-562111');
 } catch (ApiException $e) {
     echo 'HTTP Status: ' . $e->getCode();
     echo 'Message: ' . $e->getMessage();
@@ -222,7 +222,7 @@ try {
 All endpoints provide async variants returning Guzzle promises:
 
 ```php
-$promise = $api->dataGetAsync($token, regnumber: '01-09-562111');
+$promise = $api->getDataAsync($token, regnumber: '01-09-562111');
 $promise->then(function (ApiResult $result) {
     foreach ($result->getCompanies() as $company) {
         echo $company->getName();
@@ -235,13 +235,13 @@ $promise->then(function (ApiResult $result) {
 Each endpoint has a `*WithHttpInfo()` variant that returns an array of `[$response, $statusCode, $headers]` instead of just the response body:
 
 ```php
-[$result, $statusCode, $headers] = $api->dataGetWithHttpInfo($token, regnumber: '01-09-562111');
+[$result, $statusCode, $headers] = $api->getDataWithHttpInfo($token, regnumber: '01-09-562111');
 ```
 
 Async `*WithHttpInfo()` variants are also available:
 
 ```php
-$promise = $api->dataGetAsyncWithHttpInfo($token, regnumber: '01-09-562111');
+$promise = $api->getDataAsyncWithHttpInfo($token, regnumber: '01-09-562111');
 ```
 
 ## Full Example
@@ -270,7 +270,7 @@ $token = $headers['Token'][0] ?? null; // Token returned in response headers
 
 // 2. Look up a company by registration number
 $dataApi = new GetDataByIdService($config);
-$result = $dataApi->dataGet($token, regnumber: '01-09-562111');
+$result = $dataApi->getData($token, regnumber: '01-09-562111');
 
 echo 'Limit reached: ' . ($result->getLimitReached() ? 'Yes' : 'No') . "\n\n";
 

@@ -6,13 +6,13 @@ All URIs are relative to https://api.creditonline.hu/v3, except if the operation
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**dataGet()**](GetDataByIdService.md#dataGet) | **GET** /Data |  |
+| [**getData()**](GetDataByIdService.md#getData) | **GET** /Data |  |
 
 
-## `dataGet()`
+## `getData()`
 
 ```php
-dataGet($token, $regnumber, $taxnumber): \Omisai\CreditOnline\Model\ApiResult
+getData($token, $regnumber, $taxnumber): \Omisai\CreditOnline\Model\ApiResult
 ```
 
 
@@ -37,10 +37,10 @@ $regnumber = 0109562111; // string | Cégjegyzékszám cég esetén. Egyéni vá
 $taxnumber = 12177705; // string | Adószám, egyéni vállalkozók esetén \"EV_\" előtaggal.
 
 try {
-    $result = $apiInstance->dataGet($token, $regnumber, $taxnumber);
+    $result = $apiInstance->getData($token, $regnumber, $taxnumber);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling GetDataByIdService->dataGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling GetDataByIdService->getData: ', $e->getMessage(), PHP_EOL;
 }
 ```
 
