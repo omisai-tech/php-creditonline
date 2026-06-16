@@ -6,13 +6,13 @@ All URIs are relative to https://api.creditonline.hu/v3, except if the operation
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**tokenGet()**](AuthenticationService.md#tokenGet) | **GET** /Token |  |
+| [**getToken()**](AuthenticationService.md#getToken) | **GET** /Token |  |
 
 
-## `tokenGet()`
+## `getToken()`
 
 ```php
-tokenGet($api_key, $format, $language)
+getToken($api_key, $format, $language)
 ```
 
 
@@ -37,9 +37,9 @@ $format = 'json'; // string | A lekérések eredményének formátuma
 $language = 'hu'; // string | Az adatok nyelve
 
 try {
-    $apiInstance->tokenGet($api_key, $format, $language);
+    $apiInstance->getToken($api_key, $format, $language);
 } catch (Exception $e) {
-    echo 'Exception when calling AuthenticationService->tokenGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling AuthenticationService->getToken: ', $e->getMessage(), PHP_EOL;
 }
 ```
 

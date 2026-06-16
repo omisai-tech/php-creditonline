@@ -75,7 +75,7 @@ class AuthenticationService
 
     /** @var string[] * */
     public const contentTypes = [
-        'tokenGet' => [
+        'getToken' => [
             'application/json',
         ],
     ];
@@ -124,37 +124,37 @@ class AuthenticationService
     }
 
     /**
-     * Operation tokenGet
+     * Operation getToken
      *
      * @param  string  $api_key  Az előfizető egyedi API kulcsa (required)
      * @param  string|null  $format  A lekérések eredményének formátuma (optional, default to 'json')
      * @param  string|null  $language  Az adatok nyelve (optional, default to 'hu')
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getToken'] to see the possible values for this operation
      *
      * @return void
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
-    public function tokenGet($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
+    public function getToken($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['getToken'][0])
     {
-        $this->tokenGetWithHttpInfo($api_key, $format, $language, $contentType);
+        $this->getTokenWithHttpInfo($api_key, $format, $language, $contentType);
     }
 
     /**
-     * Operation tokenGetWithHttpInfo
+     * Operation getTokenWithHttpInfo
      *
      * @param  string  $api_key  Az előfizető egyedi API kulcsa (required)
      * @param  string|null  $format  A lekérések eredményének formátuma (optional, default to 'json')
      * @param  string|null  $language  Az adatok nyelve (optional, default to 'hu')
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getToken'] to see the possible values for this operation
      *
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
-    public function tokenGetWithHttpInfo($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
+    public function getTokenWithHttpInfo($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['getToken'][0])
     {
-        $request = $this->tokenGetRequest($api_key, $format, $language, $contentType);
+        $request = $this->getTokenRequest($api_key, $format, $language, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -188,19 +188,19 @@ class AuthenticationService
     }
 
     /**
-     * Operation tokenGetAsync
+     * Operation getTokenAsync
      *
      * @param  string  $api_key  Az előfizető egyedi API kulcsa (required)
      * @param  string|null  $format  A lekérések eredményének formátuma (optional, default to 'json')
      * @param  string|null  $language  Az adatok nyelve (optional, default to 'hu')
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getToken'] to see the possible values for this operation
      *
      * @return PromiseInterface
      * @throws \InvalidArgumentException
      */
-    public function tokenGetAsync($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
+    public function getTokenAsync($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['getToken'][0])
     {
-        return $this->tokenGetAsyncWithHttpInfo($api_key, $format, $language, $contentType)
+        return $this->getTokenAsyncWithHttpInfo($api_key, $format, $language, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -209,20 +209,20 @@ class AuthenticationService
     }
 
     /**
-     * Operation tokenGetAsyncWithHttpInfo
+     * Operation getTokenAsyncWithHttpInfo
      *
      * @param  string  $api_key  Az előfizető egyedi API kulcsa (required)
      * @param  string|null  $format  A lekérések eredményének formátuma (optional, default to 'json')
      * @param  string|null  $language  Az adatok nyelve (optional, default to 'hu')
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getToken'] to see the possible values for this operation
      *
      * @return PromiseInterface
      * @throws \InvalidArgumentException
      */
-    public function tokenGetAsyncWithHttpInfo($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
+    public function getTokenAsyncWithHttpInfo($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['getToken'][0])
     {
         $returnType = '';
-        $request = $this->tokenGetRequest($api_key, $format, $language, $contentType);
+        $request = $this->getTokenRequest($api_key, $format, $language, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -248,23 +248,23 @@ class AuthenticationService
     }
 
     /**
-     * Create request for operation 'tokenGet'
+     * Create request for operation 'getToken'
      *
      * @param  string  $api_key  Az előfizető egyedi API kulcsa (required)
      * @param  string|null  $format  A lekérések eredményének formátuma (optional, default to 'json')
      * @param  string|null  $language  Az adatok nyelve (optional, default to 'hu')
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['tokenGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getToken'] to see the possible values for this operation
      *
      * @return Request
      * @throws \InvalidArgumentException
      */
-    public function tokenGetRequest($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['tokenGet'][0])
+    public function getTokenRequest($api_key, $format = 'json', $language = 'hu', string $contentType = self::contentTypes['getToken'][0])
     {
 
         // verify the required parameter 'api_key' is set
         if ($api_key === null || (is_array($api_key) && count($api_key) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $api_key when calling tokenGet'
+                'Missing the required parameter $api_key when calling getToken'
             );
         }
 

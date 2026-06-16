@@ -67,13 +67,13 @@ use Omisai\CreditOnline\Api\AuthenticationService;
 $api = new AuthenticationService();
 
 // Simple call (returns void — token is set server-side)
-$api->tokenGet('your-api-key');
+$api->getToken('your-api-key');
 
 // To retrieve the token, use the WithHttpInfo variant:
-list($body, $statusCode, $headers) = $api->tokenGetWithHttpInfo('your-api-key');
+list($body, $statusCode, $headers) = $api->getTokenWithHttpInfo('your-api-key');
 
 // Optionally specify format and language:
-// $api->tokenGet('your-api-key', 'json', 'hu');
+// $api->getToken('your-api-key', 'json', 'hu');
 ```
 
 | Parameter | Type | Required | Default | Description |
@@ -265,7 +265,7 @@ $config->setHost('https://api-test.creditonline.hu/v3');
 
 // 1. Generate token
 $tokenApi = new AuthenticationService($config);
-list(, , $headers) = $tokenApi->tokenGetWithHttpInfo($apiKey);
+list(, , $headers) = $tokenApi->getTokenWithHttpInfo($apiKey);
 $token = $headers['Token'][0] ?? null; // Token returned in response headers
 
 // 2. Look up a company by registration number

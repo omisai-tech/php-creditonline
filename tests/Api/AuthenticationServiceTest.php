@@ -35,7 +35,7 @@ it('can inject custom Guzzle ClientInterface', function () {
     $client = new Client(['handler' => HandlerStack::create($mock)]);
     $api = new AuthenticationService($client, $this->config);
 
-    $result = $api->tokenGetWithHttpInfo('test-api-key');
+    $result = $api->getTokenWithHttpInfo('test-api-key');
 
     expect($result[1])->toBe(200);
 });
@@ -53,7 +53,7 @@ it('can inject custom HeaderSelector', function () {
     $selector = new HeaderSelector;
     $api = new AuthenticationService(null, null, $selector);
 
-    $request = $api->tokenGetRequest('api-key');
+    $request = $api->getTokenRequest('api-key');
 
     expect($request)->toBeInstanceOf(Request::class);
 });
@@ -76,16 +76,16 @@ it('has contentTypes static property', function () {
     expect(defined(AuthenticationService::class.'::contentTypes'))->toBeTrue();
 });
 
-it('contentTypes has tokenGet with application/json', function () {
+it('contentTypes has getToken with application/json', function () {
     expect(AuthenticationService::contentTypes)->toBeArray()
-        ->toHaveKey('tokenGet');
-    expect(AuthenticationService::contentTypes['tokenGet'])->toBe(['application/json']);
+        ->toHaveKey('getToken');
+    expect(AuthenticationService::contentTypes['getToken'])->toBe(['application/json']);
 });
 
-it('tokenGetWithHttpInfo returns [null, statusCode, headers]', function () {
+it('getTokenWithHttpInfo returns [null, statusCode, headers]', function () {
     $this->mock->append(new Response(200, ['X-Custom' => 'bar'], ''));
 
-    $result = $this->api->tokenGetWithHttpInfo('test-api-key');
+    $result = $this->api->getTokenWithHttpInfo('test-api-key');
 
     expect($result)->toBeArray()->toHaveCount(3);
     expect($result[0])->toBeNull();
@@ -94,39 +94,39 @@ it('tokenGetWithHttpInfo returns [null, statusCode, headers]', function () {
     expect($result[2]['X-Custom'])->toBe(['bar']);
 });
 
-it('tokenGet returns void on successful response', function () {
+it('getToken returns void on successful response', function () {
     $this->mock->append(new Response(200, [], ''));
 
-    $result = $this->api->tokenGet('test-api-key');
+    $result = $this->api->getToken('test-api-key');
 
     expect($result)->toBeNull();
 });
 
-it('tokenGet passes optional parameters', function () {
+it('getToken passes optional parameters', function () {
     $this->mock->append(new Response(200, [], ''));
 
-    $result = $this->api->tokenGet('test-api-key', 'xml', 'en');
+    $result = $this->api->getToken('test-api-key', 'xml', 'en');
 
     expect($result)->toBeNull();
 });
 
-it('tokenGetRequest creates GET request to /Token', function () {
-    $request = $this->api->tokenGetRequest('my-api-key');
+it('getTokenRequest creates GET request to /Token', function () {
+    $request = $this->api->getTokenRequest('my-api-key');
 
     expect($request->getMethod())->toBe('GET');
     expect($request->getUri()->getPath())->toBe('/v3/Token');
     expect($request->getUri()->getHost())->toBe('api.creditonline.hu');
 });
 
-it('tokenGetRequest includes api_key query parameter', function () {
-    $request = $this->api->tokenGetRequest('my-api-key');
+it('getTokenRequest includes api_key query parameter', function () {
+    $request = $this->api->getTokenRequest('my-api-key');
 
     $query = $request->getUri()->getQuery();
     expect($query)->toContain('apiKey=my-api-key');
 });
 
-it('tokenGetRequest includes optional format and language query params', function () {
-    $request = $this->api->tokenGetRequest('key123', 'xml', 'en');
+it('getTokenRequest includes optional format and language query params', function () {
+    $request = $this->api->getTokenRequest('key123', 'xml', 'en');
 
     $query = $request->getUri()->getQuery();
     expect($query)->toContain('apiKey=key123');
@@ -134,58 +134,58 @@ it('tokenGetRequest includes optional format and language query params', functio
     expect($query)->toContain('language=en');
 });
 
-it('tokenGetRequest throws InvalidArgumentException when api_key is null', function () {
-    $this->api->tokenGetRequest(null);
-})->throws(InvalidArgumentException::class, 'Missing the required parameter $api_key when calling tokenGet');
+it('getTokenRequest throws InvalidArgumentException when api_key is null', function () {
+    $this->api->getTokenRequest(null);
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $api_key when calling getToken');
 
-it('tokenGetRequest throws InvalidArgumentException when api_key is empty array', function () {
-    $this->api->tokenGetRequest([]);
-})->throws(InvalidArgumentException::class, 'Missing the required parameter $api_key when calling tokenGet');
+it('getTokenRequest throws InvalidArgumentException when api_key is empty array', function () {
+    $this->api->getTokenRequest([]);
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $api_key when calling getToken');
 
-it('tokenGetRequest uses custom content type from self::contentTypes', function () {
-    $request = $this->api->tokenGetRequest('key', 'json', 'hu', 'application/json');
+it('getTokenRequest uses custom content type from self::contentTypes', function () {
+    $request = $this->api->getTokenRequest('key', 'json', 'hu', 'application/json');
 
     expect($request->getHeaderLine('Content-Type'))->toBe('application/json');
 });
 
-it('tokenGetRequest uses custom host from configuration', function () {
+it('getTokenRequest uses custom host from configuration', function () {
     $config = new Configuration;
     $config->setHost('https://custom.example.com/v1');
     $api = new AuthenticationService($this->client, $config);
 
-    $request = $api->tokenGetRequest('key');
+    $request = $api->getTokenRequest('key');
 
     expect($request->getUri()->getHost())->toBe('custom.example.com');
 });
 
-it('tokenGetAsync returns a Promise', function () {
+it('getTokenAsync returns a Promise', function () {
     $this->mock->append(new Response(200, [], ''));
 
-    $promise = $this->api->tokenGetAsync('test-api-key');
+    $promise = $this->api->getTokenAsync('test-api-key');
 
     expect($promise)->toBeInstanceOf(PromiseInterface::class);
 });
 
-it('tokenGetAsync resolves to null', function () {
+it('getTokenAsync resolves to null', function () {
     $this->mock->append(new Response(200, [], ''));
 
-    $result = $this->api->tokenGetAsync('test-api-key')->wait();
+    $result = $this->api->getTokenAsync('test-api-key')->wait();
 
     expect($result)->toBeNull();
 });
 
-it('tokenGetAsyncWithHttpInfo returns a Promise', function () {
+it('getTokenAsyncWithHttpInfo returns a Promise', function () {
     $this->mock->append(new Response(200, [], ''));
 
-    $promise = $this->api->tokenGetAsyncWithHttpInfo('test-api-key');
+    $promise = $this->api->getTokenAsyncWithHttpInfo('test-api-key');
 
     expect($promise)->toBeInstanceOf(PromiseInterface::class);
 });
 
-it('tokenGetAsyncWithHttpInfo resolves with array', function () {
+it('getTokenAsyncWithHttpInfo resolves with array', function () {
     $this->mock->append(new Response(200, ['X-Token-Header' => 'abc'], ''));
 
-    $result = $this->api->tokenGetAsyncWithHttpInfo('test-api-key')->wait();
+    $result = $this->api->getTokenAsyncWithHttpInfo('test-api-key')->wait();
 
     expect($result)->toBeArray()->toHaveCount(3);
     expect($result[0])->toBeNull();
@@ -196,31 +196,31 @@ it('tokenGetAsyncWithHttpInfo resolves with array', function () {
 it('throws ApiException on non-2xx response', function () {
     $this->mock->append(new Response(400, [], json_encode(['error' => 'Bad Request'])));
 
-    $this->api->tokenGetWithHttpInfo('bad-key');
+    $this->api->getTokenWithHttpInfo('bad-key');
 })->throws(ApiException::class);
 
 it('throws ApiException on 401 unauthorized response', function () {
     $this->mock->append(new Response(401, [], json_encode(['error' => 'Unauthorized'])));
 
-    $this->api->tokenGetWithHttpInfo('invalid-key');
+    $this->api->getTokenWithHttpInfo('invalid-key');
 })->throws(ApiException::class);
 
 it('throws ApiException on 404 not found response', function () {
     $this->mock->append(new Response(404, [], json_encode(['error' => 'Not Found'])));
 
-    $this->api->tokenGetWithHttpInfo('missing-key');
+    $this->api->getTokenWithHttpInfo('missing-key');
 })->throws(ApiException::class);
 
 it('throws ApiException on 500 server error response', function () {
     $this->mock->append(new Response(500, [], json_encode(['error' => 'Internal Server Error'])));
 
-    $this->api->tokenGetWithHttpInfo('server-error-key');
+    $this->api->getTokenWithHttpInfo('server-error-key');
 })->throws(ApiException::class);
 
 it('throws ApiException on connection failure', function () {
     $this->mock->append(new ConnectException('Connection refused', new Request('GET', 'test')));
 
-    $this->api->tokenGetWithHttpInfo('test-key');
+    $this->api->getTokenWithHttpInfo('test-key');
 })->throws(ApiException::class);
 
 it('constructor with hostIndex defaults to 0', function () {
@@ -235,16 +235,16 @@ it('constructor accepts custom hostIndex', function () {
     expect($api->getHostIndex())->toBe(1);
 });
 
-it('tokenGetWithHttpInfo handles api_key with special characters', function () {
+it('getTokenWithHttpInfo handles api_key with special characters', function () {
     $this->mock->append(new Response(200, [], ''));
 
-    $result = $this->api->tokenGetWithHttpInfo('key/with=symbols&chars');
+    $result = $this->api->getTokenWithHttpInfo('key/with=symbols&chars');
 
     expect($result[1])->toBe(200);
 });
 
-it('tokenGetRequest with null format omits format from query', function () {
-    $request = $this->api->tokenGetRequest('key', null, 'hu');
+it('getTokenRequest with null format omits format from query', function () {
+    $request = $this->api->getTokenRequest('key', null, 'hu');
 
     $query = $request->getUri()->getQuery();
     expect($query)->toContain('apiKey=key');
@@ -252,8 +252,8 @@ it('tokenGetRequest with null format omits format from query', function () {
     expect($query)->toContain('language=hu');
 });
 
-it('tokenGetRequest with null language omits language from query', function () {
-    $request = $this->api->tokenGetRequest('key', 'json', null);
+it('getTokenRequest with null language omits language from query', function () {
+    $request = $this->api->getTokenRequest('key', 'json', null);
 
     $query = $request->getUri()->getQuery();
     expect($query)->toContain('apiKey=key');
@@ -261,15 +261,15 @@ it('tokenGetRequest with null language omits language from query', function () {
     expect($query)->not->toContain('language=');
 });
 
-it('tokenGetRequest with null format and null language only includes apiKey', function () {
-    $request = $this->api->tokenGetRequest('key', null, null);
+it('getTokenRequest with null format and null language only includes apiKey', function () {
+    $request = $this->api->getTokenRequest('key', null, null);
 
     $query = $request->getUri()->getQuery();
     expect($query)->toBe('apiKey=key');
 });
 
-it('tokenGetRequest allows empty string api_key', function () {
-    $request = $this->api->tokenGetRequest('');
+it('getTokenRequest allows empty string api_key', function () {
+    $request = $this->api->getTokenRequest('');
 
     expect($request)->toBeInstanceOf(Request::class);
     expect($request->getUri()->getQuery())->toContain('apiKey=');
@@ -281,7 +281,7 @@ it('createHttpClientOption sets debug when config has debug enabled', function (
     $this->config->setDebugFile($tempFile);
 
     $this->mock->append(new Response(200, [], ''));
-    $this->api->tokenGetWithHttpInfo('key');
+    $this->api->getTokenWithHttpInfo('key');
 
     expect(file_exists($tempFile))->toBeTrue();
     unlink($tempFile);
@@ -292,7 +292,7 @@ it('createHttpClientOption throws RuntimeException when debug file cannot be ope
     $this->config->setDebugFile('/nonexistent/path/debug.log');
 
     $this->mock->append(new Response(200, [], ''));
-    $this->api->tokenGetWithHttpInfo('key');
+    $this->api->getTokenWithHttpInfo('key');
 })->throws(RuntimeException::class, 'Failed to open the debug file');
 
 it('createHttpClientOption sets cert and ssl_key options', function () {
@@ -300,7 +300,7 @@ it('createHttpClientOption sets cert and ssl_key options', function () {
     $this->config->setKeyFile('/path/to/key.pem');
 
     $this->mock->append(new Response(200, [], ''));
-    $result = $this->api->tokenGetWithHttpInfo('key');
+    $result = $this->api->getTokenWithHttpInfo('key');
 
     expect($result[1])->toBe(200);
 });
@@ -314,7 +314,7 @@ it('throws ApiException on RequestException', function () {
         )
     );
 
-    $this->api->tokenGetWithHttpInfo('key');
+    $this->api->getTokenWithHttpInfo('key');
 })->throws(ApiException::class);
 
 it('ApiException from RequestException contains response body', function () {
@@ -327,7 +327,7 @@ it('ApiException from RequestException contains response body', function () {
     );
 
     try {
-        $this->api->tokenGetWithHttpInfo('key');
+        $this->api->getTokenWithHttpInfo('key');
     } catch (ApiException $e) {
         expect($e->getCode())->toBe(422);
         expect($e->getResponseBody())->toContain('Invalid input');
@@ -339,7 +339,7 @@ it('ApiException from ConnectException has null response body and headers', func
     $this->mock->append(new ConnectException('Connection refused', new Request('GET', 'test')));
 
     try {
-        $this->api->tokenGetWithHttpInfo('key');
+        $this->api->getTokenWithHttpInfo('key');
     } catch (ApiException $e) {
         expect($e->getCode())->toBe(0);
         expect($e->getResponseBody())->toBeNull();
@@ -347,7 +347,7 @@ it('ApiException from ConnectException has null response body and headers', func
     }
 });
 
-it('tokenGetAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
+it('getTokenAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
     $this->mock->append(
         new RequestException(
             'Async error',
@@ -356,6 +356,6 @@ it('tokenGetAsyncWithHttpInfo rejects with ApiException on RequestException', fu
         )
     );
 
-    $promise = $this->api->tokenGetAsyncWithHttpInfo('key');
+    $promise = $this->api->getTokenAsyncWithHttpInfo('key');
     expect(fn () => $promise->wait())->toThrow(ApiException::class);
 });
