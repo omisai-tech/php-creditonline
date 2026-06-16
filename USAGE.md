@@ -160,7 +160,7 @@ use Omisai\CreditOnline\Api\GetProfileAndTrafficDataService;
 
 $api = new GetProfileAndTrafficDataService();
 
-$profile = $api->profileGet($token);
+$profile = $api->getProfile($token);
 
 echo $profile->getCompanyName();
 echo $profile->getActualFormat();
@@ -291,7 +291,7 @@ foreach ($events as $event) {
 
 // 4. Check profile usage
 $profileApi = new GetProfileAndTrafficDataService($config);
-$profile = $profileApi->profileGet($token);
+$profile = $profileApi->getProfile($token);
 
 echo 'Profile: ' . $profile->getCompanyName() . "\n";
 foreach ($profile->getActualUsages() as $usage) {

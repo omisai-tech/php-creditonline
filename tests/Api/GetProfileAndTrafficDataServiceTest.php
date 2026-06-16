@@ -33,7 +33,7 @@ it('can inject custom Guzzle ClientInterface', function () {
     $client = new Client(['handler' => HandlerStack::create($mock)]);
     $api = new GetProfileAndTrafficDataService($client, $this->config);
 
-    $result = $api->profileGet('test-token');
+    $result = $api->getProfile('test-token');
 
     expect($result)->toBeInstanceOf(Profile::class);
 });
@@ -51,7 +51,7 @@ it('can inject custom HeaderSelector', function () {
     $selector = new HeaderSelector;
     $api = new GetProfileAndTrafficDataService(null, null, $selector);
 
-    $request = $api->profileGetRequest('token');
+    $request = $api->getProfileRequest('token');
 
     expect($request)->toBeInstanceOf(Request::class);
 });
@@ -74,20 +74,20 @@ it('has contentTypes static property', function () {
     expect(defined(GetProfileAndTrafficDataService::class.'::contentTypes'))->toBeTrue();
 });
 
-it('contentTypes has profileGet with application/json', function () {
+it('contentTypes has getProfile with application/json', function () {
     expect(GetProfileAndTrafficDataService::contentTypes)->toBeArray()
-        ->toHaveKey('profileGet');
-    expect(GetProfileAndTrafficDataService::contentTypes['profileGet'])->toBe(['application/json']);
+        ->toHaveKey('getProfile');
+    expect(GetProfileAndTrafficDataService::contentTypes['getProfile'])->toBe(['application/json']);
 });
 
-it('profileGet returns Profile model', function () {
+it('getProfile returns Profile model', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'CompanyName' => 'Test Company Kft.',
         'ActualFormat' => 'json',
         'ActualLanguage' => 'hu',
     ])));
 
-    $result = $this->api->profileGet('test-token');
+    $result = $this->api->getProfile('test-token');
 
     expect($result)->toBeInstanceOf(Profile::class);
     expect($result->getCompanyName())->toBe('Test Company Kft.');
@@ -95,21 +95,21 @@ it('profileGet returns Profile model', function () {
     expect($result->getActualLanguage())->toBe('hu');
 });
 
-it('profileGet returns Profile with different language', function () {
+it('getProfile returns Profile with different language', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'CompanyName' => 'Nemzetkozi Kft.',
         'ActualFormat' => 'xml',
         'ActualLanguage' => 'en',
     ])));
 
-    $result = $this->api->profileGet('test-token');
+    $result = $this->api->getProfile('test-token');
 
     expect($result->getCompanyName())->toBe('Nemzetkozi Kft.');
     expect($result->getActualFormat())->toBe('xml');
     expect($result->getActualLanguage())->toBe('en');
 });
 
-it('profileGet returns Profile with ActualUsages', function () {
+it('getProfile returns Profile with ActualUsages', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'CompanyName' => 'Usage Co',
         'ActualFormat' => 'json',
@@ -121,21 +121,21 @@ it('profileGet returns Profile with ActualUsages', function () {
         ],
     ])));
 
-    $result = $this->api->profileGet('test-token');
+    $result = $this->api->getProfile('test-token');
 
     expect($result)->toBeInstanceOf(Profile::class);
     expect($result->getCompanyName())->toBe('Usage Co');
     expect($result->getActualUsages())->not->toBeNull();
 });
 
-it('profileGetWithHttpInfo returns array with status code', function () {
+it('getProfileWithHttpInfo returns array with status code', function () {
     $this->mock->append(new Response(200, ['X-Profile-Id' => 'prof123'], json_encode([
         'CompanyName' => 'Profile Test Kft.',
         'ActualFormat' => 'json',
         'ActualLanguage' => 'hu',
     ])));
 
-    $result = $this->api->profileGetWithHttpInfo('test-token');
+    $result = $this->api->getProfileWithHttpInfo('test-token');
 
     expect($result)->toBeArray()->toHaveCount(3);
     expect($result[0])->toBeInstanceOf(Profile::class);
@@ -145,51 +145,51 @@ it('profileGetWithHttpInfo returns array with status code', function () {
     expect($result[2]['X-Profile-Id'])->toBe(['prof123']);
 });
 
-it('profileGetAsync returns a Promise', function () {
+it('getProfileAsync returns a Promise', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'CompanyName' => 'Async Co',
         'ActualFormat' => 'json',
         'ActualLanguage' => 'hu',
     ])));
 
-    $promise = $this->api->profileGetAsync('test-token');
+    $promise = $this->api->getProfileAsync('test-token');
 
     expect($promise)->toBeInstanceOf(PromiseInterface::class);
 });
 
-it('profileGetAsync resolves to Profile', function () {
+it('getProfileAsync resolves to Profile', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'CompanyName' => 'Async Test Kft.',
         'ActualFormat' => 'json',
         'ActualLanguage' => 'en',
     ])));
 
-    $result = $this->api->profileGetAsync('test-token')->wait();
+    $result = $this->api->getProfileAsync('test-token')->wait();
 
     expect($result)->toBeInstanceOf(Profile::class);
     expect($result->getCompanyName())->toBe('Async Test Kft.');
 });
 
-it('profileGetAsyncWithHttpInfo returns a Promise', function () {
+it('getProfileAsyncWithHttpInfo returns a Promise', function () {
     $this->mock->append(new Response(200, [], json_encode([
         'CompanyName' => 'AsyncInfo Co',
         'ActualFormat' => 'json',
         'ActualLanguage' => 'hu',
     ])));
 
-    $promise = $this->api->profileGetAsyncWithHttpInfo('test-token');
+    $promise = $this->api->getProfileAsyncWithHttpInfo('test-token');
 
     expect($promise)->toBeInstanceOf(PromiseInterface::class);
 });
 
-it('profileGetAsyncWithHttpInfo resolves with array', function () {
+it('getProfileAsyncWithHttpInfo resolves with array', function () {
     $this->mock->append(new Response(200, ['X-Header' => 'val'], json_encode([
         'CompanyName' => 'AsyncInfo Test Kft.',
         'ActualFormat' => 'json',
         'ActualLanguage' => 'hu',
     ])));
 
-    $result = $this->api->profileGetAsyncWithHttpInfo('test-token')->wait();
+    $result = $this->api->getProfileAsyncWithHttpInfo('test-token')->wait();
 
     expect($result)->toBeArray()->toHaveCount(3);
     expect($result[0])->toBeInstanceOf(Profile::class);
@@ -197,51 +197,51 @@ it('profileGetAsyncWithHttpInfo resolves with array', function () {
     expect($result[2])->toBeArray();
 });
 
-it('profileGetRequest creates GET request to /Profile', function () {
-    $request = $this->api->profileGetRequest('my-token');
+it('getProfileRequest creates GET request to /Profile', function () {
+    $request = $this->api->getProfileRequest('my-token');
 
     expect($request->getMethod())->toBe('GET');
     expect($request->getUri()->getPath())->toBe('/v3/Profile');
     expect($request->getUri()->getHost())->toBe('api.creditonline.hu');
 });
 
-it('profileGetRequest includes token query parameter', function () {
-    $request = $this->api->profileGetRequest('my-token');
+it('getProfileRequest includes token query parameter', function () {
+    $request = $this->api->getProfileRequest('my-token');
 
     $query = $request->getUri()->getQuery();
     expect($query)->toContain('token=my-token');
 });
 
-it('profileGetRequest throws InvalidArgumentException when token is null', function () {
-    $this->api->profileGetRequest(null);
-})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling profileGet');
+it('getProfileRequest throws InvalidArgumentException when token is null', function () {
+    $this->api->getProfileRequest(null);
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling getProfile');
 
-it('profileGetRequest throws InvalidArgumentException when token is empty array', function () {
-    $this->api->profileGetRequest([]);
-})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling profileGet');
+it('getProfileRequest throws InvalidArgumentException when token is empty array', function () {
+    $this->api->getProfileRequest([]);
+})->throws(InvalidArgumentException::class, 'Missing the required parameter $token when calling getProfile');
 
 it('throws ApiException on 400 bad request', function () {
     $this->mock->append(new Response(400, [], json_encode(['error' => 'Bad Request'])));
 
-    $this->api->profileGetWithHttpInfo('bad-token');
+    $this->api->getProfileWithHttpInfo('bad-token');
 })->throws(ApiException::class);
 
 it('throws ApiException on 403 forbidden', function () {
     $this->mock->append(new Response(403, [], json_encode(['error' => 'Forbidden'])));
 
-    $this->api->profileGetWithHttpInfo('forbidden-token');
+    $this->api->getProfileWithHttpInfo('forbidden-token');
 })->throws(ApiException::class);
 
 it('throws ApiException on 500 server error', function () {
     $this->mock->append(new Response(500, [], json_encode(['error' => 'Server Error'])));
 
-    $this->api->profileGetWithHttpInfo('server-error-token');
+    $this->api->getProfileWithHttpInfo('server-error-token');
 })->throws(ApiException::class);
 
 it('throws ApiException on connection failure', function () {
     $this->mock->append(new ConnectException('Connection refused', new Request('GET', 'test')));
 
-    $this->api->profileGetWithHttpInfo('test-token');
+    $this->api->getProfileWithHttpInfo('test-token');
 })->throws(ApiException::class);
 
 it('constructor with hostIndex defaults to 0', function () {
@@ -256,27 +256,27 @@ it('constructor accepts custom hostIndex', function () {
     expect($api->getHostIndex())->toBe(1);
 });
 
-it('profileGetRequest with custom contentType uses it in headers', function () {
-    $request = $this->api->profileGetRequest('token', 'application/xml');
+it('getProfileRequest with custom contentType uses it in headers', function () {
+    $request = $this->api->getProfileRequest('token', 'application/xml');
 
     expect($request->getHeaderLine('Content-Type'))->toBe('application/xml');
 });
 
-it('profileGetRequest allows empty string token', function () {
-    $request = $this->api->profileGetRequest('');
+it('getProfileRequest allows empty string token', function () {
+    $request = $this->api->getProfileRequest('');
 
     expect($request)->toBeInstanceOf(Request::class);
     expect($request->getUri()->getQuery())->toContain('token=');
 });
 
-it('profileGetWithHttpInfo handles 201 non-200 2xx response', function () {
+it('getProfileWithHttpInfo handles 201 non-200 2xx response', function () {
     $this->mock->append(new Response(201, ['X-Created' => 'yes'], json_encode([
         'CompanyName' => 'Created Co',
         'ActualFormat' => 'json',
         'ActualLanguage' => 'hu',
     ])));
 
-    $result = $this->api->profileGetWithHttpInfo('token');
+    $result = $this->api->getProfileWithHttpInfo('token');
 
     expect($result[0])->toBeInstanceOf(Profile::class);
     expect($result[1])->toBe(201);
@@ -291,7 +291,7 @@ it('throws ApiException on RequestException', function () {
         )
     );
 
-    $this->api->profileGetWithHttpInfo('token');
+    $this->api->getProfileWithHttpInfo('token');
 })->throws(ApiException::class);
 
 it('ApiException from RequestException captures status code and body', function () {
@@ -304,7 +304,7 @@ it('ApiException from RequestException captures status code and body', function 
     );
 
     try {
-        $this->api->profileGetWithHttpInfo('token');
+        $this->api->getProfileWithHttpInfo('token');
     } catch (ApiException $e) {
         expect($e->getCode())->toBe(422);
         expect($e->getResponseBody())->toContain('token');
@@ -316,7 +316,7 @@ it('ApiException from ConnectException has null body and headers', function () {
     $this->mock->append(new ConnectException('Timeout', new Request('GET', 'test')));
 
     try {
-        $this->api->profileGetWithHttpInfo('token');
+        $this->api->getProfileWithHttpInfo('token');
     } catch (ApiException $e) {
         expect($e->getCode())->toBe(0);
         expect($e->getResponseBody())->toBeNull();
@@ -324,7 +324,7 @@ it('ApiException from ConnectException has null body and headers', function () {
     }
 });
 
-it('profileGetAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
+it('getProfileAsyncWithHttpInfo rejects with ApiException on RequestException', function () {
     $this->mock->append(
         new RequestException(
             'Async failure',
@@ -333,7 +333,7 @@ it('profileGetAsyncWithHttpInfo rejects with ApiException on RequestException', 
         )
     );
 
-    $promise = $this->api->profileGetAsyncWithHttpInfo('token');
+    $promise = $this->api->getProfileAsyncWithHttpInfo('token');
     expect(fn () => $promise->wait())->toThrow(ApiException::class);
 });
 
@@ -348,7 +348,7 @@ it('createHttpClientOption enables debug logging', function () {
         'ActualLanguage' => 'hu',
     ])));
 
-    $this->api->profileGetWithHttpInfo('token');
+    $this->api->getProfileWithHttpInfo('token');
 
     expect(file_exists($tempFile))->toBeTrue();
     unlink($tempFile);
@@ -359,7 +359,7 @@ it('createHttpClientOption with debug throws RuntimeException for bad path', fun
     $this->config->setDebugFile('/root/forbidden/debug.log');
 
     $this->mock->append(new Response(200, [], json_encode([])));
-    $this->api->profileGetWithHttpInfo('token');
+    $this->api->getProfileWithHttpInfo('token');
 })->throws(RuntimeException::class);
 
 it('createHttpClientOption sets cert and ssl_key', function () {
@@ -372,12 +372,12 @@ it('createHttpClientOption sets cert and ssl_key', function () {
         'ActualLanguage' => 'hu',
     ])));
 
-    $result = $this->api->profileGetWithHttpInfo('token');
+    $result = $this->api->getProfileWithHttpInfo('token');
 
     expect($result[1])->toBe(200);
 });
 
 it('handleResponseWithDataType throws ApiException on invalid JSON for non-200 2xx', function () {
     $this->mock->append(new Response(204, ['Content-Type' => 'application/json'], 'not-valid-json{{{'));
-    $this->api->profileGetWithHttpInfo('token');
+    $this->api->getProfileWithHttpInfo('token');
 })->throws(ApiException::class, 'Error JSON decoding server response');

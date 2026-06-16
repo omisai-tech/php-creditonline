@@ -6,13 +6,13 @@ All URIs are relative to https://api.creditonline.hu/v3, except if the operation
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**profileGet()**](GetProfileAndTrafficDataService.md#profileGet) | **GET** /Profile |  |
+| [**getProfile()**](GetProfileAndTrafficDataService.md#getProfile) | **GET** /Profile |  |
 
 
-## `profileGet()`
+## `getProfile()`
 
 ```php
-profileGet($token): \Omisai\CreditOnline\Model\Profile
+getProfile($token): \Omisai\CreditOnline\Model\Profile
 ```
 
 
@@ -35,10 +35,10 @@ $apiInstance = new Omisai\CreditOnline\Api\GetProfileAndTrafficDataService(
 $token = 'token_example'; // string | Egyedi token
 
 try {
-    $result = $apiInstance->profileGet($token);
+    $result = $apiInstance->getProfile($token);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling GetProfileAndTrafficDataService->profileGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling GetProfileAndTrafficDataService->getProfile: ', $e->getMessage(), PHP_EOL;
 }
 ```
 

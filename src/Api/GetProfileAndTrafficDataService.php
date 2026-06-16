@@ -76,7 +76,7 @@ class GetProfileAndTrafficDataService
 
     /** @var string[] * */
     public const contentTypes = [
-        'profileGet' => [
+        'getProfile' => [
             'application/json',
         ],
     ];
@@ -125,35 +125,35 @@ class GetProfileAndTrafficDataService
     }
 
     /**
-     * Operation profileGet
+     * Operation getProfile
      *
      * @param  string  $token  Egyedi token (required)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getProfile'] to see the possible values for this operation
      *
      * @return Profile
      * @throws \Omisai\CreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
-    public function profileGet($token, string $contentType = self::contentTypes['profileGet'][0])
+    public function getProfile($token, string $contentType = self::contentTypes['getProfile'][0])
     {
-        [$response] = $this->profileGetWithHttpInfo($token, $contentType);
+        [$response] = $this->getProfileWithHttpInfo($token, $contentType);
 
         return $response;
     }
 
     /**
-     * Operation profileGetWithHttpInfo
+     * Operation getProfileWithHttpInfo
      *
      * @param  string  $token  Egyedi token (required)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getProfile'] to see the possible values for this operation
      *
      * @return array of \Omisai\CreditOnline\Model\Profile, HTTP status code, HTTP response headers (array of strings)
      * @throws \Omisai\CreditOnline\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      */
-    public function profileGetWithHttpInfo($token, string $contentType = self::contentTypes['profileGet'][0])
+    public function getProfileWithHttpInfo($token, string $contentType = self::contentTypes['getProfile'][0])
     {
-        $request = $this->profileGetRequest($token, $contentType);
+        $request = $this->getProfileRequest($token, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -221,17 +221,17 @@ class GetProfileAndTrafficDataService
     }
 
     /**
-     * Operation profileGetAsync
+     * Operation getProfileAsync
      *
      * @param  string  $token  Egyedi token (required)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getProfile'] to see the possible values for this operation
      *
      * @return PromiseInterface
      * @throws \InvalidArgumentException
      */
-    public function profileGetAsync($token, string $contentType = self::contentTypes['profileGet'][0])
+    public function getProfileAsync($token, string $contentType = self::contentTypes['getProfile'][0])
     {
-        return $this->profileGetAsyncWithHttpInfo($token, $contentType)
+        return $this->getProfileAsyncWithHttpInfo($token, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -240,18 +240,18 @@ class GetProfileAndTrafficDataService
     }
 
     /**
-     * Operation profileGetAsyncWithHttpInfo
+     * Operation getProfileAsyncWithHttpInfo
      *
      * @param  string  $token  Egyedi token (required)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getProfile'] to see the possible values for this operation
      *
      * @return PromiseInterface
      * @throws \InvalidArgumentException
      */
-    public function profileGetAsyncWithHttpInfo($token, string $contentType = self::contentTypes['profileGet'][0])
+    public function getProfileAsyncWithHttpInfo($token, string $contentType = self::contentTypes['getProfile'][0])
     {
         $returnType = '\Omisai\CreditOnline\Model\Profile';
-        $request = $this->profileGetRequest($token, $contentType);
+        $request = $this->getProfileRequest($token, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -290,21 +290,21 @@ class GetProfileAndTrafficDataService
     }
 
     /**
-     * Create request for operation 'profileGet'
+     * Create request for operation 'getProfile'
      *
      * @param  string  $token  Egyedi token (required)
-     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['profileGet'] to see the possible values for this operation
+     * @param  string  $contentType  The value for the Content-Type header. Check self::contentTypes['getProfile'] to see the possible values for this operation
      *
      * @return Request
      * @throws \InvalidArgumentException
      */
-    public function profileGetRequest($token, string $contentType = self::contentTypes['profileGet'][0])
+    public function getProfileRequest($token, string $contentType = self::contentTypes['getProfile'][0])
     {
 
         // verify the required parameter 'token' is set
         if ($token === null || (is_array($token) && count($token) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $token when calling profileGet'
+                'Missing the required parameter $token when calling getProfile'
             );
         }
 
